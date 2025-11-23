@@ -1,12 +1,16 @@
 {
   "name": "BoardKit - GitHub Project Board Generator",
   "short_name": "BoardKit",
-  "description": "Generate structured GitHub project boards from pre-built templates",
+  "description": "Generate structured GitHub project boards from pre-built templates in seconds",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
   "orientation": "portrait-primary",
+  "categories": ["productivity", "developer tools", "utilities"],
+  "lang": "en-US",
+  "dir": "ltr",
   "icons": [
     {
       "src": "/icon-192x192.png",
@@ -20,5 +24,15 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
 }
