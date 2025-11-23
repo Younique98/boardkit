@@ -1,0 +1,168 @@
+{
+  "id": "military-rideshare",
+  "name": "Military Tech Startup",
+  "description": "Complete project plan for military-focused tech products like verified rideshare platforms",
+  "category": "Startup",
+  "icon": "🪖",
+  "estimatedIssues": 73,
+  "labels": [
+    { "name": "phase-1", "color": "0052CC", "description": "Phase 1: Core Functionality" },
+    { "name": "phase-2", "color": "FF5630", "description": "Phase 2: Security & Compliance" },
+    { "name": "phase-3", "color": "00B8D9", "description": "Phase 3: Advanced Features" },
+    { "name": "phase-4", "color": "36B37E", "description": "Phase 4: Launch Preparation" },
+    { "name": "priority-high", "color": "FF0000", "description": "High priority task" },
+    { "name": "priority-medium", "color": "FFA500", "description": "Medium priority task" },
+    { "name": "priority-low", "color": "FFFF00", "description": "Low priority task" },
+    { "name": "frontend", "color": "61DAFB", "description": "Frontend development" },
+    { "name": "backend", "color": "68A063", "description": "Backend development" },
+    { "name": "security", "color": "D73A49", "description": "Security related" },
+    { "name": "documentation", "color": "0366D6", "description": "Documentation needed" },
+    { "name": "testing", "color": "28A745", "description": "Testing required" },
+    { "name": "enhancement", "color": "A2EEEF", "description": "New feature or enhancement" }
+  ],
+  "phases": [
+    {
+      "name": "Phase 1: Core Functionality",
+      "description": "Essential features for MVP",
+      "duration": "2-3 weeks",
+      "issues": [
+        {
+          "title": "Set up authentication system with CAC/PIV support",
+          "labels": ["phase-1", "priority-high", "security", "backend"],
+          "body": "## Description\\nImplement multi-factor authentication system supporting CAC/PIV cards for military verification.\\n\\n## Acceptance Criteria\\n- [ ] CAC/PIV card reader integration\\n- [ ] Fallback authentication methods\\n- [ ] Session management\\n- [ ] Security token handling\\n\\n## Technical Notes\\n- Use military-grade encryption\\n- Implement OAuth 2.0 flow\\n- Support DoD PKI certificates"
+        },
+        {
+          "title": "Create user profile system with military verification",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\\nBuild user profile management with military service verification.\\n\\n## Acceptance Criteria\\n- [ ] Profile creation and editing\\n- [ ] Military branch selection\\n- [ ] Rank verification\\n- [ ] Base assignment\\n- [ ] Profile photo upload\\n\\n## Technical Notes\\n- Store sensitive data encrypted\\n- Implement verification workflow"
+        },
+        {
+          "title": "Build ride request/offer creation interface",
+          "labels": ["phase-1", "priority-high", "frontend"],
+          "body": "## Description\\nCreate UI for posting and browsing rides.\\n\\n## Acceptance Criteria\\n- [ ] Ride posting form\\n- [ ] Date/time picker\\n- [ ] Location autocomplete\\n- [ ] Seat capacity selector\\n- [ ] Cost sharing options\\n\\n## Technical Notes\\n- Mobile-responsive design\\n- Real-time validation"
+        },
+        {
+          "title": "Implement real-time matching algorithm",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\\nDevelop algorithm to match riders with drivers based on routes and timing.\\n\\n## Acceptance Criteria\\n- [ ] Route matching logic\\n- [ ] Time window matching\\n- [ ] Distance calculations\\n- [ ] Preference matching\\n- [ ] Real-time updates\\n\\n## Technical Notes\\n- Use geospatial indexing\\n- Optimize for low latency"
+        },
+        {
+          "title": "Create messaging system for ride coordination",
+          "labels": ["phase-1", "priority-medium", "frontend", "backend"],
+          "body": "## Description\\nBuild in-app messaging for coordinating ride details.\\n\\n## Acceptance Criteria\\n- [ ] Real-time chat\\n- [ ] Message notifications\\n- [ ] Read receipts\\n- [ ] File sharing (limited)\\n- [ ] Message encryption\\n\\n## Technical Notes\\n- WebSocket for real-time\\n- End-to-end encryption option"
+        },
+        {
+          "title": "Develop payment/cost-sharing integration",
+          "labels": ["phase-1", "priority-medium", "backend"],
+          "body": "## Description\\nIntegrate payment system for ride cost sharing.\\n\\n## Acceptance Criteria\\n- [ ] Payment method storage\\n- [ ] Cost calculation\\n- [ ] Split payment logic\\n- [ ] Transaction history\\n- [ ] Refund handling\\n\\n## Technical Notes\\n- PCI compliance required\\n- Use established payment gateway"
+        }
+      ]
+    },
+    {
+      "name": "Phase 2: Security & Compliance",
+      "description": "Military-grade security and DoD compliance",
+      "duration": "2-3 weeks",
+      "issues": [
+        {
+          "title": "Implement DoD security compliance measures",
+          "labels": ["phase-2", "priority-high", "security"],
+          "body": "## Description\\nEnsure platform meets DoD security requirements.\\n\\n## Acceptance Criteria\\n- [ ] NIST compliance audit\\n- [ ] Security scanning implementation\\n- [ ] Vulnerability assessment\\n- [ ] Incident response plan\\n- [ ] Security documentation\\n\\n## Technical Notes\\n- Follow DISA STIG guidelines\\n- Implement security headers"
+        },
+        {
+          "title": "Add background check integration",
+          "labels": ["phase-2", "priority-high", "security", "backend"],
+          "body": "## Description\\nIntegrate with military background check systems.\\n\\n## Acceptance Criteria\\n- [ ] DEERS integration\\n- [ ] Clearance level verification\\n- [ ] Automated checks\\n- [ ] Status updates\\n- [ ] Privacy compliance\\n\\n## Technical Notes\\n- Secure API integration\\n- Handle classified information properly"
+        },
+        {
+          "title": "Implement data encryption at rest and in transit",
+          "labels": ["phase-2", "priority-high", "security"],
+          "body": "## Description\\nEnsure all sensitive data is properly encrypted.\\n\\n## Acceptance Criteria\\n- [ ] Database encryption\\n- [ ] TLS 1.3 minimum\\n- [ ] Key management system\\n- [ ] Encryption audit logs\\n- [ ] Compliance verification\\n\\n## Technical Notes\\n- Use AES-256 encryption\\n- Implement key rotation"
+        },
+        {
+          "title": "Create audit logging system",
+          "labels": ["phase-2", "priority-medium", "security"],
+          "body": "## Description\\nImplement comprehensive activity logging for security audits.\\n\\n## Acceptance Criteria\\n- [ ] All actions logged\\n- [ ] Tamper-proof logs\\n- [ ] Log retention policy\\n- [ ] Export capabilities\\n- [ ] Real-time monitoring\\n\\n## Technical Notes\\n- Centralized logging\\n- SIEM integration ready"
+        },
+        {
+          "title": "Build admin dashboard for security monitoring",
+          "labels": ["phase-2", "priority-medium", "frontend"],
+          "body": "## Description\\nCreate administrative interface for monitoring platform security.\\n\\n## Acceptance Criteria\\n- [ ] Real-time security alerts\\n- [ ] User activity monitoring\\n- [ ] Suspicious pattern detection\\n- [ ] Quick response actions\\n- [ ] Reporting dashboard\\n\\n## Technical Notes\\n- Role-based access control\\n- Secure admin authentication"
+        }
+      ]
+    },
+    {
+      "name": "Phase 3: Advanced Features",
+      "description": "Enhanced functionality and user experience",
+      "duration": "2-3 weeks",
+      "issues": [
+        {
+          "title": "Add recurring ride scheduling",
+          "labels": ["phase-3", "priority-medium", "enhancement"],
+          "body": "## Description\\nAllow users to set up recurring rides (e.g., daily commutes to base).\\n\\n## Acceptance Criteria\\n- [ ] Recurring schedule creation\\n- [ ] Automatic matching\\n- [ ] Schedule modifications\\n- [ ] Cancellation handling\\n- [ ] Notification system\\n\\n## Technical Notes\\n- Cron-based scheduling\\n- Handle schedule conflicts"
+        },
+        {
+          "title": "Implement rating and review system",
+          "labels": ["phase-3", "priority-medium", "frontend", "backend"],
+          "body": "## Description\\nBuild reputation system for drivers and riders.\\n\\n## Acceptance Criteria\\n- [ ] Star rating system\\n- [ ] Written reviews\\n- [ ] Response to reviews\\n- [ ] Rating calculations\\n- [ ] Moderation tools\\n\\n## Technical Notes\\n- Prevent review manipulation\\n- Privacy-aware display"
+        },
+        {
+          "title": "Create route optimization with multiple stops",
+          "labels": ["phase-3", "priority-low", "enhancement"],
+          "body": "## Description\\nOptimize routes when picking up multiple riders.\\n\\n## Acceptance Criteria\\n- [ ] Multi-stop routing\\n- [ ] Time estimates\\n- [ ] Cost adjustments\\n- [ ] Visual route display\\n- [ ] Alternative routes\\n\\n## Technical Notes\\n- Use routing API\\n- Traffic consideration"
+        },
+        {
+          "title": "Add emergency contact and safety features",
+          "labels": ["phase-3", "priority-high", "security"],
+          "body": "## Description\\nImplement safety features for ride participants.\\n\\n## Acceptance Criteria\\n- [ ] Emergency contacts\\n- [ ] Share trip details\\n- [ ] Safety check-ins\\n- [ ] Emergency button\\n- [ ] Location sharing\\n\\n## Technical Notes\\n- GPS tracking\\n- Quick emergency response"
+        },
+        {
+          "title": "Build analytics dashboard for users",
+          "labels": ["phase-3", "priority-low", "frontend"],
+          "body": "## Description\\nShow users their ride statistics and savings.\\n\\n## Acceptance Criteria\\n- [ ] Ride history\\n- [ ] Cost savings calculator\\n- [ ] Carbon footprint reduction\\n- [ ] Personal statistics\\n- [ ] Export data\\n\\n## Technical Notes\\n- Data visualization\\n- Privacy controls"
+        }
+      ]
+    },
+    {
+      "name": "Phase 4: Launch Preparation",
+      "description": "Testing, documentation, and deployment",
+      "duration": "1-2 weeks",
+      "issues": [
+        {
+          "title": "Complete comprehensive testing suite",
+          "labels": ["phase-4", "priority-high", "testing"],
+          "body": "## Description\\nDevelop and execute full testing coverage.\\n\\n## Acceptance Criteria\\n- [ ] Unit tests (90%+ coverage)\\n- [ ] Integration tests\\n- [ ] E2E tests\\n- [ ] Security testing\\n- [ ] Performance testing\\n- [ ] Load testing\\n\\n## Technical Notes\\n- Automated test pipeline\\n- Security scan integration"
+        },
+        {
+          "title": "Create user documentation and guides",
+          "labels": ["phase-4", "priority-high", "documentation"],
+          "body": "## Description\\nWrite comprehensive user documentation.\\n\\n## Acceptance Criteria\\n- [ ] User manual\\n- [ ] Video tutorials\\n- [ ] FAQ section\\n- [ ] Troubleshooting guide\\n- [ ] Safety guidelines\\n\\n## Technical Notes\\n- Multiple formats\\n- Accessible design"
+        },
+        {
+          "title": "Set up monitoring and alerting",
+          "labels": ["phase-4", "priority-high", "backend"],
+          "body": "## Description\\nImplement production monitoring and alerting systems.\\n\\n## Acceptance Criteria\\n- [ ] Application monitoring\\n- [ ] Error tracking\\n- [ ] Performance metrics\\n- [ ] Uptime monitoring\\n- [ ] Alert configuration\\n\\n## Technical Notes\\n- Use monitoring tools\\n- Set SLA thresholds"
+        },
+        {
+          "title": "Prepare deployment and rollout plan",
+          "labels": ["phase-4", "priority-high", "documentation"],
+          "body": "## Description\\nCreate detailed deployment strategy.\\n\\n## Acceptance Criteria\\n- [ ] Deployment checklist\\n- [ ] Rollback procedures\\n- [ ] Phased rollout plan\\n- [ ] Success metrics\\n- [ ] Communication plan\\n\\n## Technical Notes\\n- Blue-green deployment\\n- Gradual rollout strategy"
+        },
+        {
+          "title": "Conduct security audit and penetration testing",
+          "labels": ["phase-4", "priority-high", "security", "testing"],
+          "body": "## Description\\nPerform thorough security assessment before launch.\\n\\n## Acceptance Criteria\\n- [ ] Third-party security audit\\n- [ ] Penetration testing\\n- [ ] Vulnerability remediation\\n- [ ] Security certification\\n- [ ] Compliance verification\\n\\n## Technical Notes\\n- Use certified auditors\\n- Document all findings"
+        },
+        {
+          "title": "Set up customer support system",
+          "labels": ["phase-4", "priority-medium", "enhancement"],
+          "body": "## Description\\nCreate support infrastructure for user assistance.\\n\\n## Acceptance Criteria\\n- [ ] Support ticket system\\n- [ ] Knowledge base\\n- [ ] Live chat option\\n- [ ] Email support\\n- [ ] Response time SLAs\\n\\n## Technical Notes\\n- Support tool integration\\n- Training materials"
+        },
+        {
+          "title": "Create marketing materials and launch campaign",
+          "labels": ["phase-4", "priority-medium", "documentation"],
+          "body": "## Description\\nDevelop marketing content for platform launch.\\n\\n## Acceptance Criteria\\n- [ ] Landing page\\n- [ ] Social media content\\n- [ ] Email templates\\n- [ ] Press kit\\n- [ ] Demo videos\\n\\n## Technical Notes\\n- Brand guidelines\\n- Target military audience"
+        }
+      ]
+    }
+  ]
+}

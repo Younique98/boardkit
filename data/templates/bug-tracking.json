@@ -1,0 +1,110 @@
+{
+  "id": "bug-tracking",
+  "name": "Bug Tracking & QA",
+  "description": "Systematic bug tracking and quality assurance workflow",
+  "category": "Development",
+  "icon": "🐛",
+  "estimatedIssues": 25,
+  "labels": [
+    { "name": "bug", "color": "D73A49", "description": "Something isn't working" },
+    { "name": "critical", "color": "B60205", "description": "Critical priority" },
+    { "name": "high", "color": "FF0000", "description": "High priority" },
+    { "name": "medium", "color": "FFA500", "description": "Medium priority" },
+    { "name": "low", "color": "FFFF00", "description": "Low priority" },
+    { "name": "frontend", "color": "61DAFB", "description": "UI/Frontend bug" },
+    { "name": "backend", "color": "68A063", "description": "Backend bug" },
+    { "name": "database", "color": "4DB33D", "description": "Database issue" },
+    { "name": "security", "color": "D73A49", "description": "Security vulnerability" },
+    { "name": "performance", "color": "FF6B6B", "description": "Performance issue" },
+    { "name": "regression", "color": "E99695", "description": "Previously working feature" },
+    { "name": "needs-repro", "color": "FBCA04", "description": "Needs reproduction steps" },
+    { "name": "duplicate", "color": "CFD3D7", "description": "Duplicate issue" },
+    { "name": "wontfix", "color": "FFFFFF", "description": "Will not be fixed" }
+  ],
+  "phases": [
+    {
+      "name": "Critical Bugs",
+      "description": "Production-breaking issues requiring immediate attention",
+      "issues": [
+        {
+          "title": "[CRITICAL] Application crash on startup",
+          "labels": ["bug", "critical"],
+          "body": "## Bug Description\\n[Describe the critical bug]\\n\\n## Steps to Reproduce\\n1. Step one\\n2. Step two\\n3. Step three\\n\\n## Expected Behavior\\n[What should happen]\\n\\n## Actual Behavior\\n[What actually happens]\\n\\n## Environment\\n- OS: \\n- Browser/App version: \\n- Device: \\n\\n## Impact\\n- [ ] Production down\\n- [ ] Data loss risk\\n- [ ] Security vulnerability\\n- [ ] Affects all users\\n\\n## Error Logs\\n```\\n[Paste error logs]\\n```\\n\\n## Screenshots\\n[Add screenshots if applicable]"
+        },
+        {
+          "title": "[CRITICAL] Data corruption in database",
+          "labels": ["bug", "critical", "database"],
+          "body": "## Bug Description\\n[Describe the data issue]\\n\\n## Steps to Reproduce\\n1. \\n\\n## Data Affected\\n- Tables: \\n- Records: \\n- Scope: \\n\\n## Immediate Actions Needed\\n- [ ] Stop data writes\\n- [ ] Backup current state\\n- [ ] Identify corruption source\\n- [ ] Plan recovery\\n\\n## Error Logs\\n```\\n[Paste logs]\\n```"
+        },
+        {
+          "title": "[CRITICAL] Security vulnerability",
+          "labels": ["bug", "critical", "security"],
+          "body": "## Vulnerability Description\\n[CONFIDENTIAL - Describe vulnerability]\\n\\n## Attack Vector\\n[How it can be exploited]\\n\\n## Impact Assessment\\n- [ ] Authentication bypass\\n- [ ] Data exposure\\n- [ ] Code injection\\n- [ ] Privilege escalation\\n\\n## Affected Components\\n- \\n\\n## Immediate Mitigation\\n- [ ] Disable affected feature\\n- [ ] Apply workaround\\n- [ ] Notify stakeholders\\n\\n## Fix Priority\\nMUST FIX IMMEDIATELY"
+        }
+      ]
+    },
+    {
+      "name": "High Priority Bugs",
+      "description": "Significant issues affecting user experience",
+      "issues": [
+        {
+          "title": "[HIGH] Login fails for certain users",
+          "labels": ["bug", "high", "backend"],
+          "body": "## Bug Description\\n[Describe the login issue]\\n\\n## Steps to Reproduce\\n1. Navigate to login\\n2. Enter credentials\\n3. Click submit\\n\\n## Expected Behavior\\nUser should be logged in\\n\\n## Actual Behavior\\n[What happens instead]\\n\\n## Affected Users\\n- Percentage: \\n- Pattern: \\n\\n## Browser Console Errors\\n```\\n[Paste errors]\\n```"
+        },
+        {
+          "title": "[HIGH] Payment processing timeout",
+          "labels": ["bug", "high", "backend"],
+          "body": "## Bug Description\\nPayments failing to process\\n\\n## Steps to Reproduce\\n1. \\n\\n## Business Impact\\n- Revenue loss: \\n- Affected transactions: \\n- Customer complaints: \\n\\n## Technical Details\\n- Payment gateway: \\n- Error codes: \\n- Logs: \\n```\\n\\n```"
+        },
+        {
+          "title": "[HIGH] UI completely broken on mobile",
+          "labels": ["bug", "high", "frontend"],
+          "body": "## Bug Description\\nMobile layout not responsive\\n\\n## Steps to Reproduce\\n1. Open on mobile device\\n2. Navigate to [page]\\n\\n## Expected Behavior\\nResponsive layout\\n\\n## Actual Behavior\\nBroken layout\\n\\n## Affected Devices\\n- [ ] iOS Safari\\n- [ ] Android Chrome\\n- [ ] Specific sizes: \\n\\n## Screenshots\\n[Add mobile screenshots]"
+        }
+      ]
+    },
+    {
+      "name": "Medium Priority Bugs",
+      "description": "Issues that impact functionality but have workarounds",
+      "issues": [
+        {
+          "title": "[MEDIUM] Form validation not working",
+          "labels": ["bug", "medium", "frontend"],
+          "body": "## Bug Description\\n[Describe validation issue]\\n\\n## Steps to Reproduce\\n1. \\n\\n## Expected Behavior\\n[Proper validation]\\n\\n## Actual Behavior\\n[Current behavior]\\n\\n## Workaround\\n[If available]\\n\\n## Impact\\n- User confusion\\n- Invalid data submitted"
+        },
+        {
+          "title": "[MEDIUM] Slow page load times",
+          "labels": ["bug", "medium", "performance"],
+          "body": "## Performance Issue\\nPage takes too long to load\\n\\n## Metrics\\n- Current load time: \\n- Target load time: \\n- Pages affected: \\n\\n## Profiling Data\\n```\\n[Performance metrics]\\n```\\n\\n## Potential Causes\\n- [ ] Large bundle size\\n- [ ] Unoptimized images\\n- [ ] Database queries\\n- [ ] Network requests"
+        },
+        {
+          "title": "[MEDIUM] Email notifications delayed",
+          "labels": ["bug", "medium", "backend"],
+          "body": "## Bug Description\\nEmails not sent in real-time\\n\\n## Expected Timing\\nImmediate or within 1 minute\\n\\n## Actual Timing\\n[Current delay]\\n\\n## Technical Investigation\\n- Queue status: \\n- Worker health: \\n- Email provider status: "
+        }
+      ]
+    },
+    {
+      "name": "Low Priority Bugs",
+      "description": "Minor issues and cosmetic bugs",
+      "issues": [
+        {
+          "title": "[LOW] Typo in error message",
+          "labels": ["bug", "low", "frontend"],
+          "body": "## Bug Description\\nSpelling/grammar error\\n\\n## Location\\n[Where the typo appears]\\n\\n## Current Text\\n\"[current text]\"\\n\\n## Suggested Fix\\n\"[corrected text]\""
+        },
+        {
+          "title": "[LOW] Icon misalignment",
+          "labels": ["bug", "low", "frontend"],
+          "body": "## Bug Description\\nIcon not properly aligned\\n\\n## Location\\n[Component/page]\\n\\n## Expected\\nCentered alignment\\n\\n## Actual\\n[Current alignment]\\n\\n## Screenshot\\n[Add screenshot]"
+        },
+        {
+          "title": "[LOW] Console warning in development",
+          "labels": ["bug", "low"],
+          "body": "## Warning Description\\n[Describe console warning]\\n\\n## Warning Message\\n```\\n[Paste warning]\\n```\\n\\n## Location\\n[Component/file]\\n\\n## Impact\\nDevelopment only"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "id": "mobile-app-launch",
+  "name": "Mobile App Launch",
+  "description": "Ship your mobile app to App Store and Play Store",
+  "category": "Mobile",
+  "icon": "📱",
+  "estimatedIssues": 38,
+  "labels": [
+    { "name": "phase-1", "color": "0052CC", "description": "Development" },
+    { "name": "phase-2", "color": "FF5630", "description": "Testing" },
+    { "name": "phase-3", "color": "00B8D9", "description": "Launch" },
+    { "name": "ios", "color": "000000", "description": "iOS specific" },
+    { "name": "android", "color": "3DDC84", "description": "Android specific" },
+    { "name": "priority-high", "color": "FF0000", "description": "High priority" },
+    { "name": "ui-ux", "color": "FF69B4", "description": "UI/UX" },
+    { "name": "backend", "color": "68A063", "description": "Backend" }
+  ],
+  "phases": [
+    {
+      "name": "Phase 1: Development",
+      "description": "Build core app functionality",
+      "duration": "3-4 weeks",
+      "issues": [
+        {
+          "title": "Set up React Native project",
+          "labels": ["phase-1", "priority-high"],
+          "body": "## Description\\nInitialize mobile app project\\n\\n## Acceptance Criteria\\n- [ ] React Native initialized\\n- [ ] Navigation configured\\n- [ ] State management setup\\n- [ ] Dev environment working\\n\\n## Technical Notes\\n- Expo or bare React Native\\n- TypeScript recommended"
+        },
+        {
+          "title": "Design app UI/UX",
+          "labels": ["phase-1", "priority-high", "ui-ux"],
+          "body": "## Description\\nCreate app design system\\n\\n## Acceptance Criteria\\n- [ ] Wireframes complete\\n- [ ] Design system\\n- [ ] Component library\\n- [ ] Accessibility standards\\n\\n## Technical Notes\\n- Follow platform guidelines\\n- Responsive layouts"
+        },
+        {
+          "title": "Implement core features",
+          "labels": ["phase-1", "priority-high"],
+          "body": "## Description\\nBuild main app functionality\\n\\n## Acceptance Criteria\\n- [ ] All MVP features\\n- [ ] Offline support\\n- [ ] Push notifications\\n- [ ] In-app purchases (if needed)\\n\\n## Technical Notes\\n- Platform-specific code minimized\\n- Performance optimized"
+        },
+        {
+          "title": "Set up backend API",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\\nCreate backend services\\n\\n## Acceptance Criteria\\n- [ ] REST/GraphQL API\\n- [ ] Authentication\\n- [ ] Database setup\\n- [ ] File storage\\n\\n## Technical Notes\\n- Use Firebase or custom backend\\n- API versioning"
+        }
+      ]
+    },
+    {
+      "name": "Phase 2: Testing",
+      "description": "Quality assurance and optimization",
+      "duration": "1-2 weeks",
+      "issues": [
+        {
+          "title": "iOS testing and optimization",
+          "labels": ["phase-2", "priority-high", "ios"],
+          "body": "## Description\\nTest on iOS devices\\n\\n## Acceptance Criteria\\n- [ ] iPhone testing\\n- [ ] iPad testing\\n- [ ] Performance optimization\\n- [ ] Memory leaks fixed\\n\\n## Technical Notes\\n- Test on multiple iOS versions\\n- Xcode Instruments profiling"
+        },
+        {
+          "title": "Android testing and optimization",
+          "labels": ["phase-2", "priority-high", "android"],
+          "body": "## Description\\nTest on Android devices\\n\\n## Acceptance Criteria\\n- [ ] Multiple device sizes\\n- [ ] Android versions tested\\n- [ ] Performance optimization\\n- [ ] Battery usage optimized\\n\\n## Technical Notes\\n- Test on real devices\\n- Android Profiler usage"
+        },
+        {
+          "title": "Beta testing program",
+          "labels": ["phase-2", "priority-medium"],
+          "body": "## Description\\nRun beta test with users\\n\\n## Acceptance Criteria\\n- [ ] TestFlight setup (iOS)\\n- [ ] Play Console beta (Android)\\n- [ ] Beta testers recruited\\n- [ ] Feedback collected\\n- [ ] Issues addressed\\n\\n## Technical Notes\\n- Crash reporting configured\\n- Analytics in place"
+        }
+      ]
+    },
+    {
+      "name": "Phase 3: Launch",
+      "description": "App store submission and marketing",
+      "duration": "1 week",
+      "issues": [
+        {
+          "title": "Prepare App Store submission",
+          "labels": ["phase-3", "priority-high", "ios"],
+          "body": "## Description\\nComplete App Store requirements\\n\\n## Acceptance Criteria\\n- [ ] App screenshots\\n- [ ] App preview video\\n- [ ] Description and keywords\\n- [ ] Privacy policy\\n- [ ] App review guidelines met\\n\\n## Technical Notes\\n- Follow Apple HIG\\n- Prepare for review rejection"
+        },
+        {
+          "title": "Prepare Play Store submission",
+          "labels": ["phase-3", "priority-high", "android"],
+          "body": "## Description\\nComplete Play Store requirements\\n\\n## Acceptance Criteria\\n- [ ] Store listing\\n- [ ] Screenshots and graphics\\n- [ ] Content rating\\n- [ ] Privacy policy\\n- [ ] Release tracks configured\\n\\n## Technical Notes\\n- Google Play policies\\n- Staged rollout plan"
+        },
+        {
+          "title": "Create marketing materials",
+          "labels": ["phase-3", "priority-medium"],
+          "body": "## Description\\nDevelop launch marketing\\n\\n## Acceptance Criteria\\n- [ ] Landing page\\n- [ ] Social media content\\n- [ ] Press kit\\n- [ ] Email campaign\\n\\n## Technical Notes\\n- ASO optimization\\n- Track attribution"
+        }
+      ]
+    }
+  ]
+}
