@@ -1,0 +1,101 @@
+{
+  "id": "api-development",
+  "name": "API Development",
+  "description": "Build and ship a production-ready REST/GraphQL API",
+  "category": "Backend",
+  "icon": "🔌",
+  "estimatedIssues": 32,
+  "labels": [
+    { "name": "phase-1", "color": "0052CC", "description": "Setup & Architecture" },
+    { "name": "phase-2", "color": "FF5630", "description": "Implementation" },
+    { "name": "phase-3", "color": "00B8D9", "description": "Security & Deployment" },
+    { "name": "priority-high", "color": "FF0000", "description": "High priority" },
+    { "name": "backend", "color": "68A063", "description": "Backend" },
+    { "name": "database", "color": "4DB33D", "description": "Database" },
+    { "name": "security", "color": "D73A49", "description": "Security" },
+    { "name": "documentation", "color": "0366D6", "description": "Documentation" }
+  ],
+  "phases": [
+    {
+      "name": "Phase 1: Setup & Architecture",
+      "description": "Project foundation and architecture",
+      "duration": "3-5 days",
+      "issues": [
+        {
+          "title": "Initialize API project structure",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\\nSet up project with framework\\n\\n## Acceptance Criteria\\n- [ ] Framework chosen (Express/Fastify/NestJS)\\n- [ ] TypeScript configured\\n- [ ] Project structure organized\\n- [ ] Git initialized\\n\\n## Technical Notes\\n- Clean architecture\\n- Environment configuration"
+        },
+        {
+          "title": "Design API architecture",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\\nPlan API structure and patterns\\n\\n## Acceptance Criteria\\n- [ ] API versioning strategy\\n- [ ] Resource design\\n- [ ] Error handling pattern\\n- [ ] Architecture documentation\\n\\n## Technical Notes\\n- RESTful principles\\n- Or GraphQL schema"
+        },
+        {
+          "title": "Set up database with ORM",
+          "labels": ["phase-1", "priority-high", "database"],
+          "body": "## Description\\nConfigure database layer\\n\\n## Acceptance Criteria\\n- [ ] Database chosen\\n- [ ] ORM/Query builder setup\\n- [ ] Migration system\\n- [ ] Seed data\\n\\n## Technical Notes\\n- Prisma or TypeORM\\n- Connection pooling"
+        },
+        {
+          "title": "Configure logging and monitoring",
+          "labels": ["phase-1", "priority-medium", "backend"],
+          "body": "## Description\\nSet up observability\\n\\n## Acceptance Criteria\\n- [ ] Structured logging\\n- [ ] Request tracking\\n- [ ] Performance metrics\\n- [ ] Error tracking\\n\\n## Technical Notes\\n- Winston or Pino\\n- Correlation IDs"
+        }
+      ]
+    },
+    {
+      "name": "Phase 2: Implementation",
+      "description": "Core API functionality",
+      "duration": "1-2 weeks",
+      "issues": [
+        {
+          "title": "Implement authentication & authorization",
+          "labels": ["phase-2", "priority-high", "security"],
+          "body": "## Description\\nBuild auth system\\n\\n## Acceptance Criteria\\n- [ ] JWT authentication\\n- [ ] Role-based access\\n- [ ] API key support\\n- [ ] Refresh tokens\\n\\n## Technical Notes\\n- Secure token storage\\n- Password hashing (bcrypt)"
+        },
+        {
+          "title": "Build core CRUD endpoints",
+          "labels": ["phase-2", "priority-high", "backend"],
+          "body": "## Description\\nCreate main API endpoints\\n\\n## Acceptance Criteria\\n- [ ] Create operations\\n- [ ] Read operations\\n- [ ] Update operations\\n- [ ] Delete operations\\n- [ ] Query filters\\n\\n## Technical Notes\\n- Input validation\\n- Pagination support"
+        },
+        {
+          "title": "Add request validation",
+          "labels": ["phase-2", "priority-high", "backend"],
+          "body": "## Description\\nValidate all incoming requests\\n\\n## Acceptance Criteria\\n- [ ] Schema validation\\n- [ ] Type checking\\n- [ ] Sanitization\\n- [ ] Error responses\\n\\n## Technical Notes\\n- Use Zod or Joi\\n- Clear error messages"
+        },
+        {
+          "title": "Implement rate limiting",
+          "labels": ["phase-2", "priority-medium", "security"],
+          "body": "## Description\\nProtect API from abuse\\n\\n## Acceptance Criteria\\n- [ ] Rate limit middleware\\n- [ ] Per-user limits\\n- [ ] Rate limit headers\\n- [ ] Redis for distributed\\n\\n## Technical Notes\\n- Configurable limits\\n- Graceful degradation"
+        }
+      ]
+    },
+    {
+      "name": "Phase 3: Security & Deployment",
+      "description": "Production readiness",
+      "duration": "5-7 days",
+      "issues": [
+        {
+          "title": "Write API documentation",
+          "labels": ["phase-3", "priority-high", "documentation"],
+          "body": "## Description\\nCreate comprehensive docs\\n\\n## Acceptance Criteria\\n- [ ] OpenAPI/Swagger spec\\n- [ ] Interactive docs\\n- [ ] Code examples\\n- [ ] Authentication guide\\n\\n## Technical Notes\\n- Auto-generated from code\\n- Versioned documentation"
+        },
+        {
+          "title": "Implement security best practices",
+          "labels": ["phase-3", "priority-high", "security"],
+          "body": "## Description\\nHarden API security\\n\\n## Acceptance Criteria\\n- [ ] HTTPS only\\n- [ ] CORS configured\\n- [ ] Helmet.js protection\\n- [ ] SQL injection prevention\\n- [ ] XSS protection\\n\\n## Technical Notes\\n- Security headers\\n- Regular audits"
+        },
+        {
+          "title": "Write tests",
+          "labels": ["phase-3", "priority-high"],
+          "body": "## Description\\nComprehensive test coverage\\n\\n## Acceptance Criteria\\n- [ ] Unit tests\\n- [ ] Integration tests\\n- [ ] API endpoint tests\\n- [ ] 80%+ coverage\\n\\n## Technical Notes\\n- Jest + Supertest\\n- Test database"
+        },
+        {
+          "title": "Deploy to production",
+          "labels": ["phase-3", "priority-high", "backend"],
+          "body": "## Description\\nLaunch API\\n\\n## Acceptance Criteria\\n- [ ] Production environment\\n- [ ] CI/CD pipeline\\n- [ ] Health check endpoints\\n- [ ] Monitoring dashboard\\n\\n## Technical Notes\\n- Container deployment\\n- Auto-scaling configured"
+        }
+      ]
+    }
+  ]
+}

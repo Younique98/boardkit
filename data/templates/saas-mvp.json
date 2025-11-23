@@ -1,0 +1,97 @@
+{
+  "id": "saas-mvp",
+  "name": "SaaS MVP",
+  "description": "Launch your SaaS product from idea to production",
+  "category": "Startup",
+  "icon": "🚀",
+  "estimatedIssues": 45,
+  "labels": [
+    { "name": "phase-1", "color": "0052CC", "description": "Phase 1: Foundation" },
+    { "name": "phase-2", "color": "FF5630", "description": "Phase 2: Core Features" },
+    { "name": "phase-3", "color": "00B8D9", "description": "Phase 3: Polish & Launch" },
+    { "name": "priority-high", "color": "FF0000", "description": "High priority" },
+    { "name": "priority-medium", "color": "FFA500", "description": "Medium priority" },
+    { "name": "frontend", "color": "61DAFB", "description": "Frontend" },
+    { "name": "backend", "color": "68A063", "description": "Backend" },
+    { "name": "database", "color": "4DB33D", "description": "Database" },
+    { "name": "documentation", "color": "0366D6", "description": "Documentation" }
+  ],
+  "phases": [
+    {
+      "name": "Phase 1: Foundation",
+      "description": "Set up infrastructure and core architecture",
+      "duration": "1 week",
+      "issues": [
+        {
+          "title": "Set up Next.js project with TypeScript",
+          "labels": ["phase-1", "priority-high", "frontend"],
+          "body": "## Description\\nInitialize project with modern stack\\n\\n## Acceptance Criteria\\n- [ ] Next.js 15+ installed\\n- [ ] TypeScript configured\\n- [ ] ESLint and Prettier\\n- [ ] Git repository initialized\\n\\n## Technical Notes\\n- App router preferred\\n- Strict TypeScript mode"
+        },
+        {
+          "title": "Configure database and ORM",
+          "labels": ["phase-1", "priority-high", "database", "backend"],
+          "body": "## Description\\nSet up database with proper schema\\n\\n## Acceptance Criteria\\n- [ ] Database provider chosen\\n- [ ] ORM configured (Prisma/Drizzle)\\n- [ ] Initial schema created\\n- [ ] Migrations working\\n\\n## Technical Notes\\n- Use PostgreSQL for production\\n- Seed data for development"
+        },
+        {
+          "title": "Implement authentication system",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\\nSet up user authentication\\n\\n## Acceptance Criteria\\n- [ ] Email/password auth\\n- [ ] OAuth providers (Google, GitHub)\\n- [ ] Session management\\n- [ ] Password reset flow\\n\\n## Technical Notes\\n- Use NextAuth.js\\n- Secure session storage"
+        },
+        {
+          "title": "Create landing page",
+          "labels": ["phase-1", "priority-high", "frontend"],
+          "body": "## Description\\nBuild marketing landing page\\n\\n## Acceptance Criteria\\n- [ ] Hero section\\n- [ ] Feature highlights\\n- [ ] Pricing display\\n- [ ] CTA buttons\\n- [ ] Mobile responsive\\n\\n## Technical Notes\\n- SEO optimized\\n- Fast loading time"
+        }
+      ]
+    },
+    {
+      "name": "Phase 2: Core Features",
+      "description": "Build main product functionality",
+      "duration": "2-3 weeks",
+      "issues": [
+        {
+          "title": "Build user dashboard",
+          "labels": ["phase-2", "priority-high", "frontend"],
+          "body": "## Description\\nCreate main user interface\\n\\n## Acceptance Criteria\\n- [ ] Dashboard layout\\n- [ ] Navigation menu\\n- [ ] User profile section\\n- [ ] Settings page\\n\\n## Technical Notes\\n- Component library (shadcn/ui)\\n- Dark mode support"
+        },
+        {
+          "title": "Implement core product feature",
+          "labels": ["phase-2", "priority-high", "frontend", "backend"],
+          "body": "## Description\\nBuild the main value proposition feature\\n\\n## Acceptance Criteria\\n- [ ] Feature requirements met\\n- [ ] API endpoints created\\n- [ ] Frontend interface\\n- [ ] Real-time updates\\n\\n## Technical Notes\\n- WebSocket if needed\\n- Optimistic UI updates"
+        },
+        {
+          "title": "Add payment integration",
+          "labels": ["phase-2", "priority-high", "backend"],
+          "body": "## Description\\nIntegrate payment processing\\n\\n## Acceptance Criteria\\n- [ ] Stripe integration\\n- [ ] Subscription plans\\n- [ ] Payment methods\\n- [ ] Billing portal\\n- [ ] Webhooks configured\\n\\n## Technical Notes\\n- PCI compliance\\n- Test mode for development"
+        },
+        {
+          "title": "Create API endpoints",
+          "labels": ["phase-2", "priority-medium", "backend"],
+          "body": "## Description\\nBuild RESTful API\\n\\n## Acceptance Criteria\\n- [ ] CRUD operations\\n- [ ] Authentication middleware\\n- [ ] Error handling\\n- [ ] Rate limiting\\n- [ ] API documentation\\n\\n## Technical Notes\\n- OpenAPI/Swagger docs\\n- Validation with Zod"
+        }
+      ]
+    },
+    {
+      "name": "Phase 3: Polish & Launch",
+      "description": "Testing, optimization, and deployment",
+      "duration": "1-2 weeks",
+      "issues": [
+        {
+          "title": "Set up monitoring and analytics",
+          "labels": ["phase-3", "priority-high", "backend"],
+          "body": "## Description\\nImplement observability\\n\\n## Acceptance Criteria\\n- [ ] Error tracking (Sentry)\\n- [ ] Analytics (PostHog/Mixpanel)\\n- [ ] Performance monitoring\\n- [ ] Uptime monitoring\\n\\n## Technical Notes\\n- Privacy-compliant analytics\\n- Alert thresholds configured"
+        },
+        {
+          "title": "Write tests",
+          "labels": ["phase-3", "priority-high", "documentation"],
+          "body": "## Description\\nComprehensive test coverage\\n\\n## Acceptance Criteria\\n- [ ] Unit tests\\n- [ ] Integration tests\\n- [ ] E2E tests\\n- [ ] 80%+ coverage\\n\\n## Technical Notes\\n- Jest + React Testing Library\\n- Playwright for E2E"
+        },
+        {
+          "title": "Deploy to production",
+          "labels": ["phase-3", "priority-high", "backend"],
+          "body": "## Description\\nLaunch the application\\n\\n## Acceptance Criteria\\n- [ ] Production environment\\n- [ ] CI/CD pipeline\\n- [ ] Domain configured\\n- [ ] SSL certificates\\n- [ ] Backup system\\n\\n## Technical Notes\\n- Vercel recommended\\n- Database backups automated"
+        }
+      ]
+    }
+  ]
+}
