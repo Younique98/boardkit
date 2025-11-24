@@ -1,0 +1,72 @@
+{
+  "id": "recipe-app",
+  "name": "Recipe & Cooking App",
+  "description": "Recipe management, meal planning, and grocery shopping app",
+  "category": "Food",
+  "icon": "👨‍🍳",
+  "estimatedIssues": 48,
+  "labels": [
+    { "name": "phase-1", "color": "0052CC", "description": "Phase 1: Core Features" },
+    { "name": "phase-2", "color": "FF5630", "description": "Phase 2: Planning & Social" },
+    { "name": "priority-high", "color": "FF0000", "description": "High priority" },
+    { "name": "priority-medium", "color": "FFA500", "description": "Medium priority" },
+    { "name": "frontend", "color": "61DAFB", "description": "Frontend" },
+    { "name": "backend", "color": "68A063", "description": "Backend" }
+  ],
+  "phases": [
+    {
+      "name": "Phase 1: Core Features",
+      "description": "Recipe browsing and management",
+      "duration": "2-3 weeks",
+      "issues": [
+        {
+          "title": "Build recipe database and browsing",
+          "labels": ["phase-1", "priority-high", "frontend", "backend"],
+          "body": "## Description\nCreate recipe catalog with search and filters.\n\n## Acceptance Criteria\n- [ ] Recipe listings\n- [ ] Search functionality\n- [ ] Filter by cuisine/diet\n- [ ] Recipe details page\n- [ ] Cooking instructions"
+        },
+        {
+          "title": "Create recipe submission and editing",
+          "labels": ["phase-1", "priority-high", "frontend"],
+          "body": "## Description\nAllow users to add their own recipes.\n\n## Acceptance Criteria\n- [ ] Recipe form\n- [ ] Ingredient list\n- [ ] Step-by-step instructions\n- [ ] Photo upload\n- [ ] Edit/delete recipes"
+        },
+        {
+          "title": "Implement favorites and collections",
+          "labels": ["phase-1", "priority-medium", "backend"],
+          "body": "## Description\nSave and organize favorite recipes.\n\n## Acceptance Criteria\n- [ ] Favorite recipes\n- [ ] Create collections\n- [ ] Organize by tags\n- [ ] Quick access\n- [ ] Share collections"
+        },
+        {
+          "title": "Add cooking timer and tools",
+          "labels": ["phase-1", "priority-medium", "frontend"],
+          "body": "## Description\nBuilt-in cooking utilities.\n\n## Acceptance Criteria\n- [ ] Multiple timers\n- [ ] Unit converter\n- [ ] Serving calculator\n- [ ] Step highlighting\n- [ ] Voice control"
+        }
+      ]
+    },
+    {
+      "name": "Phase 2: Planning & Social",
+      "description": "Meal planning and community",
+      "duration": "2 weeks",
+      "issues": [
+        {
+          "title": "Build meal planning calendar",
+          "labels": ["phase-2", "priority-high", "frontend"],
+          "body": "## Description\nWeekly meal planning interface.\n\n## Acceptance Criteria\n- [ ] Drag-drop planner\n- [ ] Weekly view\n- [ ] Leftover tracking\n- [ ] Prep time estimates\n- [ ] Calendar sync"
+        },
+        {
+          "title": "Create smart grocery list",
+          "labels": ["phase-2", "priority-high", "backend"],
+          "body": "## Description\nAuto-generate shopping lists from meal plans.\n\n## Acceptance Criteria\n- [ ] Auto-generate from recipes\n- [ ] Combine ingredients\n- [ ] Store organization\n- [ ] Check off items\n- [ ] Share with family"
+        },
+        {
+          "title": "Implement ratings and reviews",
+          "labels": ["phase-2", "priority-medium", "frontend", "backend"],
+          "body": "## Description\nRate and review recipes.\n\n## Acceptance Criteria\n- [ ] Star ratings\n- [ ] Written reviews\n- [ ] Photos from users\n- [ ] Recipe tips\n- [ ] Helpful votes"
+        },
+        {
+          "title": "Add nutritional information",
+          "labels": ["phase-2", "priority-medium", "backend"],
+          "body": "## Description\nDisplay nutrition facts for recipes.\n\n## Acceptance Criteria\n- [ ] Calorie calculation\n- [ ] Macro breakdown\n- [ ] Allergen warnings\n- [ ] Dietary labels\n- [ ] Per-serving info"
+        }
+      ]
+    }
+  ]
+}

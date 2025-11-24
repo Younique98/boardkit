@@ -1,0 +1,71 @@
+{
+  "id": "restaurant-management",
+  "name": "Restaurant Management",
+  "description": "Reservations, orders, menu management, and staff scheduling",
+  "category": "Food",
+  "icon": "🍽️",
+  "estimatedIssues": 48,
+  "labels": [
+    { "name": "phase-1", "color": "0052CC", "description": "Phase 1: Operations" },
+    { "name": "phase-2", "color": "FF5630", "description": "Phase 2: Customer" },
+    { "name": "priority-high", "color": "FF0000", "description": "High priority" },
+    { "name": "frontend", "color": "61DAFB", "description": "Frontend" },
+    { "name": "backend", "color": "68A063", "description": "Backend" }
+  ],
+  "phases": [
+    {
+      "name": "Phase 1: Operations",
+      "description": "Core restaurant management",
+      "duration": "2-3 weeks",
+      "issues": [
+        {
+          "title": "Build table management system",
+          "labels": ["phase-1", "priority-high", "frontend"],
+          "body": "## Description\nManage restaurant tables and seating.\n\n## Acceptance Criteria\n- [ ] Table layout\n- [ ] Seating capacity\n- [ ] Table status\n- [ ] Combine tables\n- [ ] Waitlist management"
+        },
+        {
+          "title": "Create reservation system",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\nOnline table reservations.\n\n## Acceptance Criteria\n- [ ] Book reservations\n- [ ] Time slots\n- [ ] Party size\n- [ ] Confirmation emails\n- [ ] No-show tracking"
+        },
+        {
+          "title": "Implement menu management",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\nDigital menu creation and updates.\n\n## Acceptance Criteria\n- [ ] Menu items\n- [ ] Pricing\n- [ ] Categories\n- [ ] Dietary labels\n- [ ] Out of stock items"
+        },
+        {
+          "title": "Build POS and ordering system",
+          "labels": ["phase-1", "priority-high", "frontend", "backend"],
+          "body": "## Description\nPoint of sale for orders.\n\n## Acceptance Criteria\n- [ ] Take orders\n- [ ] Modify orders\n- [ ] Send to kitchen\n- [ ] Split bills\n- [ ] Payment processing"
+        },
+        {
+          "title": "Create staff scheduling",
+          "labels": ["phase-1", "priority-medium", "backend"],
+          "body": "## Description\nEmployee shift management.\n\n## Acceptance Criteria\n- [ ] Create schedules\n- [ ] Shift assignments\n- [ ] Time-off requests\n- [ ] Shift swaps\n- [ ] Labor cost tracking"
+        }
+      ]
+    },
+    {
+      "name": "Phase 2: Customer Experience",
+      "description": "Online ordering and loyalty",
+      "duration": "2 weeks",
+      "issues": [
+        {
+          "title": "Implement online ordering",
+          "labels": ["phase-2", "priority-high", "frontend"],
+          "body": "## Description\nCustomer online orders.\n\n## Acceptance Criteria\n- [ ] Browse menu\n- [ ] Add to cart\n- [ ] Customizations\n- [ ] Delivery/pickup\n- [ ] Order tracking"
+        },
+        {
+          "title": "Add kitchen display system",
+          "labels": ["phase-2", "priority-high", "frontend"],
+          "body": "## Description\nKitchen order management.\n\n## Acceptance Criteria\n- [ ] Incoming orders\n- [ ] Order priority\n- [ ] Preparation time\n- [ ] Mark complete\n- [ ] Expo screen"
+        },
+        {
+          "title": "Create loyalty program",
+          "labels": ["phase-2", "priority-medium", "backend"],
+          "body": "## Description\nCustomer rewards system.\n\n## Acceptance Criteria\n- [ ] Points system\n- [ ] Rewards catalog\n- [ ] Member profiles\n- [ ] Redeem points\n- [ ] Birthday specials"
+        }
+      ]
+    }
+  ]
+}
