@@ -7,7 +7,7 @@
   "estimatedIssues": 45,
   "labels": [
     { "name": "phase-1", "color": "0052CC", "description": "Phase 1: Tracking" },
-    { "name": "phase-2", "color": "FF5630", "description": "Phase 2": "Automation" },
+    { "name": "phase-2", "color": "FF5630", "description": "Phase 2: Automation" },
     { "name": "priority-high", "color": "FF0000", "description": "High priority" },
     { "name": "frontend", "color": "61DAFB", "description": "Frontend" },
     { "name": "backend", "color": "68A063", "description": "Backend" }
