@@ -1,6 +1,5 @@
 import { auth } from "@/lib/auth"
-import { templates } from "@/lib/templates"
-import { TemplateCard } from "@/components/template-card"
+import { TemplateGallery } from "@/components/template-gallery"
 import { AuthButton } from "@/components/auth-button"
 import Image from "next/image"
 
@@ -92,22 +91,7 @@ export default async function Home() {
         </div>
 
         {/* Template Gallery */}
-        <div className="space-y-8">
-          <div className="text-center space-y-2">
-            <h3 className="text-3xl font-bold text-gray-900 dark:text-white">
-              Choose Your Template
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400">
-              {templates.length} templates • {templates.reduce((sum, t) => sum + t.estimatedIssues, 0)}+ pre-written issues
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {templates.map((template) => (
-              <TemplateCard key={template.id} template={template} />
-            ))}
-          </div>
-        </div>
+        <TemplateGallery />
 
         {/* CTA Section */}
         {!session && (
