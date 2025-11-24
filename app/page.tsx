@@ -127,7 +127,13 @@ export default async function Home() {
       <footer className="border-t border-gray-200 dark:border-gray-700 mt-20 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-600 dark:text-gray-400">
           <p>Built with Next.js 15 • Made for developers, by developers</p>
-          <p className="text-sm mt-2">© 2025 BoardKit. Open source and free to use.</p>
+          <p className="text-sm mt-2">
+            © 2025 BoardKit. Open source and free to use.
+            {" • "}
+            <a href="/privacy" className="hover:text-blue-600 dark:hover:text-blue-400 underline">
+              Privacy Policy
+            </a>
+          </p>
         </div>
       </footer>
     </div>
