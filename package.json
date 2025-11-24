@@ -12,6 +12,7 @@
     "@auth/core": "^0.41.0",
     "@octokit/rest": "^21.0.0",
     "@tanstack/react-query": "^5.0.0",
+    "emoji-picker-react": "^4.12.0",
     "next": "^15.0.0",
     "next-auth": "^5.0.0-beta.30",
     "react": "^19.0.0",
