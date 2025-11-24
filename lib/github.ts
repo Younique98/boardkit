@@ -52,11 +52,14 @@ export class GitHubService {
     repo: string,
     issue: Issue
   ): Promise<number> {
+    // Replace literal \n with actual newlines for proper markdown formatting
+    const formattedBody = issue.body.replace(/\\n/g, '\n')
+
     const { data } = await this.octokit.issues.create({
       owner,
       repo,
       title: issue.title,
-      body: issue.body,
+      body: formattedBody,
       labels: issue.labels,
       assignees: issue.assignees,
     })
