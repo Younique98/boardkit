@@ -1,0 +1,181 @@
+{
+  "id": "social-media-app",
+  "name": "Social Media App",
+  "description": "Complete project plan for building a social network or community platform",
+  "category": "Social",
+  "icon": "📱",
+  "estimatedIssues": 62,
+  "labels": [
+    { "name": "phase-1", "color": "0052CC", "description": "Phase 1: Core Social Features" },
+    { "name": "phase-2", "color": "FF5630", "description": "Phase 2: Engagement & Discovery" },
+    { "name": "phase-3", "color": "00B8D9", "description": "Phase 3: Community Safety" },
+    { "name": "phase-4", "color": "36B37E", "description": "Phase 4: Growth & Monetization" },
+    { "name": "priority-high", "color": "FF0000", "description": "High priority task" },
+    { "name": "priority-medium", "color": "FFA500", "description": "Medium priority task" },
+    { "name": "priority-low", "color": "FFFF00", "description": "Low priority task" },
+    { "name": "frontend", "color": "61DAFB", "description": "Frontend development" },
+    { "name": "backend", "color": "68A063", "description": "Backend development" },
+    { "name": "security", "color": "D73A49", "description": "Security related" },
+    { "name": "documentation", "color": "0366D6", "description": "Documentation needed" }
+  ],
+  "phases": [
+    {
+      "name": "Phase 1: Core Social Features",
+      "description": "Essential features for user interaction",
+      "duration": "3-4 weeks",
+      "issues": [
+        {
+          "title": "Build user authentication and profiles",
+          "labels": ["phase-1", "priority-high", "backend", "security"],
+          "body": "## Description\nCreate user registration, login, and profile system.\n\n## Acceptance Criteria\n- [ ] Email/phone signup\n- [ ] Social login (Google, Facebook, Apple)\n- [ ] Profile creation\n- [ ] Profile editing\n- [ ] Profile photos\n\n## Technical Notes\n- OAuth 2.0 integration\n- JWT authentication\n- Secure password storage"
+        },
+        {
+          "title": "Implement post creation and feed",
+          "labels": ["phase-1", "priority-high", "frontend", "backend"],
+          "body": "## Description\nBuild core posting functionality and news feed.\n\n## Acceptance Criteria\n- [ ] Create text posts\n- [ ] Image/video uploads\n- [ ] Post editing/deletion\n- [ ] Chronological feed\n- [ ] Infinite scroll\n\n## Technical Notes\n- Image optimization\n- Video transcoding\n- Pagination strategy"
+        },
+        {
+          "title": "Create follow/friend connection system",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\nImplement user connection and relationship system.\n\n## Acceptance Criteria\n- [ ] Follow/unfollow users\n- [ ] Followers list\n- [ ] Following list\n- [ ] Connection suggestions\n- [ ] Privacy settings\n\n## Technical Notes\n- Bi-directional relationships\n- Efficient queries\n- Graph database consideration"
+        },
+        {
+          "title": "Build like and reaction system",
+          "labels": ["phase-1", "priority-high", "frontend", "backend"],
+          "body": "## Description\nAdd engagement features for posts.\n\n## Acceptance Criteria\n- [ ] Like/unlike posts\n- [ ] Multiple reaction types\n- [ ] Reaction counts\n- [ ] Who reacted view\n- [ ] Real-time updates\n\n## Technical Notes\n- Optimistic UI updates\n- Counter caching\n- Race condition handling"
+        },
+        {
+          "title": "Implement commenting system",
+          "labels": ["phase-1", "priority-high", "frontend", "backend"],
+          "body": "## Description\nCreate threaded comment functionality.\n\n## Acceptance Criteria\n- [ ] Add comments\n- [ ] Nested replies\n- [ ] Edit/delete comments\n- [ ] Comment likes\n- [ ] Mention users\n\n## Technical Notes\n- Tree structure\n- Pagination\n- Real-time updates"
+        },
+        {
+          "title": "Create notifications system",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\nBuild real-time notification system.\n\n## Acceptance Criteria\n- [ ] Push notifications\n- [ ] In-app notifications\n- [ ] Notification types\n- [ ] Read/unread status\n- [ ] Notification settings\n\n## Technical Notes\n- WebSocket/SSE\n- Firebase Cloud Messaging\n- Rate limiting"
+        },
+        {
+          "title": "Build direct messaging",
+          "labels": ["phase-1", "priority-medium", "frontend", "backend"],
+          "body": "## Description\nImplement private messaging between users.\n\n## Acceptance Criteria\n- [ ] One-on-one chats\n- [ ] Group chats\n- [ ] Message history\n- [ ] Read receipts\n- [ ] Media sharing\n\n## Technical Notes\n- Real-time sync\n- Message encryption\n- Delivery status"
+        }
+      ]
+    },
+    {
+      "name": "Phase 2: Engagement & Discovery",
+      "description": "Help users discover content and connections",
+      "duration": "2-3 weeks",
+      "issues": [
+        {
+          "title": "Implement search functionality",
+          "labels": ["phase-2", "priority-high", "backend"],
+          "body": "## Description\nCreate comprehensive search for users, posts, and hashtags.\n\n## Acceptance Criteria\n- [ ] User search\n- [ ] Post search\n- [ ] Hashtag search\n- [ ] Search suggestions\n- [ ] Recent searches\n\n## Technical Notes\n- Elasticsearch integration\n- Fuzzy matching\n- Search ranking"
+        },
+        {
+          "title": "Add hashtag and topic system",
+          "labels": ["phase-2", "priority-high", "frontend", "backend"],
+          "body": "## Description\nImplement hashtag functionality for content discovery.\n\n## Acceptance Criteria\n- [ ] Hashtag parsing\n- [ ] Hashtag pages\n- [ ] Trending hashtags\n- [ ] Follow hashtags\n- [ ] Related hashtags\n\n## Technical Notes\n- Indexing strategy\n- Trend calculation\n- Real-time updates"
+        },
+        {
+          "title": "Create explore/discover page",
+          "labels": ["phase-2", "priority-high", "frontend"],
+          "body": "## Description\nBuild content discovery interface.\n\n## Acceptance Criteria\n- [ ] Trending posts\n- [ ] Popular users\n- [ ] Topic categories\n- [ ] Personalized content\n- [ ] Fresh content\n\n## Technical Notes\n- Recommendation algorithm\n- Performance optimization\n- A/B testing ready"
+        },
+        {
+          "title": "Implement stories/ephemeral content",
+          "labels": ["phase-2", "priority-medium", "frontend", "backend"],
+          "body": "## Description\nAdd temporary content feature.\n\n## Acceptance Criteria\n- [ ] Create stories\n- [ ] View stories\n- [ ] Story rings\n- [ ] 24-hour expiration\n- [ ] View count\n\n## Technical Notes\n- Auto-deletion\n- Video optimization\n- Storage management"
+        },
+        {
+          "title": "Build recommendation algorithm",
+          "labels": ["phase-2", "priority-medium", "backend"],
+          "body": "## Description\nCreate personalized content recommendation system.\n\n## Acceptance Criteria\n- [ ] User preferences\n- [ ] Engagement tracking\n- [ ] Content scoring\n- [ ] Diversity in feed\n- [ ] Performance metrics\n\n## Technical Notes\n- Machine learning\n- A/B testing\n- Real-time updates"
+        },
+        {
+          "title": "Add media galleries and albums",
+          "labels": ["phase-2", "priority-low", "frontend", "backend"],
+          "body": "## Description\nAllow users to organize media in collections.\n\n## Acceptance Criteria\n- [ ] Create albums\n- [ ] Multi-upload\n- [ ] Album privacy\n- [ ] Photo tagging\n- [ ] Album sharing\n\n## Technical Notes\n- Batch processing\n- CDN integration\n- Lazy loading"
+        }
+      ]
+    },
+    {
+      "name": "Phase 3: Community Safety",
+      "description": "Trust, safety, and content moderation",
+      "duration": "2-3 weeks",
+      "issues": [
+        {
+          "title": "Implement content moderation system",
+          "labels": ["phase-3", "priority-high", "backend"],
+          "body": "## Description\nCreate automated and manual content moderation.\n\n## Acceptance Criteria\n- [ ] Automated filtering\n- [ ] Manual review queue\n- [ ] Content flagging\n- [ ] Moderation actions\n- [ ] Appeal process\n\n## Technical Notes\n- AI content detection\n- Moderation dashboard\n- Action logging"
+        },
+        {
+          "title": "Build reporting and blocking features",
+          "labels": ["phase-3", "priority-high", "frontend", "backend"],
+          "body": "## Description\nAllow users to report and block problematic content/users.\n\n## Acceptance Criteria\n- [ ] Report posts/users\n- [ ] Block users\n- [ ] Mute users\n- [ ] Report categories\n- [ ] Admin review\n\n## Technical Notes\n- Privacy protection\n- False report handling\n- Escalation workflow"
+        },
+        {
+          "title": "Implement privacy controls",
+          "labels": ["phase-3", "priority-high", "frontend", "backend"],
+          "body": "## Description\nCreate comprehensive privacy settings.\n\n## Acceptance Criteria\n- [ ] Profile visibility\n- [ ] Post privacy\n- [ ] Who can contact\n- [ ] Data download\n- [ ] Account deletion\n\n## Technical Notes\n- GDPR compliance\n- Granular controls\n- Audit logging"
+        },
+        {
+          "title": "Add account verification system",
+          "labels": ["phase-3", "priority-medium", "backend"],
+          "body": "## Description\nCreate verified badge system for authentic accounts.\n\n## Acceptance Criteria\n- [ ] Verification requests\n- [ ] Identity verification\n- [ ] Verified badge\n- [ ] Verification criteria\n- [ ] Revocation process\n\n## Technical Notes\n- Document verification\n- Manual review\n- Secure storage"
+        },
+        {
+          "title": "Build security features (2FA, login alerts)",
+          "labels": ["phase-3", "priority-high", "security"],
+          "body": "## Description\nImplement account security features.\n\n## Acceptance Criteria\n- [ ] Two-factor authentication\n- [ ] Login notifications\n- [ ] Active sessions\n- [ ] Suspicious activity\n- [ ] Security checkup\n\n## Technical Notes\n- TOTP implementation\n- Device tracking\n- Anomaly detection"
+        },
+        {
+          "title": "Implement age restrictions and parental controls",
+          "labels": ["phase-3", "priority-medium", "backend"],
+          "body": "## Description\nCreate age-appropriate content controls.\n\n## Acceptance Criteria\n- [ ] Age verification\n- [ ] Content ratings\n- [ ] Restricted mode\n- [ ] Parental controls\n- [ ] COPPA compliance\n\n## Technical Notes\n- Age gate\n- Content filtering\n- Legal compliance"
+        }
+      ]
+    },
+    {
+      "name": "Phase 4: Growth & Monetization",
+      "description": "Scale and revenue features",
+      "duration": "2-3 weeks",
+      "issues": [
+        {
+          "title": "Build analytics dashboard",
+          "labels": ["phase-4", "priority-high", "frontend", "backend"],
+          "body": "## Description\nCreate insights for users and admins.\n\n## Acceptance Criteria\n- [ ] Profile analytics\n- [ ] Post insights\n- [ ] Audience demographics\n- [ ] Engagement metrics\n- [ ] Growth tracking\n\n## Technical Notes\n- Data aggregation\n- Visualization\n- Export capabilities"
+        },
+        {
+          "title": "Implement ads system",
+          "labels": ["phase-4", "priority-medium", "backend"],
+          "body": "## Description\nCreate advertising platform.\n\n## Acceptance Criteria\n- [ ] Ad creation\n- [ ] Targeting options\n- [ ] Ad placement\n- [ ] Performance tracking\n- [ ] Billing system\n\n## Technical Notes\n- Ad server\n- Real-time bidding\n- Fraud prevention"
+        },
+        {
+          "title": "Add subscription/premium features",
+          "labels": ["phase-4", "priority-medium", "backend"],
+          "body": "## Description\nCreate premium subscription tier.\n\n## Acceptance Criteria\n- [ ] Subscription plans\n- [ ] Payment integration\n- [ ] Premium features\n- [ ] Badge/indicator\n- [ ] Cancellation handling\n\n## Technical Notes\n- Stripe/PayPal\n- Feature flags\n- Grace periods"
+        },
+        {
+          "title": "Build creator monetization tools",
+          "labels": ["phase-4", "priority-medium", "backend"],
+          "body": "## Description\nAllow creators to earn money.\n\n## Acceptance Criteria\n- [ ] Tips/donations\n- [ ] Paid subscriptions\n- [ ] Revenue sharing\n- [ ] Payout system\n- [ ] Analytics\n\n## Technical Notes\n- Payment processing\n- Tax compliance\n- Fraud prevention"
+        },
+        {
+          "title": "Implement invite and referral system",
+          "labels": ["phase-4", "priority-high", "backend"],
+          "body": "## Description\nCreate viral growth mechanics.\n\n## Acceptance Criteria\n- [ ] Invite friends\n- [ ] Referral tracking\n- [ ] Rewards system\n- [ ] Social sharing\n- [ ] Contact import\n\n## Technical Notes\n- Unique codes\n- Attribution tracking\n- Reward fulfillment"
+        },
+        {
+          "title": "Add live streaming functionality",
+          "labels": ["phase-4", "priority-low", "backend"],
+          "body": "## Description\nImplement live video broadcasting.\n\n## Acceptance Criteria\n- [ ] Start live stream\n- [ ] View stream\n- [ ] Live comments\n- [ ] Stream notifications\n- [ ] Recording option\n\n## Technical Notes\n- WebRTC/RTMP\n- CDN streaming\n- Latency optimization"
+        },
+        {
+          "title": "Create API for third-party integrations",
+          "labels": ["phase-4", "priority-medium", "backend"],
+          "body": "## Description\nBuild public API for developers.\n\n## Acceptance Criteria\n- [ ] REST API\n- [ ] API documentation\n- [ ] OAuth for apps\n- [ ] Rate limiting\n- [ ] Developer portal\n\n## Technical Notes\n- API versioning\n- Security best practices\n- Usage analytics"
+        }
+      ]
+    }
+  ]
+}

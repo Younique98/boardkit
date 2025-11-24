@@ -1,0 +1,66 @@
+{
+  "id": "personal-finance",
+  "name": "Personal Finance App",
+  "description": "Budgeting, expense tracking, savings goals, and financial insights",
+  "category": "Finance",
+  "icon": "💰",
+  "estimatedIssues": 46,
+  "labels": [
+    { "name": "phase-1", "color": "0052CC", "description": "Phase 1: Tracking" },
+    { "name": "phase-2", "color": "FF5630", "description": "Phase 2: Planning" },
+    { "name": "priority-high", "color": "FF0000", "description": "High priority" },
+    { "name": "frontend", "color": "61DAFB", "description": "Frontend" },
+    { "name": "backend", "color": "68A063", "description": "Backend" }
+  ],
+  "phases": [
+    {
+      "name": "Phase 1: Expense Tracking",
+      "description": "Track income and expenses",
+      "duration": "2-3 weeks",
+      "issues": [
+        {
+          "title": "Build transaction logging system",
+          "labels": ["phase-1", "priority-high", "frontend", "backend"],
+          "body": "## Description\nManual transaction entry.\n\n## Acceptance Criteria\n- [ ] Add transactions\n- [ ] Categories\n- [ ] Date and amount\n- [ ] Notes and tags\n- [ ] Recurring transactions"
+        },
+        {
+          "title": "Implement bank account integration",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\nConnect bank accounts.\n\n## Acceptance Criteria\n- [ ] Plaid integration\n- [ ] Auto-sync transactions\n- [ ] Multiple accounts\n- [ ] Balance tracking\n- [ ] Secure authentication"
+        },
+        {
+          "title": "Create category management",
+          "labels": ["phase-1", "priority-medium", "backend"],
+          "body": "## Description\nOrganize spending by category.\n\n## Acceptance Criteria\n- [ ] Default categories\n- [ ] Custom categories\n- [ ] Auto-categorization\n- [ ] Recategorize\n- [ ] Category icons"
+        },
+        {
+          "title": "Build spending insights dashboard",
+          "labels": ["phase-1", "priority-high", "frontend"],
+          "body": "## Description\nVisualize spending patterns.\n\n## Acceptance Criteria\n- [ ] Monthly summary\n- [ ] Category breakdown\n- [ ] Spending trends\n- [ ] Charts and graphs\n- [ ] Export reports"
+        }
+      ]
+    },
+    {
+      "name": "Phase 2: Budgeting & Goals",
+      "description": "Financial planning",
+      "duration": "2 weeks",
+      "issues": [
+        {
+          "title": "Implement budget creation and tracking",
+          "labels": ["phase-2", "priority-high", "frontend"],
+          "body": "## Description\nSet and monitor budgets.\n\n## Acceptance Criteria\n- [ ] Create budgets\n- [ ] Category limits\n- [ ] Budget vs actual\n- [ ] Overspending alerts\n- [ ] Budget templates"
+        },
+        {
+          "title": "Add savings goals",
+          "labels": ["phase-2", "priority-medium", "backend"],
+          "body": "## Description\nSet and track savings goals.\n\n## Acceptance Criteria\n- [ ] Create goals\n- [ ] Target amount\n- [ ] Target date\n- [ ] Progress tracking\n- [ ] Automatic transfers"
+        },
+        {
+          "title": "Create bill reminders",
+          "labels": ["phase-2", "priority-medium", "backend"],
+          "body": "## Description\nTrack and remind upcoming bills.\n\n## Acceptance Criteria\n- [ ] Add bills\n- [ ] Due date reminders\n- [ ] Recurring bills\n- [ ] Payment tracking\n- [ ] Bill calendar"
+        }
+      ]
+    }
+  ]
+}

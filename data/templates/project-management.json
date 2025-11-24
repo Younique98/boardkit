@@ -1,0 +1,81 @@
+{
+  "id": "project-management",
+  "name": "Project Management Tool",
+  "description": "Tasks, boards, timelines, team collaboration, and project tracking",
+  "category": "Productivity",
+  "icon": "📊",
+  "estimatedIssues": 56,
+  "labels": [
+    { "name": "phase-1", "color": "0052CC", "description": "Phase 1: Tasks" },
+    { "name": "phase-2", "color": "FF5630", "description": "Phase 2: Collaboration" },
+    { "name": "priority-high", "color": "FF0000", "description": "High priority" },
+    { "name": "frontend", "color": "61DAFB", "description": "Frontend" },
+    { "name": "backend", "color": "68A063", "description": "Backend" }
+  ],
+  "phases": [
+    {
+      "name": "Phase 1: Task Management",
+      "description": "Core project and task features",
+      "duration": "3 weeks",
+      "issues": [
+        {
+          "title": "Build project creation and structure",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\nCreate and organize projects.\n\n## Acceptance Criteria\n- [ ] Create projects\n- [ ] Project details\n- [ ] Team members\n- [ ] Project settings\n- [ ] Archive projects"
+        },
+        {
+          "title": "Implement task management",
+          "labels": ["phase-1", "priority-high", "frontend", "backend"],
+          "body": "## Description\nCreate and manage tasks.\n\n## Acceptance Criteria\n- [ ] Create tasks\n- [ ] Task description\n- [ ] Assignees\n- [ ] Due dates\n- [ ] Priority levels"
+        },
+        {
+          "title": "Create Kanban board view",
+          "labels": ["phase-1", "priority-high", "frontend"],
+          "body": "## Description\nDrag-and-drop task board.\n\n## Acceptance Criteria\n- [ ] Board columns\n- [ ] Drag and drop\n- [ ] Custom statuses\n- [ ] Swimlanes\n- [ ] Board filters"
+        },
+        {
+          "title": "Add list and calendar views",
+          "labels": ["phase-1", "priority-medium", "frontend"],
+          "body": "## Description\nMultiple project views.\n\n## Acceptance Criteria\n- [ ] List view\n- [ ] Calendar view\n- [ ] Timeline/Gantt\n- [ ] Table view\n- [ ] View switching"
+        },
+        {
+          "title": "Implement subtasks and checklists",
+          "labels": ["phase-1", "priority-medium", "backend"],
+          "body": "## Description\nBreak down tasks.\n\n## Acceptance Criteria\n- [ ] Add subtasks\n- [ ] Checklists\n- [ ] Nested tasks\n- [ ] Progress tracking\n- [ ] Dependencies"
+        }
+      ]
+    },
+    {
+      "name": "Phase 2: Collaboration",
+      "description": "Team features",
+      "duration": "2 weeks",
+      "issues": [
+        {
+          "title": "Build commenting and mentions",
+          "labels": ["phase-2", "priority-high", "frontend", "backend"],
+          "body": "## Description\nTask discussions.\n\n## Acceptance Criteria\n- [ ] Add comments\n- [ ] @mentions\n- [ ] Notifications\n- [ ] Rich text\n- [ ] Emoji reactions"
+        },
+        {
+          "title": "Implement file attachments",
+          "labels": ["phase-2", "priority-high", "backend"],
+          "body": "## Description\nAttach files to tasks.\n\n## Acceptance Criteria\n- [ ] Upload files\n- [ ] Multiple attachments\n- [ ] File preview\n- [ ] Version history\n- [ ] Storage limits"
+        },
+        {
+          "title": "Add time tracking",
+          "labels": ["phase-2", "priority-medium", "frontend"],
+          "body": "## Description\nTrack time spent on tasks.\n\n## Acceptance Criteria\n- [ ] Start/stop timer\n- [ ] Manual time entry\n- [ ] Time estimates\n- [ ] Time reports\n- [ ] Billable hours"
+        },
+        {
+          "title": "Create activity feed and notifications",
+          "labels": ["phase-2", "priority-high", "backend"],
+          "body": "## Description\nProject activity tracking.\n\n## Acceptance Criteria\n- [ ] Activity log\n- [ ] Push notifications\n- [ ] Email digests\n- [ ] Custom alerts\n- [ ] Notification preferences"
+        },
+        {
+          "title": "Build dashboards and reporting",
+          "labels": ["phase-2", "priority-high", "frontend"],
+          "body": "## Description\nProject insights and metrics.\n\n## Acceptance Criteria\n- [ ] Project overview\n- [ ] Task completion\n- [ ] Team workload\n- [ ] Burndown charts\n- [ ] Export reports"
+        }
+      ]
+    }
+  ]
+}

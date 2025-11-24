@@ -1,0 +1,66 @@
+{
+  "id": "inventory-management",
+  "name": "Inventory Management",
+  "description": "Stock tracking, orders, suppliers, and warehouse management",
+  "category": "Business",
+  "icon": "📦",
+  "estimatedIssues": 45,
+  "labels": [
+    { "name": "phase-1", "color": "0052CC", "description": "Phase 1: Tracking" },
+    { "name": "phase-2", "color": "FF5630", "description": "Phase 2": "Automation" },
+    { "name": "priority-high", "color": "FF0000", "description": "High priority" },
+    { "name": "frontend", "color": "61DAFB", "description": "Frontend" },
+    { "name": "backend", "color": "68A063", "description": "Backend" }
+  ],
+  "phases": [
+    {
+      "name": "Phase 1: Core Tracking",
+      "description": "Inventory and stock management",
+      "duration": "2-3 weeks",
+      "issues": [
+        {
+          "title": "Build product and SKU management",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\nProduct catalog and SKUs.\n\n## Acceptance Criteria\n- [ ] Add products\n- [ ] SKU generation\n- [ ] Product variants\n- [ ] Barcodes\n- [ ] Product categories"
+        },
+        {
+          "title": "Implement stock level tracking",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\nReal-time inventory levels.\n\n## Acceptance Criteria\n- [ ] Current stock\n- [ ] Multiple locations\n- [ ] Low stock alerts\n- [ ] Stock movements\n- [ ] Inventory value"
+        },
+        {
+          "title": "Create purchase order system",
+          "labels": ["phase-1", "priority-high", "frontend", "backend"],
+          "body": "## Description\nOrder from suppliers.\n\n## Acceptance Criteria\n- [ ] Create POs\n- [ ] Supplier management\n- [ ] Order tracking\n- [ ] Receiving stock\n- [ ] Payment tracking"
+        },
+        {
+          "title": "Build warehouse management",
+          "labels": ["phase-1", "priority-medium", "backend"],
+          "body": "## Description\nMultiple warehouse locations.\n\n## Acceptance Criteria\n- [ ] Warehouse locations\n- [ ] Stock by location\n- [ ] Transfer stock\n- [ ] Bin locations\n- [ ] Picking lists"
+        }
+      ]
+    },
+    {
+      "name": "Phase 2: Automation",
+      "description": "Advanced features",
+      "duration": "2 weeks",
+      "issues": [
+        {
+          "title": "Implement automatic reordering",
+          "labels": ["phase-2", "priority-medium", "backend"],
+          "body": "## Description\nAutomatic purchase orders.\n\n## Acceptance Criteria\n- [ ] Reorder points\n- [ ] Auto-generate POs\n- [ ] Lead time calculation\n- [ ] Supplier selection\n- [ ] Approval workflow"
+        },
+        {
+          "title": "Add reporting and analytics",
+          "labels": ["phase-2", "priority-high", "frontend"],
+          "body": "## Description\nInventory insights.\n\n## Acceptance Criteria\n- [ ] Stock reports\n- [ ] Turnover rate\n- [ ] Dead stock\n- [ ] Forecasting\n- [ ] Export data"
+        },
+        {
+          "title": "Create barcode scanning",
+          "labels": ["phase-2", "priority-medium", "frontend"],
+          "body": "## Description\nMobile barcode scanning.\n\n## Acceptance Criteria\n- [ ] Scan barcodes\n- [ ] Quick lookup\n- [ ] Receive stock\n- [ ] Stock adjustments\n- [ ] Cycle counting"
+        }
+      ]
+    }
+  ]
+}

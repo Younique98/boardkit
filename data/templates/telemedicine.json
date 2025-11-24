@@ -1,0 +1,67 @@
+{
+  "id": "telemedicine",
+  "name": "Telemedicine Platform",
+  "description": "Virtual doctor appointments, prescriptions, and patient records",
+  "category": "Healthcare",
+  "icon": "🏥",
+  "estimatedIssues": 51,
+  "labels": [
+    { "name": "phase-1", "color": "0052CC", "description": "Phase 1: Appointments" },
+    { "name": "phase-2", "color": "FF5630", "description": "Phase 2: Clinical" },
+    { "name": "priority-high", "color": "FF0000", "description": "High priority" },
+    { "name": "frontend", "color": "61DAFB", "description": "Frontend" },
+    { "name": "backend", "color": "68A063", "description": "Backend" },
+    { "name": "security", "color": "D73A49", "description": "Security" }
+  ],
+  "phases": [
+    {
+      "name": "Phase 1: Appointments",
+      "description": "Scheduling and video visits",
+      "duration": "3 weeks",
+      "issues": [
+        {
+          "title": "Build doctor profiles and directory",
+          "labels": ["phase-1", "priority-high", "frontend"],
+          "body": "## Description\nDoctor profiles and search.\n\n## Acceptance Criteria\n- [ ] Doctor profiles\n- [ ] Specialties\n- [ ] Availability\n- [ ] Reviews and ratings\n- [ ] Insurance accepted"
+        },
+        {
+          "title": "Implement appointment scheduling",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\nBook doctor appointments.\n\n## Acceptance Criteria\n- [ ] Calendar integration\n- [ ] Time slot selection\n- [ ] Patient information\n- [ ] Confirmation emails\n- [ ] Reminder notifications"
+        },
+        {
+          "title": "Create video consultation system",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\nVideo calls with doctors.\n\n## Acceptance Criteria\n- [ ] WebRTC video\n- [ ] Waiting room\n- [ ] Screen sharing\n- [ ] Call recording\n- [ ] Connection quality"
+        },
+        {
+          "title": "Build patient portal and medical history",
+          "labels": ["phase-1", "priority-high", "backend", "security"],
+          "body": "## Description\nPatient health records.\n\n## Acceptance Criteria\n- [ ] Medical history\n- [ ] Allergies\n- [ ] Medications\n- [ ] Past visits\n- [ ] HIPAA compliance"
+        }
+      ]
+    },
+    {
+      "name": "Phase 2: Clinical Features",
+      "description": "Prescriptions and records",
+      "duration": "2 weeks",
+      "issues": [
+        {
+          "title": "Implement e-prescription system",
+          "labels": ["phase-2", "priority-high", "backend"],
+          "body": "## Description\nDigital prescriptions.\n\n## Acceptance Criteria\n- [ ] Write prescriptions\n- [ ] Drug database\n- [ ] Send to pharmacy\n- [ ] Refill requests\n- [ ] Prescription history"
+        },
+        {
+          "title": "Add lab orders and results",
+          "labels": ["phase-2", "priority-medium", "backend"],
+          "body": "## Description\nOrder and view lab work.\n\n## Acceptance Criteria\n- [ ] Order lab tests\n- [ ] Upload results\n- [ ] Result notifications\n- [ ] Historical results\n- [ ] Doctor review"
+        },
+        {
+          "title": "Create secure messaging",
+          "labels": ["phase-2", "priority-high", "backend", "security"],
+          "body": "## Description\nHIPAA-compliant messaging.\n\n## Acceptance Criteria\n- [ ] Doctor-patient chat\n- [ ] Encrypted messages\n- [ ] Attachment support\n- [ ] Read receipts\n- [ ] Audit logs"
+        }
+      ]
+    }
+  ]
+}

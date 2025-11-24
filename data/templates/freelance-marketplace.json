@@ -1,0 +1,66 @@
+{
+  "id": "freelance-marketplace",
+  "name": "Freelance Marketplace",
+  "description": "Gig marketplace, proposals, payments, and freelancer ratings",
+  "category": "Business",
+  "icon": "💻",
+  "estimatedIssues": 53,
+  "labels": [
+    { "name": "phase-1", "color": "0052CC", "description": "Phase 1: Core" },
+    { "name": "phase-2", "color": "FF5630", "description": "Phase 2: Projects" },
+    { "name": "priority-high", "color": "FF0000", "description": "High priority" },
+    { "name": "frontend", "color": "61DAFB", "description": "Frontend" },
+    { "name": "backend", "color": "68A063", "description": "Backend" }
+  ],
+  "phases": [
+    {
+      "name": "Phase 1: Core Marketplace",
+      "description": "Profiles and gig discovery",
+      "duration": "3 weeks",
+      "issues": [
+        {
+          "title": "Build freelancer profiles and portfolios",
+          "labels": ["phase-1", "priority-high", "frontend"],
+          "body": "## Description\nFreelancer profile system.\n\n## Acceptance Criteria\n- [ ] Profile creation\n- [ ] Skills and expertise\n- [ ] Portfolio showcase\n- [ ] Work history\n- [ ] Hourly rate"
+        },
+        {
+          "title": "Create gig posting and browsing",
+          "labels": ["phase-1", "priority-high", "frontend", "backend"],
+          "body": "## Description\nPost and discover gigs.\n\n## Acceptance Criteria\n- [ ] Post gigs\n- [ ] Gig categories\n- [ ] Search and filter\n- [ ] Gig details\n- [ ] Pricing packages"
+        },
+        {
+          "title": "Implement proposal system",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\nFreelancers submit proposals.\n\n## Acceptance Criteria\n- [ ] Submit proposals\n- [ ] Cover letter\n- [ ] Pricing quote\n- [ ] Timeline estimate\n- [ ] Accept/reject proposals"
+        },
+        {
+          "title": "Build messaging system",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\nClient-freelancer communication.\n\n## Acceptance Criteria\n- [ ] Direct messages\n- [ ] File sharing\n- [ ] Proposal discussions\n- [ ] Real-time chat\n- [ ] Message notifications"
+        }
+      ]
+    },
+    {
+      "name": "Phase 2: Project Management",
+      "description": "Contracts and payments",
+      "duration": "2 weeks",
+      "issues": [
+        {
+          "title": "Create contract and milestone system",
+          "labels": ["phase-2", "priority-high", "backend"],
+          "body": "## Description\nProject contracts and milestones.\n\n## Acceptance Criteria\n- [ ] Create contracts\n- [ ] Milestone breakdown\n- [ ] Deliverables\n- [ ] Timeline tracking\n- [ ] Contract terms"
+        },
+        {
+          "title": "Implement escrow and payment system",
+          "labels": ["phase-2", "priority-high", "backend"],
+          "body": "## Description\nSecure payment handling.\n\n## Acceptance Criteria\n- [ ] Escrow deposits\n- [ ] Milestone payments\n- [ ] Release funds\n- [ ] Dispute handling\n- [ ] Payout to freelancers"
+        },
+        {
+          "title": "Add rating and review system",
+          "labels": ["phase-2", "priority-high", "frontend"],
+          "body": "## Description\nRate freelancers and clients.\n\n## Acceptance Criteria\n- [ ] Star ratings\n- [ ] Written reviews\n- [ ] Project feedback\n- [ ] Response to reviews\n- [ ] Reputation scores"
+        }
+      ]
+    }
+  ]
+}
