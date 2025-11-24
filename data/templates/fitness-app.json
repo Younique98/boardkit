@@ -1,0 +1,95 @@
+{
+  "id": "fitness-app",
+  "name": "Fitness & Workout App",
+  "description": "Complete workout tracking, meal planning, and fitness progress app",
+  "category": "Health",
+  "icon": "💪",
+  "estimatedIssues": 52,
+  "labels": [
+    { "name": "phase-1", "color": "0052CC", "description": "Phase 1: Core Features" },
+    { "name": "phase-2", "color": "FF5630", "description": "Phase 2: Social & Tracking" },
+    { "name": "phase-3", "color": "00B8D9", "description": "Phase 3: Premium Features" },
+    { "name": "priority-high", "color": "FF0000", "description": "High priority" },
+    { "name": "priority-medium", "color": "FFA500", "description": "Medium priority" },
+    { "name": "frontend", "color": "61DAFB", "description": "Frontend" },
+    { "name": "backend", "color": "68A063", "description": "Backend" }
+  ],
+  "phases": [
+    {
+      "name": "Phase 1: Core Features",
+      "description": "Essential workout and nutrition tracking",
+      "duration": "2-3 weeks",
+      "issues": [
+        {
+          "title": "Build workout library and exercise database",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\nCreate comprehensive exercise database with instructions and videos.\n\n## Acceptance Criteria\n- [ ] Exercise catalog\n- [ ] Muscle group categorization\n- [ ] Difficulty levels\n- [ ] Equipment requirements\n- [ ] Video demonstrations"
+        },
+        {
+          "title": "Create workout builder and planner",
+          "labels": ["phase-1", "priority-high", "frontend"],
+          "body": "## Description\nAllow users to create custom workout routines.\n\n## Acceptance Criteria\n- [ ] Drag-and-drop builder\n- [ ] Pre-made templates\n- [ ] Rest periods\n- [ ] Sets and reps\n- [ ] Save custom workouts"
+        },
+        {
+          "title": "Implement workout logging and tracking",
+          "labels": ["phase-1", "priority-high", "frontend", "backend"],
+          "body": "## Description\nTrack completed workouts with weights and reps.\n\n## Acceptance Criteria\n- [ ] Log exercises\n- [ ] Track weights/reps\n- [ ] Timer functionality\n- [ ] Rest timer\n- [ ] Workout history"
+        },
+        {
+          "title": "Add nutrition tracking and meal logging",
+          "labels": ["phase-1", "priority-high", "frontend", "backend"],
+          "body": "## Description\nTrack daily nutrition intake and macros.\n\n## Acceptance Criteria\n- [ ] Food database\n- [ ] Barcode scanning\n- [ ] Macro tracking\n- [ ] Calorie counting\n- [ ] Meal history"
+        },
+        {
+          "title": "Build user profile and goal setting",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\nUser profiles with fitness goals.\n\n## Acceptance Criteria\n- [ ] Profile creation\n- [ ] Body measurements\n- [ ] Goal setting\n- [ ] Progress photos\n- [ ] Personal records"
+        }
+      ]
+    },
+    {
+      "name": "Phase 2: Social & Tracking",
+      "description": "Community features and advanced tracking",
+      "duration": "2 weeks",
+      "issues": [
+        {
+          "title": "Create progress tracking and analytics",
+          "labels": ["phase-2", "priority-high", "frontend"],
+          "body": "## Description\nVisualize fitness progress over time.\n\n## Acceptance Criteria\n- [ ] Weight charts\n- [ ] Strength progression\n- [ ] Body measurements\n- [ ] Workout streaks\n- [ ] Achievement badges"
+        },
+        {
+          "title": "Implement social features and sharing",
+          "labels": ["phase-2", "priority-medium", "backend"],
+          "body": "## Description\nShare workouts and progress with friends.\n\n## Acceptance Criteria\n- [ ] Follow users\n- [ ] Share workouts\n- [ ] Activity feed\n- [ ] Workout challenges\n- [ ] Comments and likes"
+        },
+        {
+          "title": "Add workout reminders and notifications",
+          "labels": ["phase-2", "priority-medium", "backend"],
+          "body": "## Description\nRemind users to stay consistent.\n\n## Acceptance Criteria\n- [ ] Scheduled reminders\n- [ ] Rest day alerts\n- [ ] Streak notifications\n- [ ] Goal milestones\n- [ ] Motivational messages"
+        }
+      ]
+    },
+    {
+      "name": "Phase 3: Premium Features",
+      "description": "Advanced functionality",
+      "duration": "2 weeks",
+      "issues": [
+        {
+          "title": "Build meal planning and recipes",
+          "labels": ["phase-3", "priority-medium", "frontend"],
+          "body": "## Description\nMeal planning tools with recipes.\n\n## Acceptance Criteria\n- [ ] Weekly meal planner\n- [ ] Recipe database\n- [ ] Grocery lists\n- [ ] Macro-based suggestions\n- [ ] Dietary preferences"
+        },
+        {
+          "title": "Add personal trainer features",
+          "labels": ["phase-3", "priority-medium", "backend"],
+          "body": "## Description\nTools for trainers to manage clients.\n\n## Acceptance Criteria\n- [ ] Client management\n- [ ] Assign workouts\n- [ ] Track client progress\n- [ ] In-app messaging\n- [ ] Payment integration"
+        },
+        {
+          "title": "Implement AI workout recommendations",
+          "labels": ["phase-3", "priority-low", "backend"],
+          "body": "## Description\nPersonalized workout suggestions.\n\n## Acceptance Criteria\n- [ ] Algorithm based on goals\n- [ ] Progressive overload\n- [ ] Recovery suggestions\n- [ ] Exercise alternatives\n- [ ] Adaptive difficulty"
+        }
+      ]
+    }
+  ]
+}

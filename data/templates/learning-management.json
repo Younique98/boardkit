@@ -1,0 +1,66 @@
+{
+  "id": "learning-management",
+  "name": "Learning Management System",
+  "description": "Online courses, lessons, quizzes, and student progress tracking",
+  "category": "Education",
+  "icon": "📚",
+  "estimatedIssues": 54,
+  "labels": [
+    { "name": "phase-1", "color": "0052CC", "description": "Phase 1: Core" },
+    { "name": "phase-2", "color": "FF5630", "description": "Phase 2: Assessment" },
+    { "name": "priority-high", "color": "FF0000", "description": "High priority" },
+    { "name": "frontend", "color": "61DAFB", "description": "Frontend" },
+    { "name": "backend", "color": "68A063", "description": "Backend" }
+  ],
+  "phases": [
+    {
+      "name": "Phase 1: Core Learning",
+      "description": "Courses and content delivery",
+      "duration": "3 weeks",
+      "issues": [
+        {
+          "title": "Build course creation and structure",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\nCreate and organize courses.\n\n## Acceptance Criteria\n- [ ] Course builder\n- [ ] Module structure\n- [ ] Lesson organization\n- [ ] Prerequisites\n- [ ] Course settings"
+        },
+        {
+          "title": "Implement video content delivery",
+          "labels": ["phase-1", "priority-high", "frontend"],
+          "body": "## Description\nVideo player and streaming.\n\n## Acceptance Criteria\n- [ ] Video upload\n- [ ] Adaptive streaming\n- [ ] Playback controls\n- [ ] Progress tracking\n- [ ] Subtitles support"
+        },
+        {
+          "title": "Create student enrollment system",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\nStudent course access.\n\n## Acceptance Criteria\n- [ ] Enroll in courses\n- [ ] My courses dashboard\n- [ ] Access control\n- [ ] Course library\n- [ ] Certificate of completion"
+        },
+        {
+          "title": "Build progress tracking",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\nTrack learning progress.\n\n## Acceptance Criteria\n- [ ] Lesson completion\n- [ ] Course progress\n- [ ] Time spent\n- [ ] Next lesson\n- [ ] Resume where left off"
+        }
+      ]
+    },
+    {
+      "name": "Phase 2: Assessment & Interaction",
+      "description": "Quizzes and community",
+      "duration": "2 weeks",
+      "issues": [
+        {
+          "title": "Implement quiz and assessment system",
+          "labels": ["phase-2", "priority-high", "frontend", "backend"],
+          "body": "## Description\nQuizzes and tests.\n\n## Acceptance Criteria\n- [ ] Multiple question types\n- [ ] Timed quizzes\n- [ ] Automatic grading\n- [ ] Quiz feedback\n- [ ] Retake options"
+        },
+        {
+          "title": "Create assignments and submissions",
+          "labels": ["phase-2", "priority-medium", "backend"],
+          "body": "## Description\nHomework and projects.\n\n## Acceptance Criteria\n- [ ] Assignment creation\n- [ ] File submissions\n- [ ] Deadline tracking\n- [ ] Grading rubric\n- [ ] Instructor feedback"
+        },
+        {
+          "title": "Add discussion forums",
+          "labels": ["phase-2", "priority-medium", "frontend"],
+          "body": "## Description\nStudent and instructor discussions.\n\n## Acceptance Criteria\n- [ ] Course forums\n- [ ] Create threads\n- [ ] Reply to posts\n- [ ] Upvoting\n- [ ] Instructor answers"
+        }
+      ]
+    }
+  ]
+}

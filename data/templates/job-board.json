@@ -1,0 +1,71 @@
+{
+  "id": "job-board",
+  "name": "Job Board Platform",
+  "description": "Job listings, applications, and recruitment platform",
+  "category": "Business",
+  "icon": "💼",
+  "estimatedIssues": 50,
+  "labels": [
+    { "name": "phase-1", "color": "0052CC", "description": "Phase 1: Core" },
+    { "name": "phase-2", "color": "FF5630", "description": "Phase 2: Advanced" },
+    { "name": "priority-high", "color": "FF0000", "description": "High priority" },
+    { "name": "frontend", "color": "61DAFB", "description": "Frontend" },
+    { "name": "backend", "color": "68A063", "description": "Backend" }
+  ],
+  "phases": [
+    {
+      "name": "Phase 1: Core Features",
+      "description": "Job posting and applications",
+      "duration": "2-3 weeks",
+      "issues": [
+        {
+          "title": "Build job listing and posting system",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\nCreate job posting functionality.\n\n## Acceptance Criteria\n- [ ] Post jobs\n- [ ] Job details form\n- [ ] Salary range\n- [ ] Requirements\n- [ ] Company info"
+        },
+        {
+          "title": "Implement job search and filters",
+          "labels": ["phase-1", "priority-high", "frontend"],
+          "body": "## Description\nAdvanced job search.\n\n## Acceptance Criteria\n- [ ] Keyword search\n- [ ] Location filter\n- [ ] Salary range\n- [ ] Job type\n- [ ] Experience level"
+        },
+        {
+          "title": "Create application submission system",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\nJob application process.\n\n## Acceptance Criteria\n- [ ] Apply to jobs\n- [ ] Resume upload\n- [ ] Cover letter\n- [ ] Application tracking\n- [ ] Email confirmation"
+        },
+        {
+          "title": "Build candidate profiles and resumes",
+          "labels": ["phase-1", "priority-high", "frontend"],
+          "body": "## Description\nCandidate profile management.\n\n## Acceptance Criteria\n- [ ] Profile creation\n- [ ] Work history\n- [ ] Skills\n- [ ] Resume builder\n- [ ] Portfolio links"
+        },
+        {
+          "title": "Create employer dashboard",
+          "labels": ["phase-1", "priority-medium", "frontend"],
+          "body": "## Description\nEmployer job management.\n\n## Acceptance Criteria\n- [ ] Active listings\n- [ ] Application inbox\n- [ ] Candidate pipeline\n- [ ] Job analytics\n- [ ] Edit/close jobs"
+        }
+      ]
+    },
+    {
+      "name": "Phase 2: Advanced Features",
+      "description": "Enhanced functionality",
+      "duration": "2 weeks",
+      "issues": [
+        {
+          "title": "Implement applicant tracking system (ATS)",
+          "labels": ["phase-2", "priority-high", "backend"],
+          "body": "## Description\nTrack candidates through hiring process.\n\n## Acceptance Criteria\n- [ ] Application stages\n- [ ] Move candidates\n- [ ] Notes and ratings\n- [ ] Interview scheduling\n- [ ] Team collaboration"
+        },
+        {
+          "title": "Add resume parsing and matching",
+          "labels": ["phase-2", "priority-medium", "backend"],
+          "body": "## Description\nAI-powered resume analysis.\n\n## Acceptance Criteria\n- [ ] Parse resumes\n- [ ] Extract skills\n- [ ] Job matching\n- [ ] Candidate ranking\n- [ ] Skill gap analysis"
+        },
+        {
+          "title": "Build messaging and communication",
+          "labels": ["phase-2", "priority-medium", "backend"],
+          "body": "## Description\nIn-platform messaging.\n\n## Acceptance Criteria\n- [ ] Direct messages\n- [ ] Interview invites\n- [ ] Offer letters\n- [ ] Rejection templates\n- [ ] Email integration"
+        }
+      ]
+    }
+  ]
+}

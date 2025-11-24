@@ -1,0 +1,66 @@
+{
+  "id": "hotel-booking",
+  "name": "Hotel Booking Platform",
+  "description": "Hotel reservations, room management, and booking system",
+  "category": "Travel",
+  "icon": "🏨",
+  "estimatedIssues": 49,
+  "labels": [
+    { "name": "phase-1", "color": "0052CC", "description": "Phase 1: Booking" },
+    { "name": "phase-2", "color": "FF5630", "description": "Phase 2: Management" },
+    { "name": "priority-high", "color": "FF0000", "description": "High priority" },
+    { "name": "frontend", "color": "61DAFB", "description": "Frontend" },
+    { "name": "backend", "color": "68A063", "description": "Backend" }
+  ],
+  "phases": [
+    {
+      "name": "Phase 1: Booking System",
+      "description": "Reservations and search",
+      "duration": "2-3 weeks",
+      "issues": [
+        {
+          "title": "Build hotel and room listings",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\nHotel and room catalog.\n\n## Acceptance Criteria\n- [ ] Hotel profiles\n- [ ] Room types\n- [ ] Amenities\n- [ ] Photo galleries\n- [ ] Pricing"
+        },
+        {
+          "title": "Implement availability calendar",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\nReal-time availability checking.\n\n## Acceptance Criteria\n- [ ] Date picker\n- [ ] Available rooms\n- [ ] Booking conflicts\n- [ ] Minimum stay rules\n- [ ] Blackout dates"
+        },
+        {
+          "title": "Create booking and reservation system",
+          "labels": ["phase-1", "priority-high", "frontend", "backend"],
+          "body": "## Description\nComplete booking flow.\n\n## Acceptance Criteria\n- [ ] Search hotels\n- [ ] Select dates\n- [ ] Guest information\n- [ ] Payment processing\n- [ ] Confirmation emails"
+        },
+        {
+          "title": "Add search and filtering",
+          "labels": ["phase-1", "priority-high", "frontend"],
+          "body": "## Description\nAdvanced hotel search.\n\n## Acceptance Criteria\n- [ ] Location search\n- [ ] Price range\n- [ ] Star rating\n- [ ] Amenity filters\n- [ ] Map view"
+        }
+      ]
+    },
+    {
+      "name": "Phase 2: Management",
+      "description": "Reviews and admin tools",
+      "duration": "2 weeks",
+      "issues": [
+        {
+          "title": "Build hotel admin dashboard",
+          "labels": ["phase-2", "priority-high", "frontend"],
+          "body": "## Description\nHotel management interface.\n\n## Acceptance Criteria\n- [ ] Reservation management\n- [ ] Room inventory\n- [ ] Pricing calendar\n- [ ] Guest check-in\n- [ ] Occupancy reports"
+        },
+        {
+          "title": "Implement reviews and ratings",
+          "labels": ["phase-2", "priority-medium", "backend"],
+          "body": "## Description\nGuest review system.\n\n## Acceptance Criteria\n- [ ] Post-stay reviews\n- [ ] Star ratings\n- [ ] Review moderation\n- [ ] Response to reviews\n- [ ] Verified stays"
+        },
+        {
+          "title": "Add cancellation and modifications",
+          "labels": ["phase-2", "priority-high", "backend"],
+          "body": "## Description\nBooking changes.\n\n## Acceptance Criteria\n- [ ] Cancel bookings\n- [ ] Modify dates\n- [ ] Refund policies\n- [ ] Cancellation fees\n- [ ] Email notifications"
+        }
+      ]
+    }
+  ]
+}

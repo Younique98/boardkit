@@ -1,0 +1,172 @@
+{
+  "id": "ecommerce-platform",
+  "name": "E-commerce Platform",
+  "description": "Complete project plan for building an online store or marketplace",
+  "category": "E-commerce",
+  "icon": "🛒",
+  "estimatedIssues": 58,
+  "labels": [
+    { "name": "phase-1", "color": "0052CC", "description": "Phase 1: Core Shopping" },
+    { "name": "phase-2", "color": "FF5630", "description": "Phase 2: Payments & Orders" },
+    { "name": "phase-3", "color": "00B8D9", "description": "Phase 3: Customer Experience" },
+    { "name": "phase-4", "color": "36B37E", "description": "Phase 4: Growth & Scale" },
+    { "name": "priority-high", "color": "FF0000", "description": "High priority task" },
+    { "name": "priority-medium", "color": "FFA500", "description": "Medium priority task" },
+    { "name": "priority-low", "color": "FFFF00", "description": "Low priority task" },
+    { "name": "frontend", "color": "61DAFB", "description": "Frontend development" },
+    { "name": "backend", "color": "68A063", "description": "Backend development" },
+    { "name": "security", "color": "D73A49", "description": "Security related" },
+    { "name": "documentation", "color": "0366D6", "description": "Documentation needed" },
+    { "name": "testing", "color": "28A745", "description": "Testing required" }
+  ],
+  "phases": [
+    {
+      "name": "Phase 1: Core Shopping Experience",
+      "description": "Essential features for browsing and purchasing",
+      "duration": "2-3 weeks",
+      "issues": [
+        {
+          "title": "Build product catalog and listing pages",
+          "labels": ["phase-1", "priority-high", "frontend"],
+          "body": "## Description\nCreate product browsing and listing functionality.\n\n## Acceptance Criteria\n- [ ] Product grid/list view\n- [ ] Product detail pages\n- [ ] Product images gallery\n- [ ] Variants (size, color, etc.)\n- [ ] Stock availability display\n\n## Technical Notes\n- Image optimization\n- SEO-friendly URLs\n- Responsive design"
+        },
+        {
+          "title": "Implement search and filtering",
+          "labels": ["phase-1", "priority-high", "backend", "frontend"],
+          "body": "## Description\nAdd product search with filters and sorting.\n\n## Acceptance Criteria\n- [ ] Full-text search\n- [ ] Category filters\n- [ ] Price range filter\n- [ ] Sort options\n- [ ] Search suggestions\n\n## Technical Notes\n- Use Elasticsearch/Algolia\n- Index optimization\n- Fast response times"
+        },
+        {
+          "title": "Create shopping cart functionality",
+          "labels": ["phase-1", "priority-high", "frontend", "backend"],
+          "body": "## Description\nBuild shopping cart for managing items before purchase.\n\n## Acceptance Criteria\n- [ ] Add/remove items\n- [ ] Update quantities\n- [ ] Cart persistence\n- [ ] Price calculations\n- [ ] Cart summary\n\n## Technical Notes\n- Local storage for guests\n- Database for logged-in users\n- Real-time price updates"
+        },
+        {
+          "title": "Set up product inventory management",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\nImplement inventory tracking and management system.\n\n## Acceptance Criteria\n- [ ] Stock tracking\n- [ ] Low stock alerts\n- [ ] Out of stock handling\n- [ ] Inventory updates\n- [ ] Reserve on checkout\n\n## Technical Notes\n- Prevent overselling\n- Handle concurrent orders\n- Real-time updates"
+        },
+        {
+          "title": "Build user authentication and accounts",
+          "labels": ["phase-1", "priority-high", "backend", "security"],
+          "body": "## Description\nCreate user registration and login system.\n\n## Acceptance Criteria\n- [ ] Email/password registration\n- [ ] Social login options\n- [ ] Password reset\n- [ ] Guest checkout option\n- [ ] Account dashboard\n\n## Technical Notes\n- Secure password hashing\n- JWT tokens\n- Rate limiting"
+        },
+        {
+          "title": "Create category and navigation system",
+          "labels": ["phase-1", "priority-medium", "frontend"],
+          "body": "## Description\nBuild product categorization and site navigation.\n\n## Acceptance Criteria\n- [ ] Category hierarchy\n- [ ] Mega menu navigation\n- [ ] Breadcrumbs\n- [ ] Category pages\n- [ ] Mobile navigation\n\n## Technical Notes\n- SEO optimization\n- Fast loading\n- Accessible design"
+        }
+      ]
+    },
+    {
+      "name": "Phase 2: Payments & Order Management",
+      "description": "Checkout, payments, and order processing",
+      "duration": "2-3 weeks",
+      "issues": [
+        {
+          "title": "Implement checkout flow",
+          "labels": ["phase-2", "priority-high", "frontend", "backend"],
+          "body": "## Description\nCreate multi-step checkout process.\n\n## Acceptance Criteria\n- [ ] Shipping address form\n- [ ] Billing information\n- [ ] Order review\n- [ ] Guest checkout\n- [ ] Save addresses\n\n## Technical Notes\n- Form validation\n- Auto-fill support\n- Mobile-optimized"
+        },
+        {
+          "title": "Integrate payment processing",
+          "labels": ["phase-2", "priority-high", "backend", "security"],
+          "body": "## Description\nSet up payment gateway integration.\n\n## Acceptance Criteria\n- [ ] Credit card payments\n- [ ] Multiple payment methods\n- [ ] PCI compliance\n- [ ] Payment confirmation\n- [ ] Refund processing\n\n## Technical Notes\n- Use Stripe/PayPal\n- Secure card handling\n- 3D Secure support"
+        },
+        {
+          "title": "Build order management system",
+          "labels": ["phase-2", "priority-high", "backend"],
+          "body": "## Description\nCreate system for managing customer orders.\n\n## Acceptance Criteria\n- [ ] Order creation\n- [ ] Order status tracking\n- [ ] Order history\n- [ ] Order modifications\n- [ ] Cancellation handling\n\n## Technical Notes\n- Order state machine\n- Email notifications\n- Admin dashboard"
+        },
+        {
+          "title": "Implement shipping calculations",
+          "labels": ["phase-2", "priority-high", "backend"],
+          "body": "## Description\nAdd shipping cost calculation and options.\n\n## Acceptance Criteria\n- [ ] Shipping methods\n- [ ] Rate calculation\n- [ ] Address validation\n- [ ] Shipping zones\n- [ ] Free shipping rules\n\n## Technical Notes\n- Carrier API integration\n- Real-time rates\n- Tax calculations"
+        },
+        {
+          "title": "Create order confirmation and notifications",
+          "labels": ["phase-2", "priority-high", "backend"],
+          "body": "## Description\nSet up email notifications for order events.\n\n## Acceptance Criteria\n- [ ] Order confirmation email\n- [ ] Shipping notifications\n- [ ] Delivery confirmation\n- [ ] Order updates\n- [ ] Receipt generation\n\n## Technical Notes\n- Email templates\n- SMS notifications\n- Transactional emails"
+        },
+        {
+          "title": "Build admin order dashboard",
+          "labels": ["phase-2", "priority-medium", "frontend"],
+          "body": "## Description\nCreate admin interface for managing orders.\n\n## Acceptance Criteria\n- [ ] Order list view\n- [ ] Order details\n- [ ] Status updates\n- [ ] Fulfillment tools\n- [ ] Export orders\n\n## Technical Notes\n- Real-time updates\n- Bulk actions\n- Filter and search"
+        }
+      ]
+    },
+    {
+      "name": "Phase 3: Customer Experience",
+      "description": "Enhance user engagement and satisfaction",
+      "duration": "2 weeks",
+      "issues": [
+        {
+          "title": "Implement product reviews and ratings",
+          "labels": ["phase-3", "priority-high", "frontend", "backend"],
+          "body": "## Description\nAdd customer review system for products.\n\n## Acceptance Criteria\n- [ ] Star ratings\n- [ ] Written reviews\n- [ ] Review photos\n- [ ] Verified purchase badges\n- [ ] Review moderation\n\n## Technical Notes\n- Prevent fake reviews\n- Rating aggregation\n- Helpful voting system"
+        },
+        {
+          "title": "Create wishlist functionality",
+          "labels": ["phase-3", "priority-medium", "frontend", "backend"],
+          "body": "## Description\nAllow users to save products for later.\n\n## Acceptance Criteria\n- [ ] Add/remove items\n- [ ] Multiple wishlists\n- [ ] Share wishlists\n- [ ] Price drop alerts\n- [ ] Move to cart\n\n## Technical Notes\n- User authentication\n- Real-time sync\n- Email notifications"
+        },
+        {
+          "title": "Add product recommendations",
+          "labels": ["phase-3", "priority-medium", "backend"],
+          "body": "## Description\nImplement personalized product recommendations.\n\n## Acceptance Criteria\n- [ ] Related products\n- [ ] Frequently bought together\n- [ ] Personalized suggestions\n- [ ] Recently viewed\n- [ ] Trending items\n\n## Technical Notes\n- Machine learning\n- Collaborative filtering\n- Performance optimization"
+        },
+        {
+          "title": "Implement discount codes and promotions",
+          "labels": ["phase-3", "priority-high", "backend"],
+          "body": "## Description\nCreate coupon and promotion system.\n\n## Acceptance Criteria\n- [ ] Coupon code creation\n- [ ] Percentage/fixed discounts\n- [ ] Usage limits\n- [ ] Expiration dates\n- [ ] Automatic promotions\n\n## Technical Notes\n- Code validation\n- Stacking rules\n- Analytics tracking"
+        },
+        {
+          "title": "Build customer support system",
+          "labels": ["phase-3", "priority-medium", "backend", "frontend"],
+          "body": "## Description\nSet up customer support tools.\n\n## Acceptance Criteria\n- [ ] Contact forms\n- [ ] Live chat\n- [ ] FAQ section\n- [ ] Ticket system\n- [ ] Order inquiries\n\n## Technical Notes\n- Support software integration\n- Response templates\n- SLA tracking"
+        },
+        {
+          "title": "Add email marketing integration",
+          "labels": ["phase-3", "priority-medium", "backend"],
+          "body": "## Description\nIntegrate email marketing platform.\n\n## Acceptance Criteria\n- [ ] Newsletter signup\n- [ ] Abandoned cart emails\n- [ ] Welcome series\n- [ ] Segmentation\n- [ ] Campaign analytics\n\n## Technical Notes\n- Mailchimp/SendGrid\n- GDPR compliance\n- Unsubscribe handling"
+        }
+      ]
+    },
+    {
+      "name": "Phase 4: Growth & Scale",
+      "description": "Optimization and business growth",
+      "duration": "2 weeks",
+      "issues": [
+        {
+          "title": "Implement analytics and tracking",
+          "labels": ["phase-4", "priority-high", "backend"],
+          "body": "## Description\nSet up comprehensive analytics.\n\n## Acceptance Criteria\n- [ ] Google Analytics\n- [ ] E-commerce tracking\n- [ ] Conversion funnels\n- [ ] Custom events\n- [ ] Dashboard reports\n\n## Technical Notes\n- Privacy compliance\n- Cookie consent\n- Tag management"
+        },
+        {
+          "title": "Build admin reports and insights",
+          "labels": ["phase-4", "priority-high", "frontend", "backend"],
+          "body": "## Description\nCreate business intelligence dashboard.\n\n## Acceptance Criteria\n- [ ] Sales reports\n- [ ] Revenue metrics\n- [ ] Product performance\n- [ ] Customer insights\n- [ ] Export capabilities\n\n## Technical Notes\n- Data visualization\n- Real-time updates\n- Historical data"
+        },
+        {
+          "title": "Optimize site performance and SEO",
+          "labels": ["phase-4", "priority-high", "frontend"],
+          "body": "## Description\nImprove loading speed and search rankings.\n\n## Acceptance Criteria\n- [ ] Image optimization\n- [ ] Code splitting\n- [ ] CDN setup\n- [ ] Meta tags\n- [ ] Structured data\n\n## Technical Notes\n- Lighthouse scores\n- Core Web Vitals\n- Schema markup"
+        },
+        {
+          "title": "Implement return and refund system",
+          "labels": ["phase-4", "priority-high", "backend"],
+          "body": "## Description\nCreate returns management system.\n\n## Acceptance Criteria\n- [ ] Return requests\n- [ ] Return labels\n- [ ] Refund processing\n- [ ] Restocking\n- [ ] Exchange handling\n\n## Technical Notes\n- Workflow automation\n- Payment gateway integration\n- Inventory updates"
+        },
+        {
+          "title": "Add multi-language support",
+          "labels": ["phase-4", "priority-medium", "frontend"],
+          "body": "## Description\nImplement internationalization.\n\n## Acceptance Criteria\n- [ ] Language switcher\n- [ ] Translation management\n- [ ] Currency conversion\n- [ ] Locale formatting\n- [ ] RTL support\n\n## Technical Notes\n- i18n framework\n- Translation services\n- Performance impact"
+        },
+        {
+          "title": "Launch mobile app or PWA",
+          "labels": ["phase-4", "priority-medium", "frontend"],
+          "body": "## Description\nCreate mobile shopping experience.\n\n## Acceptance Criteria\n- [ ] PWA implementation\n- [ ] Offline support\n- [ ] Push notifications\n- [ ] App-like experience\n- [ ] Install prompts\n\n## Technical Notes\n- Service workers\n- App manifest\n- Performance optimization"
+        }
+      ]
+    }
+  ]
+}

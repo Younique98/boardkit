@@ -1,0 +1,66 @@
+{
+  "id": "real-estate-platform",
+  "name": "Real Estate Platform",
+  "description": "Property listings, search, and real estate management platform",
+  "category": "Real Estate",
+  "icon": "🏠",
+  "estimatedIssues": 55,
+  "labels": [
+    { "name": "phase-1", "color": "0052CC", "description": "Phase 1: Listings" },
+    { "name": "phase-2", "color": "FF5630", "description": "Phase 2: Agents & Tours" },
+    { "name": "priority-high", "color": "FF0000", "description": "High priority" },
+    { "name": "frontend", "color": "61DAFB", "description": "Frontend" },
+    { "name": "backend", "color": "68A063", "description": "Backend" }
+  ],
+  "phases": [
+    {
+      "name": "Phase 1: Property Listings",
+      "description": "Core property browsing",
+      "duration": "2-3 weeks",
+      "issues": [
+        {
+          "title": "Build property listing database",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\nCreate property listing system.\n\n## Acceptance Criteria\n- [ ] Property details\n- [ ] Photo galleries\n- [ ] Property specs\n- [ ] Price and status\n- [ ] Location data"
+        },
+        {
+          "title": "Implement search and filters",
+          "labels": ["phase-1", "priority-high", "frontend"],
+          "body": "## Description\nAdvanced property search.\n\n## Acceptance Criteria\n- [ ] Location search\n- [ ] Price range filter\n- [ ] Bedrooms/bathrooms\n- [ ] Property type\n- [ ] Map view"
+        },
+        {
+          "title": "Create property detail pages",
+          "labels": ["phase-1", "priority-high", "frontend"],
+          "body": "## Description\nComprehensive property information.\n\n## Acceptance Criteria\n- [ ] Photo carousel\n- [ ] Virtual tour\n- [ ] Amenities list\n- [ ] Neighborhood info\n- [ ] Contact agent button"
+        },
+        {
+          "title": "Add favorites and saved searches",
+          "labels": ["phase-1", "priority-medium", "backend"],
+          "body": "## Description\nSave properties and search criteria.\n\n## Acceptance Criteria\n- [ ] Favorite properties\n- [ ] Save searches\n- [ ] Email alerts\n- [ ] Compare properties\n- [ ] Share listings"
+        }
+      ]
+    },
+    {
+      "name": "Phase 2: Agents & Tours",
+      "description": "Agent features and scheduling",
+      "duration": "2 weeks",
+      "issues": [
+        {
+          "title": "Build agent profiles and directory",
+          "labels": ["phase-2", "priority-high", "frontend"],
+          "body": "## Description\nAgent profiles and search.\n\n## Acceptance Criteria\n- [ ] Agent profiles\n- [ ] Listings by agent\n- [ ] Reviews and ratings\n- [ ] Contact information\n- [ ] Active listings count"
+        },
+        {
+          "title": "Implement tour scheduling",
+          "labels": ["phase-2", "priority-high", "backend"],
+          "body": "## Description\nSchedule property viewings.\n\n## Acceptance Criteria\n- [ ] Calendar integration\n- [ ] Book tours\n- [ ] Confirmation emails\n- [ ] Reschedule/cancel\n- [ ] Virtual tour option"
+        },
+        {
+          "title": "Create inquiry and messaging system",
+          "labels": ["phase-2", "priority-medium", "backend"],
+          "body": "## Description\nContact agents about properties.\n\n## Acceptance Criteria\n- [ ] Contact forms\n- [ ] Direct messaging\n- [ ] Email notifications\n- [ ] Lead tracking\n- [ ] Response management"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "id": "event-management",
+  "name": "Event Management App",
+  "description": "Event creation, ticketing, and attendee management platform",
+  "category": "Events",
+  "icon": "🎉",
+  "estimatedIssues": 47,
+  "labels": [
+    { "name": "phase-1", "color": "0052CC", "description": "Phase 1: Core" },
+    { "name": "phase-2", "color": "FF5630", "description": "Phase 2: Ticketing" },
+    { "name": "priority-high", "color": "FF0000", "description": "High priority" },
+    { "name": "frontend", "color": "61DAFB", "description": "Frontend" },
+    { "name": "backend", "color": "68A063", "description": "Backend" }
+  ],
+  "phases": [
+    {
+      "name": "Phase 1: Core Features",
+      "description": "Event creation and discovery",
+      "duration": "2-3 weeks",
+      "issues": [
+        {
+          "title": "Build event creation and management",
+          "labels": ["phase-1", "priority-high", "frontend"],
+          "body": "## Description\nCreate and manage events.\n\n## Acceptance Criteria\n- [ ] Event details form\n- [ ] Date and location\n- [ ] Event images\n- [ ] Description\n- [ ] Edit/cancel events"
+        },
+        {
+          "title": "Implement event discovery and search",
+          "labels": ["phase-1", "priority-high", "frontend"],
+          "body": "## Description\nBrowse and search events.\n\n## Acceptance Criteria\n- [ ] Event listings\n- [ ] Search by location\n- [ ] Category filters\n- [ ] Date filters\n- [ ] Map view"
+        },
+        {
+          "title": "Create RSVP and registration system",
+          "labels": ["phase-1", "priority-high", "backend"],
+          "body": "## Description\nEvent registration.\n\n## Acceptance Criteria\n- [ ] RSVP to events\n- [ ] Guest registration\n- [ ] Waitlist management\n- [ ] Confirmation emails\n- [ ] Check-in system"
+        },
+        {
+          "title": "Build attendee management",
+          "labels": ["phase-1", "priority-medium", "backend"],
+          "body": "## Description\nManage event attendees.\n\n## Acceptance Criteria\n- [ ] Attendee list\n- [ ] Export data\n- [ ] Send updates\n- [ ] Check-in tracking\n- [ ] Attendee messaging"
+        }
+      ]
+    },
+    {
+      "name": "Phase 2: Ticketing & Payments",
+      "description": "Monetization features",
+      "duration": "2 weeks",
+      "issues": [
+        {
+          "title": "Implement ticketing system",
+          "labels": ["phase-2", "priority-high", "backend"],
+          "body": "## Description\nPaid ticket sales.\n\n## Acceptance Criteria\n- [ ] Ticket types\n- [ ] Pricing tiers\n- [ ] Early bird pricing\n- [ ] Promo codes\n- [ ] Capacity limits"
+        },
+        {
+          "title": "Add payment processing",
+          "labels": ["phase-2", "priority-high", "backend"],
+          "body": "## Description\nSecure payment handling.\n\n## Acceptance Criteria\n- [ ] Credit card payments\n- [ ] Payment gateway\n- [ ] Refund processing\n- [ ] Transaction history\n- [ ] Payout to organizers"
+        },
+        {
+          "title": "Create QR code tickets and check-in",
+          "labels": ["phase-2", "priority-medium", "frontend"],
+          "body": "## Description\nDigital tickets and scanning.\n\n## Acceptance Criteria\n- [ ] Generate QR tickets\n- [ ] Mobile tickets\n- [ ] Scan to check-in\n- [ ] Duplicate prevention\n- [ ] Offline mode"
+        }
+      ]
+    }
+  ]
+}
