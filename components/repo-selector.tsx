@@ -133,11 +133,16 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
                 <>
                   <div className="text-6xl">✅</div>
                   <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {result.issuesSkipped && result.issuesSkipped > 0
-                      ? result.issuesCreated && result.issuesCreated > 0
-                        ? "Board Updated Successfully!"
-                        : "Board Already Up to Date!"
-                      : "Board Generated Successfully!"}
+                    {(() => {
+                      const anyCreated = (result.issuesCreated || 0) > 0 || (result.labelsCreated || 0) > 0
+                      const anyUpdated = (result.labelsUpdated || 0) > 0
+                      const anySkipped = (result.issuesSkipped || 0) > 0
+
+                      if (anyCreated || anyUpdated) {
+                        return anySkipped ? "Board Updated Successfully!" : "Board Generated Successfully!"
+                      }
+                      return "Board Already Up to Date!"
+                    })()}
                   </h3>
                   <div className="text-gray-600 dark:text-gray-400 space-y-1">
                     {result.issuesCreated && result.issuesCreated > 0 && (
@@ -160,8 +165,10 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
                         ⏭️ Skipped {result.issuesSkipped} existing issue{result.issuesSkipped !== 1 ? "s" : ""} (no duplicates)
                       </p>
                     )}
-                    {(!result.issuesCreated || result.issuesCreated === 0) && (!result.issuesSkipped || result.issuesSkipped === 0) && (
-                      <p>No changes needed - all issues already exist</p>
+                    {(!result.issuesCreated || result.issuesCreated === 0) &&
+                     (!result.labelsCreated || result.labelsCreated === 0) &&
+                     (!result.labelsUpdated || result.labelsUpdated === 0) && (
+                      <p>No changes needed</p>
                     )}
                   </div>
                   <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
