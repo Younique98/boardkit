@@ -17,19 +17,77 @@ export class GitHubService {
     return data
   }
 
-  async getExistingLabels(owner: string, repo: string): Promise<string[]> {
+  async getExistingLabels(owner: string, repo: string): Promise<Map<string, GitHubLabel>> {
     try {
       const { data } = await this.octokit.issues.listLabelsForRepo({
         owner,
         repo,
         per_page: 100,
       })
-      // Return array of label names
-      return data.map((label) => label.name)
+      // Return map of label name -> label data for easy lookup
+      const labelMap = new Map<string, GitHubLabel>()
+      data.forEach((label) => {
+        labelMap.set(label.name, {
+          name: label.name,
+          color: label.color,
+          description: label.description || "",
+        })
+      })
+      return labelMap
     } catch (error) {
       console.error("Error fetching existing labels:", error)
-      return []
+      return new Map()
     }
+  }
+
+  async createOrUpdateLabel(
+    owner: string,
+    repo: string,
+    label: GitHubLabel,
+    existingLabels: Map<string, GitHubLabel>
+  ): Promise<"created" | "updated" | "unchanged"> {
+    const existing = existingLabels.get(label.name)
+
+    if (!existing) {
+      // Label doesn't exist, create it
+      try {
+        await this.octokit.issues.createLabel({
+          owner,
+          repo,
+          name: label.name,
+          color: label.color,
+          description: label.description,
+        })
+        return "created"
+      } catch (error) {
+        console.error("Error creating label:", error)
+        throw error
+      }
+    }
+
+    // Label exists, check if it changed
+    const colorChanged = existing.color.toLowerCase() !== label.color.toLowerCase()
+    const descriptionChanged = (existing.description || "") !== (label.description || "")
+
+    if (colorChanged || descriptionChanged) {
+      // Label changed, update it
+      try {
+        await this.octokit.issues.updateLabel({
+          owner,
+          repo,
+          name: label.name,
+          color: label.color,
+          description: label.description,
+        })
+        return "updated"
+      } catch (error) {
+        console.error("Error updating label:", error)
+        throw error
+      }
+    }
+
+    // Label exists and hasn't changed
+    return "unchanged"
   }
 
   async createLabel(
@@ -114,31 +172,40 @@ export class GitHubService {
     let labelsUpdated = 0
     let issuesSkipped = 0
 
-    // Step 0: Fetch existing issues to avoid duplicates
+    // Step 0: Fetch existing data to avoid duplicates
     onProgress?.({
-      phase: "Checking existing issues",
+      phase: "Checking existing data",
       current: 0,
       total: 1,
     })
 
     const existingIssueTitles = await this.getExistingIssues(owner, repo)
+    const existingLabels = await this.getExistingLabels(owner, repo)
 
-    // Step 1: Create or update labels
+    // Step 1: Create or update labels (only count actual changes)
     onProgress?.({
-      phase: "Creating labels",
+      phase: "Processing labels",
       current: 0,
       total: template.labels.length,
     })
 
     for (let i = 0; i < template.labels.length; i++) {
-      const wasNewlyCreated = await this.createLabel(owner, repo, template.labels[i])
-      if (wasNewlyCreated) {
+      const result = await this.createOrUpdateLabel(
+        owner,
+        repo,
+        template.labels[i],
+        existingLabels
+      )
+
+      if (result === "created") {
         labelsCreated++
-      } else {
+      } else if (result === "updated") {
         labelsUpdated++
       }
+      // If result === "unchanged", don't count it
+
       onProgress?.({
-        phase: "Creating labels",
+        phase: "Processing labels",
         current: i + 1,
         total: template.labels.length,
       })
