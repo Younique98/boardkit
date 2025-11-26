@@ -71,8 +71,8 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
 
   const addIssueToPhase = (phaseIndex: number) => {
     const newIssue: Issue = {
-      title: "New Issue",
-      body: "Description here...",
+      title: "",
+      body: "",
       labels: [],
       assignees: [],
     }
