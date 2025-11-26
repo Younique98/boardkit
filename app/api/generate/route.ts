@@ -46,11 +46,14 @@ export async function POST(request: NextRequest) {
     // Generate the board
     const result = await github.generateBoard(owner, repo, template)
 
+    // Add cache-busting parameter to force GitHub to show fresh data
+    const timestamp = Date.now()
+
     return NextResponse.json({
       success: true,
       ...result,
       repositoryUrl: `https://github.com/${owner}/${repo}`,
-      issuesUrl: `https://github.com/${owner}/${repo}/issues`,
+      issuesUrl: `https://github.com/${owner}/${repo}/issues?t=${timestamp}`,
     })
   } catch (error) {
     console.error("Generation error:", error)
