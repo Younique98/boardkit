@@ -145,29 +145,29 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
                     })()}
                   </h3>
                   <div className="text-gray-600 dark:text-gray-400 space-y-1">
-                    {result.issuesCreated && result.issuesCreated > 0 && (
+                    {(result.issuesCreated ?? 0) > 0 && (
                       <p>
                         ✨ Created {result.issuesCreated} new issue{result.issuesCreated !== 1 ? "s" : ""}
                       </p>
                     )}
-                    {result.labelsCreated && result.labelsCreated > 0 && (
+                    {(result.labelsCreated ?? 0) > 0 && (
                       <p>
                         🏷️ Created {result.labelsCreated} new label{result.labelsCreated !== 1 ? "s" : ""}
                       </p>
                     )}
-                    {result.labelsUpdated && result.labelsUpdated > 0 && (
+                    {(result.labelsUpdated ?? 0) > 0 && (
                       <p>
                         🔄 Updated {result.labelsUpdated} existing label{result.labelsUpdated !== 1 ? "s" : ""}
                       </p>
                     )}
-                    {result.issuesSkipped && result.issuesSkipped > 0 && (
+                    {(result.issuesSkipped ?? 0) > 0 && (
                       <p>
                         ⏭️ Skipped {result.issuesSkipped} existing issue{result.issuesSkipped !== 1 ? "s" : ""} (no duplicates)
                       </p>
                     )}
-                    {(!result.issuesCreated || result.issuesCreated === 0) &&
-                     (!result.labelsCreated || result.labelsCreated === 0) &&
-                     (!result.labelsUpdated || result.labelsUpdated === 0) && (
+                    {(result.issuesCreated ?? 0) === 0 &&
+                     (result.labelsCreated ?? 0) === 0 &&
+                     (result.labelsUpdated ?? 0) === 0 && (
                       <p>No changes needed</p>
                     )}
                   </div>
