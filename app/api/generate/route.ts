@@ -14,16 +14,17 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { templateId, owner, repo } = await request.json()
+    const { templateId, template: clientTemplate, owner, repo } = await request.json()
 
-    if (!templateId || !owner || !repo) {
+    if ((!templateId && !clientTemplate) || !owner || !repo) {
       return NextResponse.json(
         { error: "Missing required parameters" },
         { status: 400 }
       )
     }
 
-    const template = getTemplateById(templateId)
+    // Use provided template object (for custom templates) or fetch by ID (for built-in templates)
+    const template = clientTemplate || getTemplateById(templateId)
     if (!template) {
       return NextResponse.json(
         { error: "Template not found" },
