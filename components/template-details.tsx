@@ -72,12 +72,22 @@ export function TemplateDetails({ template }: TemplateDetailsProps) {
                 </span>
               </div>
 
-              <button
-                onClick={() => setShowRepoSelector(true)}
-                className="mt-6 px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
-              >
-                Generate This Board
-              </button>
+              <div className="mt-6 flex gap-3">
+                <button
+                  onClick={() => setShowRepoSelector(true)}
+                  className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
+                >
+                  Generate This Board
+                </button>
+                {template.id.startsWith("custom-") && (
+                  <Link
+                    href={`/templates/${template.id}/edit`}
+                    className="px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
+                  >
+                    Edit Template
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         </div>
