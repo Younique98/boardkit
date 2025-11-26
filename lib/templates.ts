@@ -1,4 +1,5 @@
 import { Template } from "@/types/template"
+import { getCustomTemplates } from "./custom-templates"
 import ridesharePlatform from "@/data/templates/rideshare-platform.json"
 import ecommercePlatform from "@/data/templates/ecommerce-platform.json"
 import socialMediaApp from "@/data/templates/social-media-app.json"
@@ -43,14 +44,22 @@ export const templates: Template[] = [
   bugTracking as Template,
 ]
 
+export function getAllTemplates(): Template[] {
+  const customTemplates = getCustomTemplates()
+  return [...templates, ...customTemplates]
+}
+
 export function getTemplateById(id: string): Template | undefined {
-  return templates.find((t) => t.id === id)
+  const allTemplates = getAllTemplates()
+  return allTemplates.find((t) => t.id === id)
 }
 
 export function getTemplatesByCategory(category: string): Template[] {
-  return templates.filter((t) => t.category === category)
+  const allTemplates = getAllTemplates()
+  return allTemplates.filter((t) => t.category === category)
 }
 
 export function getAllCategories(): string[] {
-  return Array.from(new Set(templates.map((t) => t.category)))
+  const allTemplates = getAllTemplates()
+  return Array.from(new Set(allTemplates.map((t) => t.category)))
 }

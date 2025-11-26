@@ -56,11 +56,16 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
     setProgress({ phase: "Starting...", current: 0, total: 100 })
 
     try {
+      // For custom templates (from localStorage), send the entire template object
+      // For built-in templates, just send the ID
+      const isCustomTemplate = template.id.startsWith("custom-")
+
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          templateId: template.id,
+          templateId: isCustomTemplate ? undefined : template.id,
+          template: isCustomTemplate ? template : undefined,
           owner: selectedRepo.owner.login,
           repo: selectedRepo.name,
         }),

@@ -14,16 +14,17 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { templateId, owner, repo } = await request.json()
+    const { templateId, template: clientTemplate, owner, repo } = await request.json()
 
-    if (!templateId || !owner || !repo) {
+    if ((!templateId && !clientTemplate) || !owner || !repo) {
       return NextResponse.json(
         { error: "Missing required parameters" },
         { status: 400 }
       )
     }
 
-    const template = getTemplateById(templateId)
+    // Use provided template object (for custom templates) or fetch by ID (for built-in templates)
+    const template = clientTemplate || getTemplateById(templateId)
     if (!template) {
       return NextResponse.json(
         { error: "Template not found" },
@@ -45,11 +46,14 @@ export async function POST(request: NextRequest) {
     // Generate the board
     const result = await github.generateBoard(owner, repo, template)
 
+    // Add cache-busting parameter to force GitHub to show fresh data
+    const timestamp = Date.now()
+
     return NextResponse.json({
       success: true,
       ...result,
       repositoryUrl: `https://github.com/${owner}/${repo}`,
-      issuesUrl: `https://github.com/${owner}/${repo}/issues`,
+      issuesUrl: `https://github.com/${owner}/${repo}/issues?t=${timestamp}`,
     })
   } catch (error) {
     console.error("Generation error:", error)
