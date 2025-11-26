@@ -35,6 +35,13 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
   const [phases, setPhases] = useState<Phase[]>(initialTemplate?.phases || [])
   const [showPreview, setShowPreview] = useState(false)
 
+  // Validation state
+  const [errors, setErrors] = useState<{
+    name?: string
+    phases?: string
+    general?: string
+  }>({})
+
   // Label form state
   const [newLabelName, setNewLabelName] = useState("")
   const [newLabelColor, setNewLabelColor] = useState("0052CC")
@@ -67,10 +74,19 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
   }
 
   const addLabel = () => {
-    if (!newLabelName) return
+    if (!newLabelName || newLabelName.trim().length === 0) {
+      alert("Label name is required")
+      return
+    }
+
+    // Check for duplicate label names
+    if (labels.some((l) => l.name.toLowerCase() === newLabelName.toLowerCase())) {
+      alert("A label with this name already exists")
+      return
+    }
 
     const label: GitHubLabel = {
-      name: newLabelName,
+      name: newLabelName.trim(),
       color: newLabelColor.replace("#", ""),
       description: newLabelDescription || "",
     }
@@ -86,10 +102,19 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
   }
 
   const addPhase = () => {
-    if (!newPhaseName) return
+    if (!newPhaseName || newPhaseName.trim().length === 0) {
+      alert("Phase name is required")
+      return
+    }
+
+    // Check for duplicate phase names
+    if (phases.some((p) => p.name.toLowerCase() === newPhaseName.toLowerCase())) {
+      alert("A phase with this name already exists")
+      return
+    }
 
     const phase: Phase = {
-      name: newPhaseName,
+      name: newPhaseName.trim(),
       description: newPhaseDescription,
       duration: newPhaseDuration || undefined,
       issues: [],
@@ -99,6 +124,11 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
     setNewPhaseName("")
     setNewPhaseDescription("")
     setNewPhaseDuration("")
+
+    // Clear phases error when user adds a phase
+    if (errors.phases) {
+      setErrors({ ...errors, phases: undefined })
+    }
   }
 
   const removePhase = (index: number) => {
@@ -116,6 +146,11 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
     const updatedPhases = [...phases]
     updatedPhases[phaseIndex].issues.push(newIssue)
     setPhases(updatedPhases)
+
+    // Clear phases error when user adds an issue
+    if (errors.phases) {
+      setErrors({ ...errors, phases: undefined })
+    }
   }
 
   const updateIssue = (
@@ -152,9 +187,42 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
     setPhases(updatedPhases)
   }
 
+  const validateForm = (): boolean => {
+    const newErrors: typeof errors = {}
+
+    // Validate template name
+    if (!name || name.trim().length === 0) {
+      newErrors.name = "Template name is required"
+    } else if (name.trim().length < 3) {
+      newErrors.name = "Template name must be at least 3 characters"
+    }
+
+    // Validate phases
+    if (phases.length === 0) {
+      newErrors.phases = "At least one phase is required"
+    } else {
+      // Check if any phase has issues
+      const hasAnyIssues = phases.some((phase) => phase.issues.length > 0)
+      if (!hasAnyIssues) {
+        newErrors.phases = "At least one phase must have issues"
+      }
+
+      // Validate each phase has a name
+      const phasesWithoutNames = phases.filter((p) => !p.name || p.name.trim().length === 0)
+      if (phasesWithoutNames.length > 0) {
+        newErrors.phases = "All phases must have a name"
+      }
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
   const handleSubmit = () => {
-    if (!name || phases.length === 0) {
-      alert("Please provide a name and at least one phase")
+    // Validate form
+    if (!validateForm()) {
+      // Scroll to top to show errors
+      window.scrollTo({ top: 0, behavior: "smooth" })
       return
     }
 
@@ -225,6 +293,25 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
+        {/* Validation Errors */}
+        {Object.keys(errors).length > 0 && (
+          <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-500 rounded-xl p-6">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">⚠️</span>
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-red-900 dark:text-red-200 mb-2">
+                  Please fix the following errors:
+                </h3>
+                <ul className="list-disc list-inside space-y-1 text-red-800 dark:text-red-300">
+                  {errors.name && <li>{errors.name}</li>}
+                  {errors.phases && <li>{errors.phases}</li>}
+                  {errors.general && <li>{errors.general}</li>}
+                </ul>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Template Info */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-gray-700">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
@@ -246,10 +333,23 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
               <input
                 type="text"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                onChange={(e) => {
+                  setName(e.target.value)
+                  // Clear name error when user starts typing
+                  if (errors.name) {
+                    setErrors({ ...errors, name: undefined })
+                  }
+                }}
+                className={`w-full px-4 py-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+                  errors.name
+                    ? "border-red-500 dark:border-red-500 focus:ring-2 focus:ring-red-500"
+                    : "border-gray-300 dark:border-gray-600"
+                }`}
                 placeholder="My Awesome Template"
               />
+              {errors.name && (
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.name}</p>
+              )}
             </div>
 
             <div>
@@ -391,10 +491,21 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
         </div>
 
         {/* Phases */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-gray-700">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-            Phases & Issues
-          </h2>
+        <div className={`bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border ${
+          errors.phases
+            ? "border-red-500 dark:border-red-500"
+            : "border-gray-200 dark:border-gray-700"
+        }`}>
+          <div className="flex items-start justify-between mb-6">
+            <div className="flex-1">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                Phases & Issues *
+              </h2>
+              {errors.phases && (
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.phases}</p>
+              )}
+            </div>
+          </div>
 
           {/* Add Phase Form */}
           <div className="space-y-3 mb-6 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
