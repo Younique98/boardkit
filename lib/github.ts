@@ -47,6 +47,22 @@ export class GitHubService {
     }
   }
 
+  async getExistingIssues(owner: string, repo: string): Promise<string[]> {
+    try {
+      const { data } = await this.octokit.issues.listForRepo({
+        owner,
+        repo,
+        state: "all",
+        per_page: 100,
+      })
+      // Return array of issue titles
+      return data.map((issue) => issue.title)
+    } catch (error) {
+      console.error("Error fetching existing issues:", error)
+      return []
+    }
+  }
+
   async createIssue(
     owner: string,
     repo: string,
@@ -75,9 +91,19 @@ export class GitHubService {
       current: number
       total: number
     }) => void
-  ): Promise<{ issuesCreated: number; labelsCreated: number }> {
+  ): Promise<{ issuesCreated: number; labelsCreated: number; issuesSkipped: number }> {
     let issuesCreated = 0
     let labelsCreated = 0
+    let issuesSkipped = 0
+
+    // Step 0: Fetch existing issues to avoid duplicates
+    onProgress?.({
+      phase: "Checking existing issues",
+      current: 0,
+      total: 1,
+    })
+
+    const existingIssueTitles = await this.getExistingIssues(owner, repo)
 
     // Step 1: Create all labels
     onProgress?.({
@@ -96,7 +122,7 @@ export class GitHubService {
       })
     }
 
-    // Step 2: Create all issues across phases
+    // Step 2: Create only new issues (skip duplicates)
     const totalIssues = template.phases.reduce(
       (sum, phase) => sum + phase.issues.length,
       0
@@ -106,9 +132,21 @@ export class GitHubService {
 
     for (const phase of template.phases) {
       for (const issue of phase.issues) {
+        currentIssueIndex++
+
+        // Skip if issue with same title already exists
+        if (existingIssueTitles.includes(issue.title)) {
+          issuesSkipped++
+          onProgress?.({
+            phase: `Creating issues - ${phase.name}`,
+            current: currentIssueIndex,
+            total: totalIssues,
+          })
+          continue
+        }
+
         await this.createIssue(owner, repo, issue)
         issuesCreated++
-        currentIssueIndex++
         onProgress?.({
           phase: `Creating issues - ${phase.name}`,
           current: currentIssueIndex,
@@ -120,7 +158,7 @@ export class GitHubService {
       }
     }
 
-    return { issuesCreated, labelsCreated }
+    return { issuesCreated, labelsCreated, issuesSkipped }
   }
 
   async verifyAccess(owner: string, repo: string): Promise<boolean> {

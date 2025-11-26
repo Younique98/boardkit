@@ -27,6 +27,7 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
     success: boolean
     issuesCreated?: number
     labelsCreated?: number
+    issuesSkipped?: number
     issuesUrl?: string
     error?: string
   } | null>(null)
@@ -78,6 +79,7 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
           success: true,
           issuesCreated: data.issuesCreated,
           labelsCreated: data.labelsCreated,
+          issuesSkipped: data.issuesSkipped,
           issuesUrl: data.issuesUrl,
         })
       } else {
@@ -129,11 +131,27 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
                 <>
                   <div className="text-6xl">✅</div>
                   <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-                    Board Generated Successfully!
+                    {result.issuesSkipped && result.issuesSkipped > 0
+                      ? result.issuesCreated && result.issuesCreated > 0
+                        ? "Board Updated Successfully!"
+                        : "Board Already Up to Date!"
+                      : "Board Generated Successfully!"}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    Created {result.labelsCreated} labels and {result.issuesCreated} issues
-                  </p>
+                  <div className="text-gray-600 dark:text-gray-400 space-y-1">
+                    {result.issuesCreated && result.issuesCreated > 0 && (
+                      <p>
+                        ✨ Created {result.issuesCreated} new issue{result.issuesCreated !== 1 ? "s" : ""} and {result.labelsCreated} label{result.labelsCreated !== 1 ? "s" : ""}
+                      </p>
+                    )}
+                    {result.issuesSkipped && result.issuesSkipped > 0 && (
+                      <p>
+                        ⏭️ Skipped {result.issuesSkipped} existing issue{result.issuesSkipped !== 1 ? "s" : ""} (no duplicates created)
+                      </p>
+                    )}
+                    {(!result.issuesCreated || result.issuesCreated === 0) && (!result.issuesSkipped || result.issuesSkipped === 0) && (
+                      <p>No changes needed - all issues already exist</p>
+                    )}
+                  </div>
                   <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
                     <a
                       href={result.issuesUrl}
