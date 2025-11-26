@@ -11,6 +11,20 @@ interface TemplateFormProps {
   mode: "create" | "edit"
 }
 
+// Preset colors for quick selection
+const PRESET_COLORS = [
+  { name: "Blue", color: "0052CC" },
+  { name: "Red", color: "FF5630" },
+  { name: "Green", color: "36B37E" },
+  { name: "Yellow", color: "FFAB00" },
+  { name: "Purple", color: "6554C0" },
+  { name: "Pink", color: "FF79C6" },
+  { name: "Orange", color: "FF8B00" },
+  { name: "Teal", color: "00B8D9" },
+  { name: "Gray", color: "6B778C" },
+  { name: "Lime", color: "79F2C0" },
+]
+
 export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
   const router = useRouter()
   const [name, setName] = useState(initialTemplate?.name || "")
@@ -29,6 +43,27 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
   const [newPhaseName, setNewPhaseName] = useState("")
   const [newPhaseDescription, setNewPhaseDescription] = useState("")
   const [newPhaseDuration, setNewPhaseDuration] = useState("")
+
+  const suggestUnusedColor = () => {
+    // Get all currently used colors
+    const usedColors = labels.map((l) => l.color.toLowerCase())
+
+    // Find first preset color that's not used
+    const unusedPreset = PRESET_COLORS.find(
+      (preset) => !usedColors.includes(preset.color.toLowerCase())
+    )
+
+    if (unusedPreset) {
+      setNewLabelColor(unusedPreset.color)
+    } else {
+      // All presets used, generate random color
+      const randomColor = Math.floor(Math.random() * 16777215)
+        .toString(16)
+        .padStart(6, "0")
+        .toUpperCase()
+      setNewLabelColor(randomColor)
+    }
+  }
 
   const addLabel = () => {
     if (!newLabelName) return
@@ -243,32 +278,79 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Labels</h2>
 
           <div className="space-y-4 mb-6">
-            <div className="flex gap-3">
-              <input
-                type="text"
-                value={newLabelName}
-                onChange={(e) => setNewLabelName(e.target.value)}
-                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                placeholder="Label name"
-              />
-              <input
-                type="text"
-                value={newLabelColor}
-                onChange={(e) => setNewLabelColor(e.target.value.replace("#", ""))}
-                className="w-32 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                placeholder="0052CC"
-              />
-              <div
-                className="w-12 h-10 rounded-lg border border-gray-300 dark:border-gray-600"
-                style={{ backgroundColor: `#${newLabelColor}` }}
-              />
+            {/* Label Name */}
+            <input
+              type="text"
+              value={newLabelName}
+              onChange={(e) => setNewLabelName(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+              placeholder="Label name *"
+            />
+
+            {/* Color Selection Row */}
+            <div className="flex gap-3 items-center">
+              <div className="flex-1 flex gap-2 items-center">
+                {/* Native Color Picker */}
+                <input
+                  type="color"
+                  value={`#${newLabelColor}`}
+                  onChange={(e) => setNewLabelColor(e.target.value.replace("#", ""))}
+                  className="w-12 h-10 rounded cursor-pointer border border-gray-300 dark:border-gray-600"
+                  title="Pick a color"
+                />
+
+                {/* Hex Input */}
+                <div className="flex items-center gap-1 flex-1">
+                  <span className="text-gray-500 dark:text-gray-400">#</span>
+                  <input
+                    type="text"
+                    value={newLabelColor}
+                    onChange={(e) => setNewLabelColor(e.target.value.replace("#", ""))}
+                    className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-mono"
+                    placeholder="0052CC"
+                    maxLength={6}
+                  />
+                </div>
+
+                {/* Suggest Color Button */}
+                <button
+                  type="button"
+                  onClick={suggestUnusedColor}
+                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors whitespace-nowrap"
+                  title="Suggest an unused color"
+                >
+                  🎨 Suggest
+                </button>
+              </div>
+
+              {/* Add Button */}
               <button
+                type="button"
                 onClick={addLabel}
-                className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+                className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
               >
-                Add
+                Add Label
               </button>
             </div>
+
+            {/* Preset Colors */}
+            <div className="flex flex-wrap gap-2">
+              <span className="text-sm text-gray-600 dark:text-gray-400 self-center mr-2">
+                Quick colors:
+              </span>
+              {PRESET_COLORS.map((preset) => (
+                <button
+                  key={preset.color}
+                  type="button"
+                  onClick={() => setNewLabelColor(preset.color)}
+                  className="w-8 h-8 rounded border-2 border-gray-300 dark:border-gray-600 hover:border-gray-900 dark:hover:border-gray-100 transition-colors"
+                  style={{ backgroundColor: `#${preset.color}` }}
+                  title={preset.name}
+                />
+              ))}
+            </div>
+
+            {/* Label Description */}
             <input
               type="text"
               value={newLabelDescription}
