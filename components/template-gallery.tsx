@@ -10,9 +10,19 @@ import { getCustomTemplates } from "@/lib/custom-templates"
 export function TemplateGallery() {
   const [allTemplates, setAllTemplates] = useState<Template[]>(templates)
 
-  useEffect(() => {
+  const loadTemplates = () => {
     const customTemplates = getCustomTemplates()
     setAllTemplates([...templates, ...customTemplates])
+  }
+
+  useEffect(() => {
+    loadTemplates()
+
+    // Refresh templates when window gains focus (e.g., after editing and returning)
+    const handleFocus = () => loadTemplates()
+    window.addEventListener("focus", handleFocus)
+
+    return () => window.removeEventListener("focus", handleFocus)
   }, [])
 
   const totalIssues = allTemplates.reduce((sum, t) => sum + t.estimatedIssues, 0)

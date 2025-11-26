@@ -17,11 +17,84 @@ export class GitHubService {
     return data
   }
 
+  async getExistingLabels(owner: string, repo: string): Promise<Map<string, GitHubLabel>> {
+    try {
+      const { data } = await this.octokit.issues.listLabelsForRepo({
+        owner,
+        repo,
+        per_page: 100,
+      })
+      // Return map of label name -> label data for easy lookup
+      const labelMap = new Map<string, GitHubLabel>()
+      data.forEach((label) => {
+        labelMap.set(label.name, {
+          name: label.name,
+          color: label.color,
+          description: label.description || "",
+        })
+      })
+      return labelMap
+    } catch (error) {
+      console.error("Error fetching existing labels:", error)
+      return new Map()
+    }
+  }
+
+  async createOrUpdateLabel(
+    owner: string,
+    repo: string,
+    label: GitHubLabel,
+    existingLabels: Map<string, GitHubLabel>
+  ): Promise<"created" | "updated" | "unchanged"> {
+    const existing = existingLabels.get(label.name)
+
+    if (!existing) {
+      // Label doesn't exist, create it
+      try {
+        await this.octokit.issues.createLabel({
+          owner,
+          repo,
+          name: label.name,
+          color: label.color,
+          description: label.description,
+        })
+        return "created"
+      } catch (error) {
+        console.error("Error creating label:", error)
+        throw error
+      }
+    }
+
+    // Label exists, check if it changed
+    const colorChanged = existing.color.toLowerCase() !== label.color.toLowerCase()
+    const descriptionChanged = (existing.description || "") !== (label.description || "")
+
+    if (colorChanged || descriptionChanged) {
+      // Label changed, update it
+      try {
+        await this.octokit.issues.updateLabel({
+          owner,
+          repo,
+          name: label.name,
+          color: label.color,
+          description: label.description,
+        })
+        return "updated"
+      } catch (error) {
+        console.error("Error updating label:", error)
+        throw error
+      }
+    }
+
+    // Label exists and hasn't changed
+    return "unchanged"
+  }
+
   async createLabel(
     owner: string,
     repo: string,
     label: GitHubLabel
-  ): Promise<void> {
+  ): Promise<boolean> {
     try {
       await this.octokit.issues.createLabel({
         owner,
@@ -30,6 +103,7 @@ export class GitHubService {
         color: label.color,
         description: label.description,
       })
+      return true // Label was newly created
     } catch (error) {
       // Label might already exist
       if (error && typeof error === 'object' && 'status' in error && error.status === 422) {
@@ -41,9 +115,26 @@ export class GitHubService {
           color: label.color,
           description: label.description,
         })
+        return false // Label already existed, was updated
       } else {
         throw error
       }
+    }
+  }
+
+  async getExistingIssues(owner: string, repo: string): Promise<string[]> {
+    try {
+      const { data } = await this.octokit.issues.listForRepo({
+        owner,
+        repo,
+        state: "all",
+        per_page: 100,
+      })
+      // Return array of issue titles
+      return data.map((issue) => issue.title)
+    } catch (error) {
+      console.error("Error fetching existing issues:", error)
+      return []
     }
   }
 
@@ -75,28 +166,52 @@ export class GitHubService {
       current: number
       total: number
     }) => void
-  ): Promise<{ issuesCreated: number; labelsCreated: number }> {
+  ): Promise<{ issuesCreated: number; labelsCreated: number; labelsUpdated: number; issuesSkipped: number }> {
     let issuesCreated = 0
     let labelsCreated = 0
+    let labelsUpdated = 0
+    let issuesSkipped = 0
 
-    // Step 1: Create all labels
+    // Step 0: Fetch existing data to avoid duplicates
     onProgress?.({
-      phase: "Creating labels",
+      phase: "Checking existing data",
+      current: 0,
+      total: 1,
+    })
+
+    const existingIssueTitles = await this.getExistingIssues(owner, repo)
+    const existingLabels = await this.getExistingLabels(owner, repo)
+
+    // Step 1: Create or update labels (only count actual changes)
+    onProgress?.({
+      phase: "Processing labels",
       current: 0,
       total: template.labels.length,
     })
 
     for (let i = 0; i < template.labels.length; i++) {
-      await this.createLabel(owner, repo, template.labels[i])
-      labelsCreated++
+      const result = await this.createOrUpdateLabel(
+        owner,
+        repo,
+        template.labels[i],
+        existingLabels
+      )
+
+      if (result === "created") {
+        labelsCreated++
+      } else if (result === "updated") {
+        labelsUpdated++
+      }
+      // If result === "unchanged", don't count it
+
       onProgress?.({
-        phase: "Creating labels",
+        phase: "Processing labels",
         current: i + 1,
         total: template.labels.length,
       })
     }
 
-    // Step 2: Create all issues across phases
+    // Step 2: Create only new issues (skip duplicates)
     const totalIssues = template.phases.reduce(
       (sum, phase) => sum + phase.issues.length,
       0
@@ -106,9 +221,21 @@ export class GitHubService {
 
     for (const phase of template.phases) {
       for (const issue of phase.issues) {
+        currentIssueIndex++
+
+        // Skip if issue with same title already exists
+        if (existingIssueTitles.includes(issue.title)) {
+          issuesSkipped++
+          onProgress?.({
+            phase: `Creating issues - ${phase.name}`,
+            current: currentIssueIndex,
+            total: totalIssues,
+          })
+          continue
+        }
+
         await this.createIssue(owner, repo, issue)
         issuesCreated++
-        currentIssueIndex++
         onProgress?.({
           phase: `Creating issues - ${phase.name}`,
           current: currentIssueIndex,
@@ -120,7 +247,7 @@ export class GitHubService {
       }
     }
 
-    return { issuesCreated, labelsCreated }
+    return { issuesCreated, labelsCreated, labelsUpdated, issuesSkipped }
   }
 
   async verifyAccess(owner: string, repo: string): Promise<boolean> {

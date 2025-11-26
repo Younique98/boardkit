@@ -27,6 +27,8 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
     success: boolean
     issuesCreated?: number
     labelsCreated?: number
+    labelsUpdated?: number
+    issuesSkipped?: number
     issuesUrl?: string
     error?: string
   } | null>(null)
@@ -78,6 +80,8 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
           success: true,
           issuesCreated: data.issuesCreated,
           labelsCreated: data.labelsCreated,
+          labelsUpdated: data.labelsUpdated,
+          issuesSkipped: data.issuesSkipped,
           issuesUrl: data.issuesUrl,
         })
       } else {
@@ -129,11 +133,44 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
                 <>
                   <div className="text-6xl">✅</div>
                   <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-                    Board Generated Successfully!
+                    {(() => {
+                      const anyCreated = (result.issuesCreated || 0) > 0 || (result.labelsCreated || 0) > 0
+                      const anyUpdated = (result.labelsUpdated || 0) > 0
+                      const anySkipped = (result.issuesSkipped || 0) > 0
+
+                      if (anyCreated || anyUpdated) {
+                        return anySkipped ? "Board Updated Successfully!" : "Board Generated Successfully!"
+                      }
+                      return "Board Already Up to Date!"
+                    })()}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    Created {result.labelsCreated} labels and {result.issuesCreated} issues
-                  </p>
+                  <div className="text-gray-600 dark:text-gray-400 space-y-1">
+                    {(result.issuesCreated ?? 0) > 0 && (
+                      <p>
+                        ✨ Created {result.issuesCreated} new issue{result.issuesCreated !== 1 ? "s" : ""}
+                      </p>
+                    )}
+                    {(result.labelsCreated ?? 0) > 0 && (
+                      <p>
+                        🏷️ Created {result.labelsCreated} new label{result.labelsCreated !== 1 ? "s" : ""}
+                      </p>
+                    )}
+                    {(result.labelsUpdated ?? 0) > 0 && (
+                      <p>
+                        🔄 Updated {result.labelsUpdated} existing label{result.labelsUpdated !== 1 ? "s" : ""}
+                      </p>
+                    )}
+                    {(result.issuesSkipped ?? 0) > 0 && (
+                      <p>
+                        ⏭️ Skipped {result.issuesSkipped} existing issue{result.issuesSkipped !== 1 ? "s" : ""} (no duplicates)
+                      </p>
+                    )}
+                    {(result.issuesCreated ?? 0) === 0 &&
+                     (result.labelsCreated ?? 0) === 0 &&
+                     (result.labelsUpdated ?? 0) === 0 && (
+                      <p>No changes needed</p>
+                    )}
+                  </div>
                   <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
                     <a
                       href={result.issuesUrl}

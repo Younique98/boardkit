@@ -18,14 +18,23 @@ export default function TemplatePage({ params }: TemplatePageProps) {
   const [template, setTemplate] = useState<Template | null>(null)
   const [loading, setLoading] = useState(true)
 
+  const loadTemplate = async () => {
+    const { id } = await params
+    const foundTemplate = getTemplateById(id)
+    setTemplate(foundTemplate || null)
+    setLoading(false)
+  }
+
   useEffect(() => {
-    params.then(({ id }) => {
-      // Load template client-side to access localStorage
-      const foundTemplate = getTemplateById(id)
-      setTemplate(foundTemplate || null)
-      setLoading(false)
-    })
-  }, [params])
+    loadTemplate()
+
+    // Refresh template when window gains focus (e.g., after editing and returning)
+    const handleFocus = () => loadTemplate()
+    window.addEventListener("focus", handleFocus)
+
+    return () => window.removeEventListener("focus", handleFocus)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   if (loading || status === "loading") {
     return (

@@ -4,7 +4,6 @@ const STORAGE_KEY = "boardkit_custom_templates"
 
 export function getCustomTemplates(): Template[] {
   if (typeof window === "undefined") return []
-
   try {
     const stored = localStorage.getItem(STORAGE_KEY)
     return stored ? JSON.parse(stored) : []
