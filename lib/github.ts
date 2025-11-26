@@ -17,11 +17,26 @@ export class GitHubService {
     return data
   }
 
+  async getExistingLabels(owner: string, repo: string): Promise<string[]> {
+    try {
+      const { data } = await this.octokit.issues.listLabelsForRepo({
+        owner,
+        repo,
+        per_page: 100,
+      })
+      // Return array of label names
+      return data.map((label) => label.name)
+    } catch (error) {
+      console.error("Error fetching existing labels:", error)
+      return []
+    }
+  }
+
   async createLabel(
     owner: string,
     repo: string,
     label: GitHubLabel
-  ): Promise<void> {
+  ): Promise<boolean> {
     try {
       await this.octokit.issues.createLabel({
         owner,
@@ -30,6 +45,7 @@ export class GitHubService {
         color: label.color,
         description: label.description,
       })
+      return true // Label was newly created
     } catch (error) {
       // Label might already exist
       if (error && typeof error === 'object' && 'status' in error && error.status === 422) {
@@ -41,6 +57,7 @@ export class GitHubService {
           color: label.color,
           description: label.description,
         })
+        return false // Label already existed, was updated
       } else {
         throw error
       }
@@ -91,9 +108,10 @@ export class GitHubService {
       current: number
       total: number
     }) => void
-  ): Promise<{ issuesCreated: number; labelsCreated: number; issuesSkipped: number }> {
+  ): Promise<{ issuesCreated: number; labelsCreated: number; labelsUpdated: number; issuesSkipped: number }> {
     let issuesCreated = 0
     let labelsCreated = 0
+    let labelsUpdated = 0
     let issuesSkipped = 0
 
     // Step 0: Fetch existing issues to avoid duplicates
@@ -105,7 +123,7 @@ export class GitHubService {
 
     const existingIssueTitles = await this.getExistingIssues(owner, repo)
 
-    // Step 1: Create all labels
+    // Step 1: Create or update labels
     onProgress?.({
       phase: "Creating labels",
       current: 0,
@@ -113,8 +131,12 @@ export class GitHubService {
     })
 
     for (let i = 0; i < template.labels.length; i++) {
-      await this.createLabel(owner, repo, template.labels[i])
-      labelsCreated++
+      const wasNewlyCreated = await this.createLabel(owner, repo, template.labels[i])
+      if (wasNewlyCreated) {
+        labelsCreated++
+      } else {
+        labelsUpdated++
+      }
       onProgress?.({
         phase: "Creating labels",
         current: i + 1,
@@ -158,7 +180,7 @@ export class GitHubService {
       }
     }
 
-    return { issuesCreated, labelsCreated, issuesSkipped }
+    return { issuesCreated, labelsCreated, labelsUpdated, issuesSkipped }
   }
 
   async verifyAccess(owner: string, repo: string): Promise<boolean> {
