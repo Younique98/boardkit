@@ -1,16 +1,35 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Template } from "@/types/template"
 import Link from "next/link"
 import { RepoSelector } from "./repo-selector"
+import { deleteCustomTemplate } from "@/lib/custom-templates"
 
 interface TemplateDetailsProps {
   template: Template
 }
 
 export function TemplateDetails({ template }: TemplateDetailsProps) {
+  const router = useRouter()
   const [showRepoSelector, setShowRepoSelector] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  const handleDelete = async () => {
+    setIsDeleting(true)
+    try {
+      deleteCustomTemplate(template.id)
+      // Redirect to homepage after deletion
+      router.push("/")
+    } catch (error) {
+      console.error("Error deleting template:", error)
+      alert("Failed to delete template")
+      setIsDeleting(false)
+      setShowDeleteConfirm(false)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -72,7 +91,7 @@ export function TemplateDetails({ template }: TemplateDetailsProps) {
                 </span>
               </div>
 
-              <div className="mt-6 flex gap-3">
+              <div className="mt-6 flex gap-3 flex-wrap">
                 <button
                   onClick={() => setShowRepoSelector(true)}
                   className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
@@ -80,12 +99,20 @@ export function TemplateDetails({ template }: TemplateDetailsProps) {
                   Generate This Board
                 </button>
                 {template.id.startsWith("custom-") && (
-                  <Link
-                    href={`/templates/${template.id}/edit`}
-                    className="px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
-                  >
-                    Edit Template
-                  </Link>
+                  <>
+                    <Link
+                      href={`/templates/${template.id}/edit`}
+                      className="px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
+                    >
+                      Edit Template
+                    </Link>
+                    <button
+                      onClick={() => setShowDeleteConfirm(true)}
+                      className="px-8 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
+                    >
+                      Delete Template
+                    </button>
+                  </>
                 )}
               </div>
             </div>
@@ -173,6 +200,39 @@ export function TemplateDetails({ template }: TemplateDetailsProps) {
           template={template}
           onClose={() => setShowRepoSelector(false)}
         />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-8">
+            <div className="text-center space-y-4">
+              <div className="text-6xl">⚠️</div>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                Delete Template?
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400">
+                Are you sure you want to delete &quot;{template.name}&quot;? This action cannot be undone.
+              </p>
+              <div className="flex gap-3 pt-4">
+                <button
+                  onClick={() => setShowDeleteConfirm(false)}
+                  disabled={isDeleting}
+                  className="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-white rounded-lg font-semibold transition-colors disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                  className="flex-1 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-colors disabled:opacity-50"
+                >
+                  {isDeleting ? "Deleting..." : "Delete"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
