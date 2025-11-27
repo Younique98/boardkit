@@ -26,6 +26,7 @@ export default function PreviewImportPage() {
   const [parsedIssues, setParsedIssues] = useState<ParsedIssue[]>([])
   const [template, setTemplate] = useState<Template | null>(null)
   const [loading, setLoading] = useState(true)
+  const [showRepoSelector, setShowRepoSelector] = useState(false)
 
   useEffect(() => {
     // Load data from sessionStorage
@@ -233,12 +234,20 @@ export default function PreviewImportPage() {
           </p>
         </div>
 
-        {/* Repository Selector */}
+        {/* Generate Button */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-gray-700">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-            Select Repository
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            Ready to Generate
           </h2>
-          <RepoSelector template={template} onClose={() => {}} />
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            Review the issues above and click the button below to select a repository and generate your board.
+          </p>
+          <button
+            onClick={() => setShowRepoSelector(true)}
+            className="w-full px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-xl"
+          >
+            🚀 Generate Board
+          </button>
         </div>
 
         {/* Labels Preview */}
@@ -330,6 +339,11 @@ export default function PreviewImportPage() {
           ))}
         </div>
       </main>
+
+      {/* Repository Selector Modal */}
+      {showRepoSelector && (
+        <RepoSelector template={template} onClose={() => setShowRepoSelector(false)} />
+      )}
     </div>
   )
 }
