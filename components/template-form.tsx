@@ -57,8 +57,11 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
   const [draggedIssue, setDraggedIssue] = useState<{ phaseIndex: number; issueIndex: number } | null>(null)
 
   const suggestUnusedColor = () => {
-    // Get all currently used colors
-    const usedColors = labels.map((l) => l.color.toLowerCase())
+    // Get all currently used colors (including the current suggestion)
+    const usedColors = [
+      ...labels.map((l) => l.color.toLowerCase()),
+      newLabelColor.toLowerCase()
+    ]
 
     // Find first preset color that's not used
     const unusedPreset = PRESET_COLORS.find(
@@ -68,11 +71,15 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
     if (unusedPreset) {
       setNewLabelColor(unusedPreset.color)
     } else {
-      // All presets used, generate random color
-      const randomColor = Math.floor(Math.random() * 16777215)
-        .toString(16)
-        .padStart(6, "0")
-        .toUpperCase()
+      // All presets used, generate random color different from current
+      let randomColor
+      do {
+        randomColor = Math.floor(Math.random() * 16777215)
+          .toString(16)
+          .padStart(6, "0")
+          .toUpperCase()
+      } while (randomColor.toLowerCase() === newLabelColor.toLowerCase())
+
       setNewLabelColor(randomColor)
     }
   }
