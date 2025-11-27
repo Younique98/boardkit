@@ -57,31 +57,38 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
   const [draggedIssue, setDraggedIssue] = useState<{ phaseIndex: number; issueIndex: number } | null>(null)
 
   const suggestUnusedColor = () => {
-    // Get all currently used colors (including the current suggestion)
-    const usedColors = [
-      ...labels.map((l) => l.color.toLowerCase()),
-      newLabelColor.toLowerCase()
-    ]
+    // Get all colors used in labels
+    const usedColors = labels.map((l) => l.color.toLowerCase())
 
-    // Find first preset color that's not used
-    const unusedPreset = PRESET_COLORS.find(
-      (preset) => !usedColors.includes(preset.color.toLowerCase())
+    // Find current color's index in preset colors
+    const currentIndex = PRESET_COLORS.findIndex(
+      (preset) => preset.color.toLowerCase() === newLabelColor.toLowerCase()
     )
 
-    if (unusedPreset) {
-      setNewLabelColor(unusedPreset.color)
-    } else {
-      // All presets used, generate random color different from current
-      let randomColor
-      do {
-        randomColor = Math.floor(Math.random() * 16777215)
-          .toString(16)
-          .padStart(6, "0")
-          .toUpperCase()
-      } while (randomColor.toLowerCase() === newLabelColor.toLowerCase())
+    // If current color is a preset, start from next index, otherwise start from 0
+    const startIndex = currentIndex >= 0 ? currentIndex + 1 : 0
 
-      setNewLabelColor(randomColor)
+    // Try to find next unused preset color in sequence
+    for (let i = 0; i < PRESET_COLORS.length; i++) {
+      const index = (startIndex + i) % PRESET_COLORS.length
+      const preset = PRESET_COLORS[index]
+
+      if (!usedColors.includes(preset.color.toLowerCase())) {
+        setNewLabelColor(preset.color)
+        return
+      }
     }
+
+    // All presets used, generate random color different from current
+    let randomColor
+    do {
+      randomColor = Math.floor(Math.random() * 16777215)
+        .toString(16)
+        .padStart(6, "0")
+        .toUpperCase()
+    } while (randomColor.toLowerCase() === newLabelColor.toLowerCase())
+
+    setNewLabelColor(randomColor)
   }
 
   const addLabel = () => {
