@@ -224,8 +224,32 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
     // Remove issue from original position
     const [draggedIssueObj] = newPhases[draggedIssue.phaseIndex].issues.splice(draggedIssue.issueIndex, 1)
 
+    // Adjust drop index if dropping in same phase after the removed item
+    let adjustedDropIndex = dropIssueIndex
+    if (draggedIssue.phaseIndex === dropPhaseIndex && draggedIssue.issueIndex < dropIssueIndex) {
+      adjustedDropIndex = dropIssueIndex - 1
+    }
+
     // Insert at new position
-    newPhases[dropPhaseIndex].issues.splice(dropIssueIndex, 0, draggedIssueObj)
+    newPhases[dropPhaseIndex].issues.splice(adjustedDropIndex, 0, draggedIssueObj)
+
+    setPhases(newPhases)
+    setDraggedIssue(null)
+  }
+
+  const handlePhaseContainerDrop = (e: React.DragEvent, dropPhaseIndex: number) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (!draggedIssue) return
+
+    const newPhases = [...phases]
+
+    // Remove issue from original position
+    const [draggedIssueObj] = newPhases[draggedIssue.phaseIndex].issues.splice(draggedIssue.issueIndex, 1)
+
+    // Add to end of target phase
+    newPhases[dropPhaseIndex].issues.push(draggedIssueObj)
 
     setPhases(newPhases)
     setDraggedIssue(null)
@@ -796,7 +820,11 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
                 </div>
 
                 {/* Issues in Phase */}
-                <div className="space-y-3">
+                <div
+                  className="space-y-3 min-h-[60px]"
+                  onDragOver={handleIssueDragOver}
+                  onDrop={(e) => handlePhaseContainerDrop(e, phaseIndex)}
+                >
                   {phase.issues.map((issue, issueIndex) => (
                     <div
                       key={issueIndex}
