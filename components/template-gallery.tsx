@@ -53,6 +53,20 @@ export function TemplateGallery() {
           </p>
         </Link>
 
+        {/* Import from CSV Card */}
+        <Link
+          href="/templates/import"
+          className="group relative overflow-hidden rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-500 transition-all hover:shadow-lg bg-white dark:bg-gray-800 p-6 flex flex-col items-center justify-center min-h-[200px]"
+        >
+          <div className="text-6xl mb-4 group-hover:scale-110 transition-transform">📊</div>
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            Import from CSV
+          </h3>
+          <p className="text-gray-600 dark:text-gray-400 text-center text-sm">
+            Upload a spreadsheet to generate issues from your data
+          </p>
+        </Link>
+
         {/* Template Cards */}
         {allTemplates.map((template) => (
           <TemplateCard key={template.id} template={template} />

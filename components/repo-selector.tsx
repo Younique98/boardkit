@@ -60,7 +60,7 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
     try {
       // For custom templates (from localStorage), send the entire template object
       // For built-in templates, just send the ID
-      const isCustomTemplate = template.id.startsWith("custom-")
+      const isCustomTemplate = template.id.startsWith("custom-") || template.id.startsWith("import-")
 
       const response = await fetch("/api/generate", {
         method: "POST",
