@@ -378,6 +378,7 @@ export default function ImportJSONPage() {
                     setJsonText("")
                     setError(null)
                     setTemplate(null)
+                    setShowPreview(false)
                   }}
                   className="px-6 py-2 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-semibold transition-colors"
                 >
@@ -385,14 +386,16 @@ export default function ImportJSONPage() {
                 </button>
                 <button
                   onClick={handlePasteJSON}
-                  disabled={!jsonText.trim()}
+                  disabled={!jsonText.trim() || (!!template && showPreview)}
                   className={`flex-1 px-6 py-2 rounded-lg font-semibold transition-colors ${
-                    jsonText.trim()
-                      ? "bg-blue-600 hover:bg-blue-700 text-white"
-                      : "bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed"
+                    template && showPreview
+                      ? "bg-green-600 text-white cursor-default"
+                      : jsonText.trim()
+                        ? "bg-blue-600 hover:bg-blue-700 text-white"
+                        : "bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed"
                   }`}
                 >
-                  Validate & Preview
+                  {template && showPreview ? "✓ Validated Successfully" : "Validate & Preview"}
                 </button>
               </div>
             </div>
