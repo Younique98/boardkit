@@ -25,6 +25,30 @@ const PRESET_COLORS = [
   { name: "Lime", color: "79F2C0" },
 ]
 
+// Suggested colors for the suggest button (different from quick picks)
+const SUGGEST_COLORS = [
+  "1E90FF", // Dodger Blue
+  "FF1493", // Deep Pink
+  "32CD32", // Lime Green
+  "FFD700", // Gold
+  "9370DB", // Medium Purple
+  "FF69B4", // Hot Pink
+  "FF4500", // Orange Red
+  "20B2AA", // Light Sea Green
+  "A9A9A9", // Dark Gray
+  "7FFF00", // Chartreuse
+  "4169E1", // Royal Blue
+  "DC143C", // Crimson
+  "2E8B57", // Sea Green
+  "FFA500", // Orange
+  "8A2BE2", // Blue Violet
+  "FF6347", // Tomato
+  "00CED1", // Dark Turquoise
+  "696969", // Dim Gray
+  "ADFF2F", // Green Yellow
+  "00BFFF", // Deep Sky Blue
+]
+
 export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
   const router = useRouter()
   const [name, setName] = useState(initialTemplate?.name || "")
@@ -46,31 +70,49 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
   const [newLabelName, setNewLabelName] = useState("")
   const [newLabelColor, setNewLabelColor] = useState("0052CC")
   const [newLabelDescription, setNewLabelDescription] = useState("")
+  const [editingLabelIndex, setEditingLabelIndex] = useState<number | null>(null)
+  const [editingLabelData, setEditingLabelData] = useState<GitHubLabel | null>(null)
 
   // Phase form state
   const [newPhaseName, setNewPhaseName] = useState("")
   const [newPhaseDescription, setNewPhaseDescription] = useState("")
   const [newPhaseDuration, setNewPhaseDuration] = useState("")
+  const [draggedPhaseIndex, setDraggedPhaseIndex] = useState<number | null>(null)
+  const [draggedIssue, setDraggedIssue] = useState<{ phaseIndex: number; issueIndex: number } | null>(null)
 
   const suggestUnusedColor = () => {
-    // Get all currently used colors
+    // Get all colors used in labels
     const usedColors = labels.map((l) => l.color.toLowerCase())
 
-    // Find first preset color that's not used
-    const unusedPreset = PRESET_COLORS.find(
-      (preset) => !usedColors.includes(preset.color.toLowerCase())
+    // Find current color's index in suggest colors
+    const currentIndex = SUGGEST_COLORS.findIndex(
+      (color) => color.toLowerCase() === newLabelColor.toLowerCase()
     )
 
-    if (unusedPreset) {
-      setNewLabelColor(unusedPreset.color)
-    } else {
-      // All presets used, generate random color
-      const randomColor = Math.floor(Math.random() * 16777215)
+    // If current color is in suggest list, start from next index, otherwise start from 0
+    const startIndex = currentIndex >= 0 ? currentIndex + 1 : 0
+
+    // Try to find next unused suggest color in sequence
+    for (let i = 0; i < SUGGEST_COLORS.length; i++) {
+      const index = (startIndex + i) % SUGGEST_COLORS.length
+      const color = SUGGEST_COLORS[index]
+
+      if (!usedColors.includes(color.toLowerCase())) {
+        setNewLabelColor(color)
+        return
+      }
+    }
+
+    // All suggest colors used, generate random color different from current
+    let randomColor
+    do {
+      randomColor = Math.floor(Math.random() * 16777215)
         .toString(16)
         .padStart(6, "0")
         .toUpperCase()
-      setNewLabelColor(randomColor)
-    }
+    } while (randomColor.toLowerCase() === newLabelColor.toLowerCase())
+
+    setNewLabelColor(randomColor)
   }
 
   const addLabel = () => {
@@ -99,6 +141,122 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
 
   const removeLabel = (index: number) => {
     setLabels(labels.filter((_, i) => i !== index))
+  }
+
+  const startEditLabel = (index: number) => {
+    setEditingLabelIndex(index)
+    setEditingLabelData({ ...labels[index] })
+  }
+
+  const saveEditLabel = () => {
+    if (editingLabelIndex === null || !editingLabelData) return
+
+    if (!editingLabelData.name || editingLabelData.name.trim().length === 0) {
+      alert("Label name is required")
+      return
+    }
+
+    // Check for duplicate label names (excluding the current one)
+    const isDuplicate = labels.some(
+      (l, i) => i !== editingLabelIndex && l.name.toLowerCase() === editingLabelData.name.toLowerCase()
+    )
+    if (isDuplicate) {
+      alert("A label with this name already exists")
+      return
+    }
+
+    const updatedLabels = [...labels]
+    updatedLabels[editingLabelIndex] = {
+      ...editingLabelData,
+      color: editingLabelData.color.replace("#", ""),
+    }
+    setLabels(updatedLabels)
+    setEditingLabelIndex(null)
+    setEditingLabelData(null)
+  }
+
+  const cancelEditLabel = () => {
+    setEditingLabelIndex(null)
+    setEditingLabelData(null)
+  }
+
+  // Phase drag-and-drop handlers
+  const handlePhaseDragStart = (index: number) => {
+    setDraggedPhaseIndex(index)
+  }
+
+  const handlePhaseDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+  }
+
+  const handlePhaseDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault()
+    if (draggedPhaseIndex === null || draggedPhaseIndex === dropIndex) return
+
+    const newPhases = [...phases]
+    const [draggedPhase] = newPhases.splice(draggedPhaseIndex, 1)
+    newPhases.splice(dropIndex, 0, draggedPhase)
+    setPhases(newPhases)
+    setDraggedPhaseIndex(null)
+  }
+
+  const handlePhaseDragEnd = () => {
+    setDraggedPhaseIndex(null)
+  }
+
+  // Issue drag-and-drop handlers
+  const handleIssueDragStart = (phaseIndex: number, issueIndex: number) => {
+    setDraggedIssue({ phaseIndex, issueIndex })
+  }
+
+  const handleIssueDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+  }
+
+  const handleIssueDrop = (e: React.DragEvent, dropPhaseIndex: number, dropIssueIndex: number) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (!draggedIssue) return
+
+    const newPhases = [...phases]
+
+    // Remove issue from original position
+    const [draggedIssueObj] = newPhases[draggedIssue.phaseIndex].issues.splice(draggedIssue.issueIndex, 1)
+
+    // Adjust drop index if dropping in same phase after the removed item
+    let adjustedDropIndex = dropIssueIndex
+    if (draggedIssue.phaseIndex === dropPhaseIndex && draggedIssue.issueIndex < dropIssueIndex) {
+      adjustedDropIndex = dropIssueIndex - 1
+    }
+
+    // Insert at new position
+    newPhases[dropPhaseIndex].issues.splice(adjustedDropIndex, 0, draggedIssueObj)
+
+    setPhases(newPhases)
+    setDraggedIssue(null)
+  }
+
+  const handlePhaseContainerDrop = (e: React.DragEvent, dropPhaseIndex: number) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (!draggedIssue) return
+
+    const newPhases = [...phases]
+
+    // Remove issue from original position
+    const [draggedIssueObj] = newPhases[draggedIssue.phaseIndex].issues.splice(draggedIssue.issueIndex, 1)
+
+    // Add to end of target phase
+    newPhases[dropPhaseIndex].issues.push(draggedIssueObj)
+
+    setPhases(newPhases)
+    setDraggedIssue(null)
+  }
+
+  const handleIssueDragEnd = () => {
+    setDraggedIssue(null)
   }
 
   const addPhase = () => {
@@ -467,25 +625,103 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
             />
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             {labels.map((label, index) => (
-              <span
-                key={index}
-                className="inline-flex items-center gap-2 px-3 py-1 text-sm font-medium rounded"
-                style={{
-                  backgroundColor: `#${label.color}20`,
-                  color: `#${label.color}`,
-                  border: `1px solid #${label.color}40`,
-                }}
-              >
-                {label.name}
-                <button
-                  onClick={() => removeLabel(index)}
-                  className="hover:opacity-70"
-                >
-                  ✕
-                </button>
-              </span>
+              <div key={index}>
+                {editingLabelIndex === index && editingLabelData ? (
+                  // Editing mode
+                  <div className="p-3 bg-gray-50 dark:bg-gray-900 rounded-lg border-2 border-blue-500 space-y-2 min-w-[320px]">
+                    <input
+                      type="text"
+                      value={editingLabelData.name}
+                      onChange={(e) =>
+                        setEditingLabelData({ ...editingLabelData, name: e.target.value })
+                      }
+                      className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      placeholder="Label name"
+                      autoFocus
+                    />
+                    <div className="flex gap-2 items-center">
+                      <input
+                        type="color"
+                        value={`#${editingLabelData.color}`}
+                        onChange={(e) =>
+                          setEditingLabelData({
+                            ...editingLabelData,
+                            color: e.target.value.replace("#", ""),
+                          })
+                        }
+                        className="w-10 h-8 rounded cursor-pointer border border-gray-300 dark:border-gray-600"
+                      />
+                      <div className="flex items-center gap-1 flex-1">
+                        <span className="text-gray-500 dark:text-gray-400 text-sm">#</span>
+                        <input
+                          type="text"
+                          value={editingLabelData.color}
+                          onChange={(e) =>
+                            setEditingLabelData({
+                              ...editingLabelData,
+                              color: e.target.value.replace("#", ""),
+                            })
+                          }
+                          className="flex-1 px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-mono"
+                          placeholder="0052CC"
+                          maxLength={6}
+                        />
+                      </div>
+                    </div>
+                    <input
+                      type="text"
+                      value={editingLabelData.description || ""}
+                      onChange={(e) =>
+                        setEditingLabelData({ ...editingLabelData, description: e.target.value })
+                      }
+                      className="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      placeholder="Description (optional)"
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        onClick={saveEditLabel}
+                        className="flex-1 px-3 py-1.5 text-sm bg-green-600 hover:bg-green-700 text-white rounded transition-colors"
+                      >
+                        ✓ Save
+                      </button>
+                      <button
+                        onClick={cancelEditLabel}
+                        className="flex-1 px-3 py-1.5 text-sm bg-gray-500 hover:bg-gray-600 text-white rounded transition-colors"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  // Display mode
+                  <span
+                    className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded"
+                    style={{
+                      backgroundColor: `#${label.color}20`,
+                      color: `#${label.color}`,
+                      border: `1px solid #${label.color}40`,
+                    }}
+                  >
+                    {label.name}
+                    <button
+                      onClick={() => startEditLabel(index)}
+                      className="hover:opacity-70 text-xs"
+                      title="Edit label"
+                    >
+                      ✏️
+                    </button>
+                    <button
+                      onClick={() => removeLabel(index)}
+                      className="hover:opacity-70"
+                      title="Remove label"
+                    >
+                      ✕
+                    </button>
+                  </span>
+                )}
+              </div>
             ))}
           </div>
         </div>
@@ -545,21 +781,35 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
             {phases.map((phase, phaseIndex) => (
               <div
                 key={phaseIndex}
-                className="border-2 border-gray-200 dark:border-gray-700 rounded-lg p-6"
+                draggable
+                onDragStart={() => handlePhaseDragStart(phaseIndex)}
+                onDragOver={handlePhaseDragOver}
+                onDrop={(e) => handlePhaseDrop(e, phaseIndex)}
+                onDragEnd={handlePhaseDragEnd}
+                className={`border-2 rounded-lg p-6 transition-all ${
+                  draggedPhaseIndex === phaseIndex
+                    ? "opacity-50 border-blue-500 dark:border-blue-500"
+                    : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+                } cursor-move`}
               >
                 <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                      {phase.name}
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {phase.description}
-                    </p>
-                    {phase.duration && (
-                      <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
-                        Duration: {phase.duration}
+                  <div className="flex items-start gap-3 flex-1">
+                    <div className="text-gray-400 dark:text-gray-500 mt-1 cursor-grab active:cursor-grabbing" title="Drag to reorder">
+                      ⋮⋮
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                        {phase.name}
+                      </h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {phase.description}
                       </p>
-                    )}
+                      {phase.duration && (
+                        <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
+                          Duration: {phase.duration}
+                        </p>
+                      )}
+                    </div>
                   </div>
                   <button
                     onClick={() => removePhase(phaseIndex)}
@@ -570,13 +820,29 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
                 </div>
 
                 {/* Issues in Phase */}
-                <div className="space-y-3">
+                <div
+                  className="space-y-3 min-h-[60px]"
+                  onDragOver={handleIssueDragOver}
+                  onDrop={(e) => handlePhaseContainerDrop(e, phaseIndex)}
+                >
                   {phase.issues.map((issue, issueIndex) => (
                     <div
                       key={issueIndex}
-                      className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg space-y-3"
+                      draggable
+                      onDragStart={() => handleIssueDragStart(phaseIndex, issueIndex)}
+                      onDragOver={handleIssueDragOver}
+                      onDrop={(e) => handleIssueDrop(e, phaseIndex, issueIndex)}
+                      onDragEnd={handleIssueDragEnd}
+                      className={`bg-gray-50 dark:bg-gray-900 p-4 rounded-lg space-y-3 transition-all ${
+                        draggedIssue?.phaseIndex === phaseIndex && draggedIssue?.issueIndex === issueIndex
+                          ? "opacity-50 border-2 border-blue-500"
+                          : "border-2 border-transparent hover:border-gray-300 dark:hover:border-gray-700"
+                      } cursor-move`}
                     >
                       <div className="flex gap-2">
+                        <div className="text-gray-400 dark:text-gray-500 self-center cursor-grab active:cursor-grabbing" title="Drag to reorder">
+                          ⋮⋮
+                        </div>
                         <input
                           type="text"
                           value={issue.title}

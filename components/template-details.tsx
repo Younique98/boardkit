@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { Template } from "@/types/template"
 import Link from "next/link"
 import { RepoSelector } from "./repo-selector"
-import { deleteCustomTemplate } from "@/lib/custom-templates"
+import { deleteCustomTemplate, saveCustomTemplate } from "@/lib/custom-templates"
 
 interface TemplateDetailsProps {
   template: Template
@@ -33,6 +33,24 @@ export function TemplateDetails({ template }: TemplateDetailsProps) {
     // Cleanup
     document.body.removeChild(link)
     URL.revokeObjectURL(url)
+  }
+
+  const handleDuplicate = () => {
+    // Create a duplicate template with new ID and modified name
+    const duplicateTemplate: Template = {
+      ...template,
+      id: `custom-${Date.now()}`,
+      name: `${template.name} (Copy)`,
+    }
+
+    try {
+      saveCustomTemplate(duplicateTemplate)
+      // Redirect to the new duplicate template
+      router.push(`/templates/${duplicateTemplate.id}`)
+    } catch (error) {
+      console.error("Error duplicating template:", error)
+      alert("Failed to duplicate template")
+    }
   }
 
   const handleDelete = async () => {
@@ -115,6 +133,13 @@ export function TemplateDetails({ template }: TemplateDetailsProps) {
                   className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
                 >
                   Generate This Board
+                </button>
+                <button
+                  onClick={handleDuplicate}
+                  className="px-8 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
+                  title="Create a copy of this template"
+                >
+                  📋 Duplicate
                 </button>
                 {template.id.startsWith("custom-") && (
                   <>
