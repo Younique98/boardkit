@@ -67,6 +67,20 @@ export function TemplateGallery() {
           </p>
         </Link>
 
+        {/* Import from JSON Card */}
+        <Link
+          href="/templates/import-json"
+          className="group relative overflow-hidden rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-green-500 dark:hover:border-green-500 transition-all hover:shadow-lg bg-white dark:bg-gray-800 p-6 flex flex-col items-center justify-center min-h-[200px]"
+        >
+          <div className="text-6xl mb-4 group-hover:scale-110 transition-transform">📦</div>
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            Import from JSON
+          </h3>
+          <p className="text-gray-600 dark:text-gray-400 text-center text-sm">
+            Import shared templates from JSON files
+          </p>
+        </Link>
+
         {/* Template Cards */}
         {allTemplates.map((template) => (
           <TemplateCard key={template.id} template={template} />

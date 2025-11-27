@@ -17,6 +17,24 @@ export function TemplateDetails({ template }: TemplateDetailsProps) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
 
+  const handleExport = () => {
+    // Create JSON blob
+    const json = JSON.stringify(template, null, 2)
+    const blob = new Blob([json], { type: "application/json" })
+    const url = URL.createObjectURL(blob)
+
+    // Create download link
+    const link = document.createElement("a")
+    link.href = url
+    link.download = `${template.name.replace(/[^a-z0-9]/gi, "-").toLowerCase()}-template.json`
+    document.body.appendChild(link)
+    link.click()
+
+    // Cleanup
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
+
   const handleDelete = async () => {
     setIsDeleting(true)
     try {
@@ -100,6 +118,12 @@ export function TemplateDetails({ template }: TemplateDetailsProps) {
                 </button>
                 {template.id.startsWith("custom-") && (
                   <>
+                    <button
+                      onClick={handleExport}
+                      className="px-8 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
+                    >
+                      📥 Export JSON
+                    </button>
                     <Link
                       href={`/templates/${template.id}/edit`}
                       className="px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"

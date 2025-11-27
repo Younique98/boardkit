@@ -9,6 +9,12 @@ export default function ImportTemplatePage() {
   const { status } = useSession()
   const [file, setFile] = useState<File | null>(null)
   const [dragActive, setDragActive] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [validationInfo, setValidationInfo] = useState<{
+    rowCount?: number
+    columnCount?: number
+    delimiter?: string
+  } | null>(null)
 
   // Redirect to sign in if not authenticated
   if (status === "unauthenticated") {
@@ -24,6 +30,94 @@ export default function ImportTemplatePage() {
     )
   }
 
+  const detectDelimiter = (text: string): string => {
+    const firstLine = text.split("\n")[0]
+    const delimiters = [",", ";", "\t", "|"]
+
+    let maxCount = 0
+    let detectedDelimiter = ","
+
+    for (const delimiter of delimiters) {
+      const count = firstLine.split(delimiter).length
+      if (count > maxCount) {
+        maxCount = count
+        detectedDelimiter = delimiter
+      }
+    }
+
+    return detectedDelimiter
+  }
+
+  const validateCSV = async (selectedFile: File): Promise<boolean> => {
+    setError(null)
+    setValidationInfo(null)
+
+    try {
+      const text = await selectedFile.text()
+
+      // Check if file is empty
+      if (!text || text.trim().length === 0) {
+        setError("The CSV file is empty. Please upload a file with data.")
+        return false
+      }
+
+      // Split into lines and remove empty lines
+      const lines = text.split("\n").filter((line) => line.trim().length > 0)
+
+      // Check if there are at least 2 lines (header + data)
+      if (lines.length < 2) {
+        setError("The CSV file needs at least a header row and one data row. Please add more data.")
+        return false
+      }
+
+      // Detect delimiter
+      const delimiter = detectDelimiter(text)
+      const delimiterName =
+        delimiter === "," ? "comma" :
+        delimiter === ";" ? "semicolon" :
+        delimiter === "\t" ? "tab" :
+        "pipe"
+
+      // Parse header
+      const headerLine = lines[0]
+      const headers = headerLine.split(delimiter).map((h) => h.trim().replace(/^"|"$/g, ""))
+
+      // Check if headers exist
+      if (headers.length === 0 || headers.every((h) => !h)) {
+        setError("No column headers detected. The first row should contain column names like 'Phase', 'Title', 'Description'.")
+        return false
+      }
+
+      // Check if we have at least one header that looks like it could be a title
+      const hasPotentialTitleColumn = headers.some((h) =>
+        h.toLowerCase().includes("title") ||
+        h.toLowerCase().includes("name") ||
+        h.toLowerCase().includes("task") ||
+        h.toLowerCase().includes("issue")
+      )
+
+      if (!hasPotentialTitleColumn) {
+        setError(
+          `No 'Title' column detected. Found columns: ${headers.join(", ")}. ` +
+          "Please ensure you have a column for issue titles."
+        )
+        return false
+      }
+
+      // Set validation info
+      setValidationInfo({
+        rowCount: lines.length - 1, // excluding header
+        columnCount: headers.length,
+        delimiter: delimiterName,
+      })
+
+      return true
+    } catch {
+      setError("Failed to read the CSV file. Please ensure it's a valid text file.")
+      return false
+    }
+  }
+
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault()
     e.stopPropagation()
@@ -34,7 +128,7 @@ export default function ImportTemplatePage() {
     }
   }
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault()
     e.stopPropagation()
     setDragActive(false)
@@ -43,25 +137,27 @@ export default function ImportTemplatePage() {
       const droppedFile = e.dataTransfer.files[0]
       if (droppedFile.type === "text/csv" || droppedFile.name.endsWith(".csv")) {
         setFile(droppedFile)
+        await validateCSV(droppedFile)
       } else {
-        alert("Please upload a CSV file")
+        setError("Please upload a CSV file (.csv extension)")
       }
     }
   }
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0]
       if (selectedFile.type === "text/csv" || selectedFile.name.endsWith(".csv")) {
         setFile(selectedFile)
+        await validateCSV(selectedFile)
       } else {
-        alert("Please upload a CSV file")
+        setError("Please upload a CSV file (.csv extension)")
       }
     }
   }
 
   const handleNext = () => {
-    if (file) {
+    if (file && !error && validationInfo) {
       // Read and parse CSV file
       const reader = new FileReader()
       reader.onload = (e) => {
@@ -131,7 +227,11 @@ Phase 2,Create UI,Build React components,&quot;frontend,ui&quot;
             className={`border-2 border-dashed rounded-xl p-12 text-center transition-colors ${
               dragActive
                 ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                : "border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500"
+                : error
+                  ? "border-red-500 bg-red-50 dark:bg-red-900/20"
+                  : validationInfo
+                    ? "border-green-500 bg-green-50 dark:bg-green-900/20"
+                    : "border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500"
             }`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
@@ -139,7 +239,9 @@ Phase 2,Create UI,Build React components,&quot;frontend,ui&quot;
             onDrop={handleDrop}
           >
             <div className="space-y-4">
-              <div className="text-6xl">📊</div>
+              <div className="text-6xl">
+                {error ? "❌" : validationInfo ? "✅" : "📊"}
+              </div>
               {file ? (
                 <div>
                   <p className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -148,8 +250,36 @@ Phase 2,Create UI,Build React components,&quot;frontend,ui&quot;
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     {(file.size / 1024).toFixed(2)} KB
                   </p>
+
+                  {/* Error Message */}
+                  {error && (
+                    <div className="mt-4 p-4 bg-white dark:bg-gray-800 rounded-lg border-2 border-red-500">
+                      <p className="text-sm text-red-600 dark:text-red-400 font-medium">
+                        {error}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Validation Info */}
+                  {validationInfo && !error && (
+                    <div className="mt-4 p-4 bg-white dark:bg-gray-800 rounded-lg border-2 border-green-500">
+                      <p className="text-sm text-green-600 dark:text-green-400 font-medium mb-2">
+                        ✓ CSV file validated successfully!
+                      </p>
+                      <div className="text-xs text-gray-600 dark:text-gray-400 space-y-1">
+                        <p>• {validationInfo.rowCount} data rows detected</p>
+                        <p>• {validationInfo.columnCount} columns found</p>
+                        <p>• Delimiter: {validationInfo.delimiter}</p>
+                      </div>
+                    </div>
+                  )}
+
                   <button
-                    onClick={() => setFile(null)}
+                    onClick={() => {
+                      setFile(null)
+                      setError(null)
+                      setValidationInfo(null)
+                    }}
                     className="mt-3 text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
                   >
                     Remove file
@@ -183,7 +313,12 @@ Phase 2,Create UI,Build React components,&quot;frontend,ui&quot;
             <div className="mt-6 flex justify-end">
               <button
                 onClick={handleNext}
-                className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
+                disabled={!!error || !validationInfo}
+                className={`px-8 py-3 rounded-lg font-semibold transition-colors shadow-lg ${
+                  error || !validationInfo
+                    ? "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-500 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700 text-white hover:shadow-xl"
+                }`}
               >
                 Next: Map Columns →
               </button>
