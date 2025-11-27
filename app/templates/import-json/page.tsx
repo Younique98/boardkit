@@ -208,6 +208,30 @@ export default function ImportJSONPage() {
             <li>• Templates will be validated before importing</li>
             <li>• Preview templates before saving</li>
           </ul>
+          <div className="mt-4 p-3 bg-white dark:bg-gray-800 rounded border border-blue-200 dark:border-blue-700 font-mono text-xs overflow-x-auto">
+            <div className="text-gray-600 dark:text-gray-400 mb-2">Example JSON format:</div>
+            <pre className="text-gray-900 dark:text-gray-100">
+{`{
+  "name": "My Project Template",
+  "description": "A template for my project",
+  "icon": "🚀",
+  "category": "Development",
+  "labels": [
+    {"name": "bug", "color": "FF0000", "description": "Bug report"},
+    {"name": "feature", "color": "00FF00", "description": "New feature"}
+  ],
+  "phases": [
+    {
+      "name": "Phase 1",
+      "description": "Initial setup",
+      "issues": [
+        {"title": "Setup repo", "body": "Initialize repository", "labels": ["feature"]}
+      ]
+    }
+  ]
+}`}
+            </pre>
+          </div>
         </div>
 
         {/* Upload/Paste Area */}
