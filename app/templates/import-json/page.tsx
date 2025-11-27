@@ -9,7 +9,9 @@ import { saveCustomTemplate } from "@/lib/custom-templates"
 export default function ImportJSONPage() {
   const router = useRouter()
   const { status } = useSession()
+  const [inputMode, setInputMode] = useState<"upload" | "paste">("upload")
   const [file, setFile] = useState<File | null>(null)
+  const [jsonText, setJsonText] = useState<string>("")
   const [dragActive, setDragActive] = useState(false)
   const [template, setTemplate] = useState<Template | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -125,6 +127,41 @@ export default function ImportJSONPage() {
     }
   }
 
+  const handlePasteJSON = () => {
+    setError(null)
+    setTemplate(null)
+
+    if (!jsonText || jsonText.trim().length === 0) {
+      setError("Please paste JSON content")
+      return
+    }
+
+    try {
+      const data = JSON.parse(jsonText)
+
+      if (!validateTemplate(data)) {
+        setError("Invalid template format. Please ensure the JSON contains a valid BoardKit template.")
+        return
+      }
+
+      // Generate new ID for imported template
+      const importedTemplate: Template = {
+        ...data,
+        id: `custom-${Date.now()}`,
+        category: data.category || "Imported",
+      }
+
+      setTemplate(importedTemplate)
+      setShowPreview(true)
+    } catch (err) {
+      if (err instanceof SyntaxError) {
+        setError("Invalid JSON format. Please check your JSON syntax.")
+      } else {
+        setError("Failed to parse JSON. Please try again.")
+      }
+    }
+  }
+
   const handleSave = () => {
     if (template) {
       try {
@@ -146,7 +183,7 @@ export default function ImportJSONPage() {
                 Import Template from JSON
               </h1>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Upload a BoardKit template JSON file
+                Upload a file or paste JSON directly
               </p>
             </div>
             <button
@@ -166,32 +203,64 @@ export default function ImportJSONPage() {
             📦 Import Templates
           </h3>
           <ul className="space-y-2 text-blue-800 dark:text-blue-300 text-sm">
-            <li>• Upload JSON files exported from BoardKit</li>
+            <li>• Upload JSON files or paste JSON directly</li>
+            <li>• Share templates by copying and pasting JSON</li>
             <li>• Templates will be validated before importing</li>
-            <li>• You can preview the template before saving</li>
-            <li>• Imported templates will be saved as custom templates</li>
+            <li>• Preview templates before saving</li>
           </ul>
         </div>
 
-        {/* Upload Area */}
+        {/* Upload/Paste Area */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-gray-700">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-            Upload JSON File
-          </h2>
+          {/* Tabs */}
+          <div className="flex gap-2 mb-6 border-b border-gray-200 dark:border-gray-700">
+            <button
+              onClick={() => {
+                setInputMode("upload")
+                setError(null)
+                setTemplate(null)
+                setJsonText("")
+              }}
+              className={`px-6 py-3 font-semibold transition-colors border-b-2 ${
+                inputMode === "upload"
+                  ? "border-blue-600 text-blue-600 dark:text-blue-400"
+                  : "border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+              }`}
+            >
+              📁 Upload File
+            </button>
+            <button
+              onClick={() => {
+                setInputMode("paste")
+                setError(null)
+                setTemplate(null)
+                setFile(null)
+              }}
+              className={`px-6 py-3 font-semibold transition-colors border-b-2 ${
+                inputMode === "paste"
+                  ? "border-blue-600 text-blue-600 dark:text-blue-400"
+                  : "border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+              }`}
+            >
+              📋 Paste JSON
+            </button>
+          </div>
 
-          <div
-            className={`border-2 border-dashed rounded-xl p-12 text-center transition-colors ${
-              dragActive
-                ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                : error
-                  ? "border-red-500 bg-red-50 dark:bg-red-900/20"
-                  : "border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500"
-            }`}
-            onDragEnter={handleDrag}
-            onDragLeave={handleDrag}
-            onDragOver={handleDrag}
-            onDrop={handleDrop}
-          >
+          {/* Upload Mode */}
+          {inputMode === "upload" && (
+            <div
+              className={`border-2 border-dashed rounded-xl p-12 text-center transition-colors ${
+                dragActive
+                  ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                  : error
+                    ? "border-red-500 bg-red-50 dark:bg-red-900/20"
+                    : "border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500"
+              }`}
+              onDragEnter={handleDrag}
+              onDragLeave={handleDrag}
+              onDragOver={handleDrag}
+              onDrop={handleDrop}
+            >
             <div className="space-y-4">
               <div className="text-6xl">{error ? "❌" : "📦"}</div>
               {file && !error ? (
@@ -244,6 +313,58 @@ export default function ImportJSONPage() {
               )}
             </div>
           </div>
+          )}
+
+          {/* Paste Mode */}
+          {inputMode === "paste" && (
+            <div className="space-y-4">
+              <textarea
+                value={jsonText}
+                onChange={(e) => {
+                  setJsonText(e.target.value)
+                  setError(null)
+                }}
+                placeholder="Paste your JSON template here...&#10;&#10;Example:&#10;{&#10;  &quot;name&quot;: &quot;My Template&quot;,&#10;  &quot;description&quot;: &quot;...&quot;,&#10;  ...&#10;}"
+                className={`w-full h-96 px-4 py-3 font-mono text-sm border-2 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white resize-y ${
+                  error
+                    ? "border-red-500 focus:ring-2 focus:ring-red-500"
+                    : "border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500"
+                }`}
+              />
+
+              {error && (
+                <div className="p-4 bg-red-50 dark:bg-red-900/20 border-2 border-red-500 rounded-lg">
+                  <p className="text-sm text-red-600 dark:text-red-400 font-medium">
+                    {error}
+                  </p>
+                </div>
+              )}
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setJsonText("")
+                    setError(null)
+                    setTemplate(null)
+                  }}
+                  className="px-6 py-2 border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-semibold transition-colors"
+                >
+                  Clear
+                </button>
+                <button
+                  onClick={handlePasteJSON}
+                  disabled={!jsonText.trim()}
+                  className={`flex-1 px-6 py-2 rounded-lg font-semibold transition-colors ${
+                    jsonText.trim()
+                      ? "bg-blue-600 hover:bg-blue-700 text-white"
+                      : "bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed"
+                  }`}
+                >
+                  Validate & Preview
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Preview Section */}
