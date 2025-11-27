@@ -25,6 +25,30 @@ const PRESET_COLORS = [
   { name: "Lime", color: "79F2C0" },
 ]
 
+// Suggested colors for the suggest button (different from quick picks)
+const SUGGEST_COLORS = [
+  "1E90FF", // Dodger Blue
+  "FF1493", // Deep Pink
+  "32CD32", // Lime Green
+  "FFD700", // Gold
+  "9370DB", // Medium Purple
+  "FF69B4", // Hot Pink
+  "FF4500", // Orange Red
+  "20B2AA", // Light Sea Green
+  "A9A9A9", // Dark Gray
+  "7FFF00", // Chartreuse
+  "4169E1", // Royal Blue
+  "DC143C", // Crimson
+  "2E8B57", // Sea Green
+  "FFA500", // Orange
+  "8A2BE2", // Blue Violet
+  "FF6347", // Tomato
+  "00CED1", // Dark Turquoise
+  "696969", // Dim Gray
+  "ADFF2F", // Green Yellow
+  "00BFFF", // Deep Sky Blue
+]
+
 export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
   const router = useRouter()
   const [name, setName] = useState(initialTemplate?.name || "")
@@ -60,26 +84,26 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
     // Get all colors used in labels
     const usedColors = labels.map((l) => l.color.toLowerCase())
 
-    // Find current color's index in preset colors
-    const currentIndex = PRESET_COLORS.findIndex(
-      (preset) => preset.color.toLowerCase() === newLabelColor.toLowerCase()
+    // Find current color's index in suggest colors
+    const currentIndex = SUGGEST_COLORS.findIndex(
+      (color) => color.toLowerCase() === newLabelColor.toLowerCase()
     )
 
-    // If current color is a preset, start from next index, otherwise start from 0
+    // If current color is in suggest list, start from next index, otherwise start from 0
     const startIndex = currentIndex >= 0 ? currentIndex + 1 : 0
 
-    // Try to find next unused preset color in sequence
-    for (let i = 0; i < PRESET_COLORS.length; i++) {
-      const index = (startIndex + i) % PRESET_COLORS.length
-      const preset = PRESET_COLORS[index]
+    // Try to find next unused suggest color in sequence
+    for (let i = 0; i < SUGGEST_COLORS.length; i++) {
+      const index = (startIndex + i) % SUGGEST_COLORS.length
+      const color = SUGGEST_COLORS[index]
 
-      if (!usedColors.includes(preset.color.toLowerCase())) {
-        setNewLabelColor(preset.color)
+      if (!usedColors.includes(color.toLowerCase())) {
+        setNewLabelColor(color)
         return
       }
     }
 
-    // All presets used, generate random color different from current
+    // All suggest colors used, generate random color different from current
     let randomColor
     do {
       randomColor = Math.floor(Math.random() * 16777215)
