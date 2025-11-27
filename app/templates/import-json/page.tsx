@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
-import { Template } from "@/types/template"
+import { Template, Phase } from "@/types/template"
 import { saveCustomTemplate } from "@/lib/custom-templates"
 
 export default function ImportJSONPage() {
@@ -89,11 +89,15 @@ export default function ImportJSONPage() {
         return
       }
 
+      // Calculate total issues
+      const totalIssues = data.phases.reduce((sum: number, phase: Phase) => sum + phase.issues.length, 0)
+
       // Generate new ID for imported template
       const importedTemplate: Template = {
         ...data,
         id: `custom-${Date.now()}`,
         category: data.category || "Imported",
+        estimatedIssues: totalIssues,
       }
 
       setTemplate(importedTemplate)
@@ -144,11 +148,15 @@ export default function ImportJSONPage() {
         return
       }
 
+      // Calculate total issues
+      const totalIssues = data.phases.reduce((sum: number, phase: Phase) => sum + phase.issues.length, 0)
+
       // Generate new ID for imported template
       const importedTemplate: Template = {
         ...data,
         id: `custom-${Date.now()}`,
         category: data.category || "Imported",
+        estimatedIssues: totalIssues,
       }
 
       setTemplate(importedTemplate)
