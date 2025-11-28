@@ -30,10 +30,31 @@ export interface Template {
   estimatedIssues: number;
 }
 
+export interface BoardColumn {
+  name: string;
+  description?: string;
+}
+
+export type BoardType = "kanban" | "scrum" | "custom" | "none";
+
+export interface PhaseColumnMapping {
+  phaseName: string;
+  columnName: string;
+}
+
+export interface BoardConfiguration {
+  enabled: boolean;
+  boardType: BoardType;
+  boardName: string;
+  columns: BoardColumn[];
+  phaseMapping: PhaseColumnMapping[];
+}
+
 export interface GenerationOptions {
   templateId: string;
   repositoryOwner: string;
   repositoryName: string;
   selectedPhases?: string[];
   customLabels?: GitHubLabel[];
+  boardConfig?: BoardConfiguration;
 }
