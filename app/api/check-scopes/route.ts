@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 
+interface SessionWithToken {
+  accessToken?: string
+}
+
 export async function GET() {
   const session = await auth()
 
@@ -9,8 +13,7 @@ export async function GET() {
   }
 
   // Get the access token from the session
-  // @ts-expect-error - Custom accessToken property
-  const accessToken = session.accessToken as string
+  const accessToken = (session as unknown as SessionWithToken).accessToken
 
   if (!accessToken) {
     return NextResponse.json({ error: "No access token" }, { status: 401 })

@@ -16,6 +16,10 @@ export async function POST(request: NextRequest) {
 
     const { templateId, template: clientTemplate, owner, repo, boardConfig } = await request.json()
 
+    console.log("=== API ROUTE DEBUG ===")
+    console.log("Received boardConfig:", JSON.stringify(boardConfig, null, 2))
+    console.log("=====================")
+
     if ((!templateId && !clientTemplate) || !owner || !repo) {
       return NextResponse.json(
         { error: "Missing required parameters" },
