@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { templateId, template: clientTemplate, owner, repo } = await request.json()
+    const { templateId, template: clientTemplate, owner, repo, boardConfig } = await request.json()
 
     if ((!templateId && !clientTemplate) || !owner || !repo) {
       return NextResponse.json(
@@ -43,8 +43,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Generate the board
-    const result = await github.generateBoard(owner, repo, template)
+    // Generate the board (and optionally create project board)
+    const result = await github.generateBoard(owner, repo, template, boardConfig)
 
     // Add cache-busting parameter to force GitHub to show fresh data
     const timestamp = Date.now()
@@ -54,6 +54,7 @@ export async function POST(request: NextRequest) {
       ...result,
       repositoryUrl: `https://github.com/${owner}/${repo}`,
       issuesUrl: `https://github.com/${owner}/${repo}/issues?t=${timestamp}`,
+      projectUrl: result.projectUrl ? `${result.projectUrl}?t=${timestamp}` : undefined,
     })
   } catch (error) {
     console.error("Generation error:", error)
