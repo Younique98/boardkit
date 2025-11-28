@@ -269,14 +269,25 @@ export class GitHubService {
 
     if (boardConfig?.enabled && boardConfig.columns.length > 0) {
       try {
+        console.log("Creating project board with config:", {
+          boardName: boardConfig.boardName,
+          columns: boardConfig.columns,
+          phaseMapping: boardConfig.phaseMapping,
+          createdIssuesCount: createdIssues.length
+        })
         projectUrl = await this.createProjectBoard(
           owner,
           repo,
           boardConfig,
           createdIssues
         )
+        console.log("Project board created successfully:", projectUrl)
       } catch (error) {
         console.error("Error creating project board:", error)
+        if (error instanceof Error) {
+          console.error("Error message:", error.message)
+          console.error("Error stack:", error.stack)
+        }
         // Don't fail the entire operation if board creation fails
       }
     }
@@ -290,6 +301,11 @@ export class GitHubService {
     boardConfig: BoardConfiguration,
     createdIssues: Array<{ number: number; phaseName: string }>
   ): Promise<string> {
+    console.log(`[createProjectBoard] Starting for ${owner}/${repo}`)
+    console.log(`[createProjectBoard] Board name: ${boardConfig.boardName}`)
+    console.log(`[createProjectBoard] Columns:`, boardConfig.columns)
+    console.log(`[createProjectBoard] Created issues count:`, createdIssues.length)
+
     // Step 1: Get repository and owner node IDs
     const repoQuery = `
       query($owner: String!, $repo: String!) {
@@ -305,6 +321,7 @@ export class GitHubService {
 
     const repoResult = await this.octokit.graphql<RepositoryQueryResult>(repoQuery, { owner, repo })
     const ownerId = repoResult.repository.owner.id
+    console.log(`[createProjectBoard] Got owner ID: ${ownerId}`)
 
     // Step 2: Create the project
     const createProjectMutation = `
@@ -326,6 +343,7 @@ export class GitHubService {
 
     const projectId = projectResult.createProjectV2.projectV2.id
     const projectUrl = projectResult.createProjectV2.projectV2.url
+    console.log(`[createProjectBoard] Created project: ${projectUrl}`)
 
     // Step 3: Create a custom single-select field for status/columns
     const createFieldMutation = `
@@ -364,14 +382,16 @@ export class GitHubService {
 
     const fieldId = fieldResult.createProjectV2Field.projectV2Field.id
     const fieldOptions2 = fieldResult.createProjectV2Field.projectV2Field.options
+    console.log(`[createProjectBoard] Created Status field with ${fieldOptions2.length} options`)
 
-    // Create a mapping of column name to option ID
-    const columnOptionMap = new Map<string, string>()
-    fieldOptions2.forEach((option) => {
-      columnOptionMap.set(option.name, option.id)
-    })
+    // Get the ID of the first column (where all new issues should start)
+    const firstColumnId = fieldOptions2[0]?.id
+    if (!firstColumnId) {
+      throw new Error("No columns defined in board configuration")
+    }
+    console.log(`[createProjectBoard] All issues will be placed in first column: ${fieldOptions2[0].name}`)
 
-    // Step 4: Add all created issues to the project and set their status
+    // Step 4: Add all created issues to the project and set them to the first column
     for (const issue of createdIssues) {
       // Get issue node ID
       const issueQuery = `
@@ -409,42 +429,32 @@ export class GitHubService {
       })
 
       const itemId = itemResult.addProjectV2ItemById.item.id
+      console.log(`[createProjectBoard] Added issue #${issue.number} to project, setting to first column`)
 
-      // Find the column this issue should be assigned to based on phase mapping
-      const mapping = boardConfig.phaseMapping.find(
-        (m) => m.phaseName === issue.phaseName
-      )
-
-      if (mapping) {
-        const optionId = columnOptionMap.get(mapping.columnName)
-
-        if (optionId) {
-          // Set the status field value
-          const updateFieldMutation = `
-            mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: ProjectV2FieldValue!) {
-              updateProjectV2ItemFieldValue(input: {
-                projectId: $projectId
-                itemId: $itemId
-                fieldId: $fieldId
-                value: $value
-              }) {
-                projectV2Item {
-                  id
-                }
-              }
+      // Set all issues to the first column (e.g., "Todo" or "Backlog")
+      const updateFieldMutation = `
+        mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: ProjectV2FieldValue!) {
+          updateProjectV2ItemFieldValue(input: {
+            projectId: $projectId
+            itemId: $itemId
+            fieldId: $fieldId
+            value: $value
+          }) {
+            projectV2Item {
+              id
             }
-          `
-
-          await this.octokit.graphql(updateFieldMutation, {
-            projectId,
-            itemId,
-            fieldId,
-            value: {
-              singleSelectOptionId: optionId,
-            },
-          })
+          }
         }
-      }
+      `
+
+      await this.octokit.graphql(updateFieldMutation, {
+        projectId,
+        itemId,
+        fieldId,
+        value: {
+          singleSelectOptionId: firstColumnId,
+        },
+      })
 
       // Small delay to avoid rate limiting
       await new Promise((resolve) => setTimeout(resolve, 100))
