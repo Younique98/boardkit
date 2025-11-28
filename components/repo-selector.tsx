@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Template } from "@/types/template"
+import { Template, BoardType, BoardColumn, PhaseColumnMapping } from "@/types/template"
+import { BOARD_PRESETS, BOARD_TYPE_LABELS } from "@/lib/board-presets"
 
 interface RepoSelectorProps {
   template: Template
@@ -30,12 +31,49 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
     labelsUpdated?: number
     issuesSkipped?: number
     issuesUrl?: string
+    projectUrl?: string
     error?: string
   } | null>(null)
+
+  // Board configuration state
+  const [createBoard, setCreateBoard] = useState(true)
+  const [boardType, setBoardType] = useState<BoardType>("kanban")
+  const [boardName, setBoardName] = useState("")
+  const [customColumns, setCustomColumns] = useState<BoardColumn[]>([])
+  const [phaseMapping, setPhaseMapping] = useState<PhaseColumnMapping[]>([])
 
   useEffect(() => {
     fetchRepos()
   }, [])
+
+  // Initialize board name and phase mapping when template or board type changes
+  useEffect(() => {
+    if (!boardName && template) {
+      setBoardName(`${template.name} Board`)
+    }
+  }, [template])
+
+  useEffect(() => {
+    if (boardType !== "custom" && boardType !== "none") {
+      // Auto-map phases to columns when board type changes
+      const columns = BOARD_PRESETS[boardType] || []
+      const newMapping: PhaseColumnMapping[] = template.phases.map((phase, index) => ({
+        phaseName: phase.name,
+        columnName: columns[Math.min(index, columns.length - 1)]?.name || columns[0]?.name || "Todo"
+      }))
+      setPhaseMapping(newMapping)
+    }
+  }, [boardType, template.phases])
+
+  const getCurrentColumns = (): BoardColumn[] => {
+    if (boardType === "custom") {
+      return customColumns
+    }
+    if (boardType === "none") {
+      return []
+    }
+    return BOARD_PRESETS[boardType] || []
+  }
 
   async function fetchRepos() {
     try {
@@ -70,6 +108,13 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
           template: isCustomTemplate ? template : undefined,
           owner: selectedRepo.owner.login,
           repo: selectedRepo.name,
+          boardConfig: createBoard && boardType !== "none" ? {
+            enabled: true,
+            boardType,
+            boardName,
+            columns: getCurrentColumns(),
+            phaseMapping,
+          } : undefined,
         }),
       })
 
@@ -83,6 +128,7 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
           labelsUpdated: data.labelsUpdated,
           issuesSkipped: data.issuesSkipped,
           issuesUrl: data.issuesUrl,
+          projectUrl: data.projectUrl,
         })
       } else {
         setResult({
@@ -165,6 +211,11 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
                         ⏭️ Skipped {result.issuesSkipped} existing issue{result.issuesSkipped !== 1 ? "s" : ""} (no duplicates)
                       </p>
                     )}
+                    {result.projectUrl && (
+                      <p>
+                        📊 Created Project Board
+                      </p>
+                    )}
                     {(result.issuesCreated ?? 0) === 0 &&
                      (result.labelsCreated ?? 0) === 0 &&
                      (result.labelsUpdated ?? 0) === 0 && (
@@ -172,6 +223,16 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
                     )}
                   </div>
                   <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
+                    {result.projectUrl && (
+                      <a
+                        href={result.projectUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors"
+                      >
+                        📊 View Project Board →
+                      </a>
+                    )}
                     <a
                       href={result.issuesUrl}
                       target="_blank"
@@ -289,12 +350,133 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
                   </div>
 
                   {selectedRepo && (
-                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
-                      <p className="text-sm text-gray-700 dark:text-gray-300">
-                        <strong>Ready to generate:</strong> {template.estimatedIssues} issues and {template.labels.length} labels will be created in{" "}
-                        <span className="font-semibold">{selectedRepo.full_name}</span>
-                      </p>
-                    </div>
+                    <>
+                      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
+                        <p className="text-sm text-gray-700 dark:text-gray-300">
+                          <strong>Ready to generate:</strong> {template.estimatedIssues} issues and {template.labels.length} labels will be created in{" "}
+                          <span className="font-semibold">{selectedRepo.full_name}</span>
+                        </p>
+                      </div>
+
+                      {/* Board Configuration */}
+                      <div className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-lg p-5 mb-4 space-y-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h3 className="font-semibold text-gray-900 dark:text-white">
+                              📊 Project Board
+                            </h3>
+                            <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5">
+                              Automatically create and organize a GitHub Project Board
+                            </p>
+                          </div>
+                          <label className="relative inline-flex items-center cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={createBoard}
+                              onChange={(e) => setCreateBoard(e.target.checked)}
+                              className="sr-only peer"
+                            />
+                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 dark:peer-focus:ring-blue-600 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                          </label>
+                        </div>
+
+                        {createBoard && (
+                          <div className="space-y-3 pt-2">
+                            {/* Board Type Selector */}
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                                Board Type
+                              </label>
+                              <select
+                                value={boardType}
+                                onChange={(e) => setBoardType(e.target.value as BoardType)}
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+                              >
+                                {Object.entries(BOARD_TYPE_LABELS).map(([type, label]) => (
+                                  <option key={type} value={type}>
+                                    {label}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+
+                            {boardType !== "none" && (
+                              <>
+                                {/* Board Name */}
+                                <div>
+                                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                                    Board Name
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={boardName}
+                                    onChange={(e) => setBoardName(e.target.value)}
+                                    placeholder="My Project Board"
+                                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+                                  />
+                                </div>
+
+                                {/* Columns Preview */}
+                                {boardType !== "custom" && (
+                                  <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                                      Board Columns
+                                    </label>
+                                    <div className="flex flex-wrap gap-2">
+                                      {getCurrentColumns().map((col, idx) => (
+                                        <span
+                                          key={idx}
+                                          className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-medium rounded-full"
+                                        >
+                                          {col.name}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {/* Phase Mapping */}
+                                {template.phases.length > 0 && boardType !== "custom" && (
+                                  <div>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                                      Phase → Column Mapping
+                                    </label>
+                                    <div className="space-y-2 max-h-40 overflow-y-auto">
+                                      {template.phases.map((phase, idx) => (
+                                        <div key={idx} className="flex items-center gap-2 text-xs">
+                                          <span className="text-gray-600 dark:text-gray-400 min-w-[100px] truncate">
+                                            {phase.name}
+                                          </span>
+                                          <span className="text-gray-500">→</span>
+                                          <select
+                                            value={phaseMapping[idx]?.columnName || ""}
+                                            onChange={(e) => {
+                                              const newMapping = [...phaseMapping]
+                                              newMapping[idx] = {
+                                                phaseName: phase.name,
+                                                columnName: e.target.value,
+                                              }
+                                              setPhaseMapping(newMapping)
+                                            }}
+                                            className="flex-1 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                          >
+                                            {getCurrentColumns().map((col) => (
+                                              <option key={col.name} value={col.name}>
+                                                {col.name}
+                                              </option>
+                                            ))}
+                                          </select>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                              </>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </>
                   )}
 
                   <button
