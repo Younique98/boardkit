@@ -366,22 +366,21 @@ export class GitHubService {
     const projectUrl = projectResult.createProjectV2.projectV2.url
     console.log(`[createProjectBoard] Created project: ${projectUrl}`)
 
-    // Step 3: Create a custom single-select field for status/columns
-    const createFieldMutation = `
-      mutation($projectId: ID!, $name: String!, $options: [ProjectV2SingleSelectFieldOptionInput!]!) {
-        createProjectV2Field(input: {
-          projectId: $projectId
-          dataType: SINGLE_SELECT
-          name: $name
-          singleSelectOptions: $options
-        }) {
-          projectV2Field {
-            ... on ProjectV2SingleSelectField {
-              id
-              name
-              options {
-                id
-                name
+    // Step 3: Query for the built-in Status field
+    const getFieldsQuery = `
+      query($projectId: ID!) {
+        node(id: $projectId) {
+          ... on ProjectV2 {
+            fields(first: 20) {
+              nodes {
+                ... on ProjectV2SingleSelectField {
+                  id
+                  name
+                  options {
+                    id
+                    name
+                  }
+                }
               }
             }
           }
@@ -389,21 +388,116 @@ export class GitHubService {
       }
     `
 
-    const fieldOptions = boardConfig.columns.map((column) => ({
-      name: column.name,
-      color: "GRAY",
-      description: column.description || "",
-    }))
+    const fieldsResult = await this.octokit.graphql<any>(getFieldsQuery, { projectId })
+    const statusField = fieldsResult.node.fields.nodes.find((field: any) => field.name === "Status")
 
-    const fieldResult = await this.octokit.graphql<CreateFieldResult>(createFieldMutation, {
-      projectId,
-      name: "Workflow",
-      options: fieldOptions,
-    })
+    console.log(`[createProjectBoard] Found Status field:`, statusField)
 
-    const fieldId = fieldResult.createProjectV2Field.projectV2Field.id
-    const fieldOptions2 = fieldResult.createProjectV2Field.projectV2Field.options
-    console.log(`[createProjectBoard] Created Workflow field with ${fieldOptions2.length} options`)
+    let fieldId: string
+    let fieldOptions2: Array<{ id: string; name: string }>
+
+    if (statusField) {
+      // Update the existing Status field options
+      console.log(`[createProjectBoard] Updating existing Status field options...`)
+
+      // First, delete existing options
+      for (const option of statusField.options) {
+        const deleteOptionMutation = `
+          mutation($projectId: ID!, $fieldId: ID!, $optionId: ID!) {
+            deleteProjectV2FieldOption(input: {
+              projectId: $projectId
+              fieldId: $fieldId
+              optionId: $optionId
+            }) {
+              projectV2Field {
+                ... on ProjectV2SingleSelectField {
+                  id
+                }
+              }
+            }
+          }
+        `
+        try {
+          await this.octokit.graphql(deleteOptionMutation, {
+            projectId,
+            fieldId: statusField.id,
+            optionId: option.id,
+          })
+        } catch (error) {
+          console.log(`[createProjectBoard] Could not delete option ${option.name}:`, error)
+        }
+      }
+
+      // Add our custom options
+      const newOptions: Array<{ id: string; name: string }> = []
+      for (const column of boardConfig.columns) {
+        const createOptionMutation = `
+          mutation($projectId: ID!, $fieldId: ID!, $name: String!, $color: ProjectV2SingleSelectFieldOptionColor!) {
+            createProjectV2FieldOption(input: {
+              projectId: $projectId
+              fieldId: $fieldId
+              name: $name
+              color: $color
+            }) {
+              projectV2FieldOption {
+                id
+                name
+              }
+            }
+          }
+        `
+        const optionResult = await this.octokit.graphql<any>(createOptionMutation, {
+          projectId,
+          fieldId: statusField.id,
+          name: column.name,
+          color: "GRAY",
+        })
+        newOptions.push(optionResult.createProjectV2FieldOption.projectV2FieldOption)
+      }
+
+      fieldId = statusField.id
+      fieldOptions2 = newOptions
+      console.log(`[createProjectBoard] Updated Status field with ${newOptions.length} options`)
+    } else {
+      // Fallback: Create a custom Workflow field if Status doesn't exist
+      const createFieldMutation = `
+        mutation($projectId: ID!, $name: String!, $options: [ProjectV2SingleSelectFieldOptionInput!]!) {
+          createProjectV2Field(input: {
+            projectId: $projectId
+            dataType: SINGLE_SELECT
+            name: $name
+            singleSelectOptions: $options
+          }) {
+            projectV2Field {
+              ... on ProjectV2SingleSelectField {
+                id
+                name
+                options {
+                  id
+                  name
+                }
+              }
+            }
+          }
+        }
+      `
+
+      const fieldOptions = boardConfig.columns.map((column) => ({
+        name: column.name,
+        color: "GRAY",
+        description: column.description || "",
+      }))
+
+      const fieldResult = await this.octokit.graphql<CreateFieldResult>(createFieldMutation, {
+        projectId,
+        name: "Workflow",
+        options: fieldOptions,
+      })
+
+      fieldId = fieldResult.createProjectV2Field.projectV2Field.id
+      fieldOptions2 = fieldResult.createProjectV2Field.projectV2Field.options
+      console.log(`[createProjectBoard] Created Workflow field with ${fieldOptions2.length} options`)
+    }
 
     // Get the ID of the first column (where all new issues should start)
     const firstColumnId = fieldOptions2[0]?.id
