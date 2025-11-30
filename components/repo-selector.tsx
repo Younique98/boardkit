@@ -79,8 +79,10 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
     try {
       const response = await fetch("/api/repos")
       const data = await response.json()
-      if (data.repos) {
+      if (data.repos && data.repos.length > 0) {
         setRepos(data.repos)
+        // Auto-select the first repository
+        setSelectedRepo(data.repos[0])
       }
     } catch (error) {
       console.error("Failed to fetch repos:", error)
