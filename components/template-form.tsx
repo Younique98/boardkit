@@ -819,6 +819,14 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
                   </button>
                 </div>
 
+                {/* Add Issue Button - At Top for Easy Access */}
+                <button
+                  onClick={() => addIssueToPhase(phaseIndex)}
+                  className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
+                >
+                  + Add Issue
+                </button>
+
                 {/* Issues in Phase */}
                 <div
                   className="space-y-3 min-h-[60px]"
@@ -892,13 +900,6 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
                       </div>
                     </div>
                   ))}
-
-                  <button
-                    onClick={() => addIssueToPhase(phaseIndex)}
-                    className="w-full px-4 py-2 border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-500 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg transition-colors"
-                  >
-                    + Add Issue
-                  </button>
                 </div>
               </div>
             ))}
