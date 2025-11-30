@@ -267,6 +267,14 @@ export class GitHubService {
     // Step 3: Create project board if requested
     let projectUrl: string | undefined
 
+    console.log("=== BOARD CONFIG DEBUG ===")
+    console.log("boardConfig received:", boardConfig)
+    console.log("boardConfig?.enabled:", boardConfig?.enabled)
+    console.log("boardConfig?.columns:", boardConfig?.columns)
+    console.log("boardConfig?.columns.length:", boardConfig?.columns?.length)
+    console.log("Will create board?:", boardConfig?.enabled && boardConfig.columns.length > 0)
+    console.log("========================")
+
     if (boardConfig?.enabled && boardConfig.columns.length > 0) {
       try {
         console.log("Creating project board with config:", {
