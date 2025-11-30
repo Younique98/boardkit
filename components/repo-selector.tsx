@@ -128,6 +128,16 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
       console.log("============================")
 
       if (data.success) {
+        // Append layout parameter to projectUrl based on board type
+        let finalProjectUrl = data.projectUrl
+        if (finalProjectUrl && createBoard && boardType !== "none") {
+          // Kanban, Scrum, and Custom all use board layout
+          const layoutParam = "board"
+
+          // Add layout parameter to URL
+          finalProjectUrl = `${finalProjectUrl}&layout=${layoutParam}`
+        }
+
         setResult({
           success: true,
           issuesCreated: data.issuesCreated,
@@ -135,7 +145,7 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
           labelsUpdated: data.labelsUpdated,
           issuesSkipped: data.issuesSkipped,
           issuesUrl: data.issuesUrl,
-          projectUrl: data.projectUrl,
+          projectUrl: finalProjectUrl,
         })
       } else {
         setResult({
@@ -219,21 +229,9 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
                       </p>
                     )}
                     {result.projectUrl && (
-                      <div className="space-y-2">
-                        <p>
-                          📊 Created Project Board with Workflow field
-                        </p>
-                        <div className="text-sm bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 text-left">
-                          <p className="font-semibold text-blue-900 dark:text-blue-100 mb-1">
-                            💡 To see as a visual board:
-                          </p>
-                          <ol className="list-decimal list-inside space-y-1 text-blue-800 dark:text-blue-200">
-                            <li>Click &ldquo;View Project Board&rdquo; below</li>
-                            <li>Click the view name at the top</li>
-                            <li>Select &ldquo;Board&rdquo; under Layout</li>
-                          </ol>
-                        </div>
-                      </div>
+                      <p>
+                        📊 Created Project Board with {boardType === "kanban" ? "Kanban" : boardType === "scrum" ? "Scrum" : "custom"} layout
+                      </p>
                     )}
                     {(result.issuesCreated ?? 0) === 0 &&
                      (result.labelsCreated ?? 0) === 0 &&
@@ -460,13 +458,13 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
                                     <div className="text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
                                       💡 All issues will be placed in the first column ({getCurrentColumns()[0]?.name || 'Todo'})
                                     </div>
-                                    <div className="text-xs text-gray-600 dark:text-gray-400 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-3 rounded-lg">
-                                      <p className="font-semibold text-amber-900 dark:text-amber-100 mb-1">
-                                        ℹ️ About Board Layout
+                                    <div className="text-xs text-gray-600 dark:text-gray-400 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 p-3 rounded-lg">
+                                      <p className="font-semibold text-green-900 dark:text-green-100 mb-1">
+                                        ✨ Smart Layout Detection
                                       </p>
                                       <p>
-                                        The project will be created with a <strong>Workflow</strong> field containing your selected columns.
-                                        By default, it displays as a Table view. You can switch to Board view in GitHub&apos;s UI after creation.
+                                        The project will be created with a <strong>Workflow</strong> field containing your selected columns
+                                        and will automatically open in <strong>Board</strong> layout.
                                       </p>
                                     </div>
                                   </div>
