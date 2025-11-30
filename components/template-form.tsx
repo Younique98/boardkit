@@ -819,14 +819,6 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
                   </button>
                 </div>
 
-                {/* Add Issue Button - At Top for Easy Access */}
-                <button
-                  onClick={() => addIssueToPhase(phaseIndex)}
-                  className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
-                >
-                  + Add Issue
-                </button>
-
                 {/* Issues in Phase */}
                 <div
                   className="space-y-3 min-h-[60px]"
@@ -860,6 +852,12 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
                           className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
                           placeholder="Issue title"
                         />
+                        {issue.title && (
+                          <div className="flex items-center px-3 py-2 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 text-sm rounded-lg border border-green-200 dark:border-green-800">
+                            <span className="mr-1">✓</span>
+                            <span className="font-medium">Saved</span>
+                          </div>
+                        )}
                         <button
                           onClick={() => removeIssue(phaseIndex, issueIndex)}
                           className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded-lg transition-colors"
@@ -900,6 +898,14 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
                       </div>
                     </div>
                   ))}
+
+                  {/* Add Issue Button */}
+                  <button
+                    onClick={() => addIssueToPhase(phaseIndex)}
+                    className="w-full px-4 py-2 border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-500 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 rounded-lg transition-colors"
+                  >
+                    + Add Issue
+                  </button>
                 </div>
               </div>
             ))}
