@@ -230,17 +230,22 @@ export class GitHubService {
 
     // Step 1: Create or update labels
     for (let i = 0; i < template.labels.length; i++) {
-      const result = await this.createOrUpdateLabel(
-        owner,
-        repo,
-        template.labels[i],
-        existingLabels
-      )
+      try {
+        const result = await this.createOrUpdateLabel(
+          owner,
+          repo,
+          template.labels[i],
+          existingLabels
+        )
 
-      if (result === "created") {
-        labelsCreated++
-      } else if (result === "updated") {
-        labelsUpdated++
+        if (result === "created") {
+          labelsCreated++
+        } else if (result === "updated") {
+          labelsUpdated++
+        }
+      } catch (error) {
+        // Silently skip labels that already exist or can't be created
+        // This is fine - user might be reusing an existing repo
       }
     }
 
@@ -255,9 +260,15 @@ export class GitHubService {
           continue
         }
 
-        const issueNumber = await this.createIssue(owner, repo, issue)
-        issuesCreated++
-        createdIssues.push({ number: issueNumber, phaseName: phase.name })
+        try {
+          const issueNumber = await this.createIssue(owner, repo, issue)
+          issuesCreated++
+          createdIssues.push({ number: issueNumber, phaseName: phase.name })
+        } catch (error) {
+          issuesSkipped++
+          // Silently skip issues that can't be created
+          // This is fine - user might be reusing an existing repo
+        }
 
         // Small delay to avoid rate limiting
         await new Promise((resolve) => setTimeout(resolve, 100))
