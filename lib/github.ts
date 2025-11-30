@@ -1,5 +1,55 @@
 import { Octokit } from "@octokit/rest"
-import { Template, GitHubLabel, Issue } from "@/types/template"
+import { Template, GitHubLabel, Issue, BoardConfiguration } from "@/types/template"
+
+// GraphQL response types
+interface RepositoryQueryResult {
+  repository: {
+    id: string
+    owner: {
+      id: string
+      login: string
+    }
+  }
+}
+
+interface CreateProjectResult {
+  createProjectV2: {
+    projectV2: {
+      id: string
+      number: number
+      url: string
+    }
+  }
+}
+
+interface CreateFieldResult {
+  createProjectV2Field: {
+    projectV2Field: {
+      id: string
+      name: string
+      options: Array<{
+        id: string
+        name: string
+      }>
+    }
+  }
+}
+
+interface IssueQueryResult {
+  repository: {
+    issue: {
+      id: string
+    }
+  }
+}
+
+interface AddItemResult {
+  addProjectV2ItemById: {
+    item: {
+      id: string
+    }
+  }
+}
 
 export class GitHubService {
   private octokit: Octokit
@@ -161,93 +211,275 @@ export class GitHubService {
     owner: string,
     repo: string,
     template: Template,
-    onProgress?: (progress: {
-      phase: string
-      current: number
-      total: number
-    }) => void
-  ): Promise<{ issuesCreated: number; labelsCreated: number; labelsUpdated: number; issuesSkipped: number }> {
+    boardConfig?: BoardConfiguration
+  ): Promise<{
+    issuesCreated: number
+    labelsCreated: number
+    labelsUpdated: number
+    issuesSkipped: number
+    projectUrl?: string
+  }> {
     let issuesCreated = 0
     let labelsCreated = 0
     let labelsUpdated = 0
     let issuesSkipped = 0
 
-    // Step 0: Fetch existing data to avoid duplicates
-    onProgress?.({
-      phase: "Checking existing data",
-      current: 0,
-      total: 1,
-    })
-
+    // Fetch existing data to avoid duplicates
     const existingIssueTitles = await this.getExistingIssues(owner, repo)
     const existingLabels = await this.getExistingLabels(owner, repo)
 
-    // Step 1: Create or update labels (only count actual changes)
-    onProgress?.({
-      phase: "Processing labels",
-      current: 0,
-      total: template.labels.length,
-    })
-
+    // Step 1: Create or update labels
     for (let i = 0; i < template.labels.length; i++) {
-      const result = await this.createOrUpdateLabel(
-        owner,
-        repo,
-        template.labels[i],
-        existingLabels
-      )
+      try {
+        const result = await this.createOrUpdateLabel(
+          owner,
+          repo,
+          template.labels[i],
+          existingLabels
+        )
 
-      if (result === "created") {
-        labelsCreated++
-      } else if (result === "updated") {
-        labelsUpdated++
+        if (result === "created") {
+          labelsCreated++
+        } else if (result === "updated") {
+          labelsUpdated++
+        }
+      } catch (error) {
+        // Silently skip labels that already exist or can't be created
+        // This is fine - user might be reusing an existing repo
       }
-      // If result === "unchanged", don't count it
-
-      onProgress?.({
-        phase: "Processing labels",
-        current: i + 1,
-        total: template.labels.length,
-      })
     }
 
-    // Step 2: Create only new issues (skip duplicates)
-    const totalIssues = template.phases.reduce(
-      (sum, phase) => sum + phase.issues.length,
-      0
-    )
-
-    let currentIssueIndex = 0
+    // Step 2: Create issues and track them for board organization
+    const createdIssues: Array<{ number: number; phaseName: string }> = []
 
     for (const phase of template.phases) {
       for (const issue of phase.issues) {
-        currentIssueIndex++
-
         // Skip if issue with same title already exists
         if (existingIssueTitles.includes(issue.title)) {
           issuesSkipped++
-          onProgress?.({
-            phase: `Creating issues - ${phase.name}`,
-            current: currentIssueIndex,
-            total: totalIssues,
-          })
           continue
         }
 
-        await this.createIssue(owner, repo, issue)
-        issuesCreated++
-        onProgress?.({
-          phase: `Creating issues - ${phase.name}`,
-          current: currentIssueIndex,
-          total: totalIssues,
-        })
+        try {
+          const issueNumber = await this.createIssue(owner, repo, issue)
+          issuesCreated++
+          createdIssues.push({ number: issueNumber, phaseName: phase.name })
+        } catch (error) {
+          issuesSkipped++
+          // Silently skip issues that can't be created
+          // This is fine - user might be reusing an existing repo
+        }
 
         // Small delay to avoid rate limiting
         await new Promise((resolve) => setTimeout(resolve, 100))
       }
     }
 
-    return { issuesCreated, labelsCreated, labelsUpdated, issuesSkipped }
+    // Step 3: Create project board if requested
+    let projectUrl: string | undefined
+
+    console.log("=== BOARD CONFIG DEBUG ===")
+    console.log("boardConfig received:", boardConfig)
+    console.log("boardConfig?.enabled:", boardConfig?.enabled)
+    console.log("boardConfig?.columns:", boardConfig?.columns)
+    console.log("boardConfig?.columns.length:", boardConfig?.columns?.length)
+    console.log("Will create board?:", boardConfig?.enabled && boardConfig.columns.length > 0)
+    console.log("========================")
+
+    if (boardConfig?.enabled && boardConfig.columns.length > 0) {
+      try {
+        console.log("Creating project board with config:", {
+          boardName: boardConfig.boardName,
+          columns: boardConfig.columns,
+          phaseMapping: boardConfig.phaseMapping,
+          createdIssuesCount: createdIssues.length
+        })
+        projectUrl = await this.createProjectBoard(
+          owner,
+          repo,
+          boardConfig,
+          createdIssues
+        )
+        console.log("Project board created successfully:", projectUrl)
+      } catch (error) {
+        console.error("Error creating project board:", error)
+        if (error instanceof Error) {
+          console.error("Error message:", error.message)
+          console.error("Error stack:", error.stack)
+        }
+        // Don't fail the entire operation if board creation fails
+      }
+    }
+
+    return { issuesCreated, labelsCreated, labelsUpdated, issuesSkipped, projectUrl }
+  }
+
+  private async createProjectBoard(
+    owner: string,
+    repo: string,
+    boardConfig: BoardConfiguration,
+    createdIssues: Array<{ number: number; phaseName: string }>
+  ): Promise<string> {
+    console.log(`[createProjectBoard] Starting for ${owner}/${repo}`)
+    console.log(`[createProjectBoard] Board name: ${boardConfig.boardName}`)
+    console.log(`[createProjectBoard] Columns:`, boardConfig.columns)
+    console.log(`[createProjectBoard] Created issues count:`, createdIssues.length)
+
+    // Step 1: Get repository and owner node IDs
+    const repoQuery = `
+      query($owner: String!, $repo: String!) {
+        repository(owner: $owner, name: $repo) {
+          id
+          owner {
+            id
+            login
+          }
+        }
+      }
+    `
+
+    const repoResult = await this.octokit.graphql<RepositoryQueryResult>(repoQuery, { owner, repo })
+    const ownerId = repoResult.repository.owner.id
+    console.log(`[createProjectBoard] Got owner ID: ${ownerId}`)
+
+    // Step 2: Create the project
+    const createProjectMutation = `
+      mutation($ownerId: ID!, $title: String!) {
+        createProjectV2(input: { ownerId: $ownerId, title: $title }) {
+          projectV2 {
+            id
+            number
+            url
+          }
+        }
+      }
+    `
+
+    const projectResult = await this.octokit.graphql<CreateProjectResult>(createProjectMutation, {
+      ownerId,
+      title: boardConfig.boardName,
+    })
+
+    const projectId = projectResult.createProjectV2.projectV2.id
+    const projectUrl = projectResult.createProjectV2.projectV2.url
+    console.log(`[createProjectBoard] Created project: ${projectUrl}`)
+
+    // Step 3: Create a custom single-select field for status/columns
+    const createFieldMutation = `
+      mutation($projectId: ID!, $name: String!, $options: [ProjectV2SingleSelectFieldOptionInput!]!) {
+        createProjectV2Field(input: {
+          projectId: $projectId
+          dataType: SINGLE_SELECT
+          name: $name
+          singleSelectOptions: $options
+        }) {
+          projectV2Field {
+            ... on ProjectV2SingleSelectField {
+              id
+              name
+              options {
+                id
+                name
+              }
+            }
+          }
+        }
+      }
+    `
+
+    const fieldOptions = boardConfig.columns.map((column) => ({
+      name: column.name,
+      color: "GRAY",
+      description: column.description || "",
+    }))
+
+    const fieldResult = await this.octokit.graphql<CreateFieldResult>(createFieldMutation, {
+      projectId,
+      name: "Workflow",
+      options: fieldOptions,
+    })
+
+    const fieldId = fieldResult.createProjectV2Field.projectV2Field.id
+    const fieldOptions2 = fieldResult.createProjectV2Field.projectV2Field.options
+    console.log(`[createProjectBoard] Created Workflow field with ${fieldOptions2.length} options`)
+
+    // Get the ID of the first column (where all new issues should start)
+    const firstColumnId = fieldOptions2[0]?.id
+    if (!firstColumnId) {
+      throw new Error("No columns defined in board configuration")
+    }
+    console.log(`[createProjectBoard] All issues will be placed in first column: ${fieldOptions2[0].name}`)
+
+    // Step 4: Add all created issues to the project and set them to the first column
+    for (const issue of createdIssues) {
+      // Get issue node ID
+      const issueQuery = `
+        query($owner: String!, $repo: String!, $issueNumber: Int!) {
+          repository(owner: $owner, name: $repo) {
+            issue(number: $issueNumber) {
+              id
+            }
+          }
+        }
+      `
+
+      const issueResult = await this.octokit.graphql<IssueQueryResult>(issueQuery, {
+        owner,
+        repo,
+        issueNumber: issue.number,
+      })
+
+      const issueId = issueResult.repository.issue.id
+
+      // Add issue to project
+      const addItemMutation = `
+        mutation($projectId: ID!, $contentId: ID!) {
+          addProjectV2ItemById(input: { projectId: $projectId, contentId: $contentId }) {
+            item {
+              id
+            }
+          }
+        }
+      `
+
+      const itemResult = await this.octokit.graphql<AddItemResult>(addItemMutation, {
+        projectId,
+        contentId: issueId,
+      })
+
+      const itemId = itemResult.addProjectV2ItemById.item.id
+      console.log(`[createProjectBoard] Added issue #${issue.number} to project, setting to first column`)
+
+      // Set all issues to the first column (e.g., "Todo" or "Backlog")
+      const updateFieldMutation = `
+        mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: ProjectV2FieldValue!) {
+          updateProjectV2ItemFieldValue(input: {
+            projectId: $projectId
+            itemId: $itemId
+            fieldId: $fieldId
+            value: $value
+          }) {
+            projectV2Item {
+              id
+            }
+          }
+        }
+      `
+
+      await this.octokit.graphql(updateFieldMutation, {
+        projectId,
+        itemId,
+        fieldId,
+        value: {
+          singleSelectOptionId: firstColumnId,
+        },
+      })
+
+      // Small delay to avoid rate limiting
+      await new Promise((resolve) => setTimeout(resolve, 100))
+    }
+
+    return projectUrl
   }
 
   async verifyAccess(owner: string, repo: string): Promise<boolean> {
