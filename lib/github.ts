@@ -297,6 +297,7 @@ export class GitHubService {
         projectUrl = await this.createProjectBoard(
           owner,
           repo,
+          template,
           boardConfig,
           createdIssues
         )
@@ -317,6 +318,7 @@ export class GitHubService {
   private async createProjectBoard(
     owner: string,
     repo: string,
+    template: Template,
     boardConfig: BoardConfiguration,
     createdIssues: Array<{ number: number; phaseName: string }>
   ): Promise<string> {
@@ -344,8 +346,8 @@ export class GitHubService {
 
     // Step 2: Create the project
     const createProjectMutation = `
-      mutation($ownerId: ID!, $title: String!) {
-        createProjectV2(input: { ownerId: $ownerId, title: $title }) {
+      mutation($ownerId: ID!, $title: String!, $shortDescription: String) {
+        createProjectV2(input: { ownerId: $ownerId, title: $title, shortDescription: $shortDescription }) {
           projectV2 {
             id
             number
@@ -358,6 +360,7 @@ export class GitHubService {
     const projectResult = await this.octokit.graphql<CreateProjectResult>(createProjectMutation, {
       ownerId,
       title: boardConfig.boardName,
+      shortDescription: template.description || `Board for ${template.name}`,
     })
 
     const projectId = projectResult.createProjectV2.projectV2.id
