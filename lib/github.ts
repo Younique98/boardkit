@@ -346,8 +346,8 @@ export class GitHubService {
 
     // Step 2: Create the project
     const createProjectMutation = `
-      mutation($ownerId: ID!, $title: String!) {
-        createProjectV2(input: { ownerId: $ownerId, title: $title }) {
+      mutation($ownerId: ID!, $title: String!, $readme: String) {
+        createProjectV2(input: { ownerId: $ownerId, title: $title, readme: $readme }) {
           projectV2 {
             id
             number
@@ -360,6 +360,7 @@ export class GitHubService {
     const projectResult = await this.octokit.graphql<CreateProjectResult>(createProjectMutation, {
       ownerId,
       title: boardConfig.boardName || `${template.name} Board`,
+      readme: template.description || `Board for ${template.name}`,
     })
 
     const projectId = projectResult.createProjectV2.projectV2.id
