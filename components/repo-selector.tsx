@@ -111,7 +111,7 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
           boardConfig: createBoard && boardType !== "none" ? {
             enabled: true,
             boardType,
-            boardName,
+            boardName: boardName || `${template.name} Board`,
             columns: getCurrentColumns(),
             phaseMapping,
           } : undefined,
@@ -119,6 +119,11 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
       })
 
       const data = await response.json()
+
+      console.log("=== FRONTEND RECEIVED DATA ===")
+      console.log("Full response data:", data)
+      console.log("projectUrl:", data.projectUrl)
+      console.log("============================")
 
       if (data.success) {
         setResult({
@@ -435,40 +440,10 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
                                   </div>
                                 )}
 
-                                {/* Phase Mapping */}
-                                {template.phases.length > 0 && boardType !== "custom" && (
-                                  <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                                      Phase → Column Mapping
-                                    </label>
-                                    <div className="space-y-2 max-h-40 overflow-y-auto">
-                                      {template.phases.map((phase, idx) => (
-                                        <div key={idx} className="flex items-center gap-2 text-xs">
-                                          <span className="text-gray-600 dark:text-gray-400 min-w-[100px] truncate">
-                                            {phase.name}
-                                          </span>
-                                          <span className="text-gray-500">→</span>
-                                          <select
-                                            value={phaseMapping[idx]?.columnName || ""}
-                                            onChange={(e) => {
-                                              const newMapping = [...phaseMapping]
-                                              newMapping[idx] = {
-                                                phaseName: phase.name,
-                                                columnName: e.target.value,
-                                              }
-                                              setPhaseMapping(newMapping)
-                                            }}
-                                            className="flex-1 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                                          >
-                                            {getCurrentColumns().map((col) => (
-                                              <option key={col.name} value={col.name}>
-                                                {col.name}
-                                              </option>
-                                            ))}
-                                          </select>
-                                        </div>
-                                      ))}
-                                    </div>
+                                {/* Info about issue placement */}
+                                {getCurrentColumns().length > 0 && (
+                                  <div className="text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
+                                    💡 All issues will be placed in the first column ({getCurrentColumns()[0]?.name || 'Todo'})
                                   </div>
                                 )}
                               </>
