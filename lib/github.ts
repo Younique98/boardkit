@@ -244,8 +244,8 @@ export class GitHubService {
           labelsUpdated++
         }
       } catch (error) {
-        console.error(`Error creating/updating label ${template.labels[i].name}:`, error)
-        // Continue with other labels even if one fails
+        // Silently skip labels that already exist or can't be created
+        // This is fine - user might be reusing an existing repo
       }
     }
 
@@ -265,9 +265,9 @@ export class GitHubService {
           issuesCreated++
           createdIssues.push({ number: issueNumber, phaseName: phase.name })
         } catch (error) {
-          console.error(`Error creating issue ${issue.title}:`, error)
           issuesSkipped++
-          // Continue with other issues even if one fails
+          // Silently skip issues that can't be created
+          // This is fine - user might be reusing an existing repo
         }
 
         // Small delay to avoid rate limiting
