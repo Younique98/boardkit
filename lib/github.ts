@@ -413,72 +413,88 @@ export class GitHubService {
     console.log(`[createProjectBoard] All issues will be placed in first column: ${fieldOptions2[0].name}`)
 
     // Step 4: Add all created issues to the project and set them to the first column
+    console.log(`[createProjectBoard] Adding ${createdIssues.length} issues to project...`)
+
+    if (createdIssues.length === 0) {
+      console.warn(`[createProjectBoard] No new issues were created - they may already exist in the repository. The board was created but has no issues.`)
+    }
+
     for (const issue of createdIssues) {
-      // Get issue node ID
-      const issueQuery = `
-        query($owner: String!, $repo: String!, $issueNumber: Int!) {
-          repository(owner: $owner, name: $repo) {
-            issue(number: $issueNumber) {
-              id
+      try {
+        console.log(`[createProjectBoard] Processing issue #${issue.number}...`)
+
+        // Get issue node ID
+        const issueQuery = `
+          query($owner: String!, $repo: String!, $issueNumber: Int!) {
+            repository(owner: $owner, name: $repo) {
+              issue(number: $issueNumber) {
+                id
+              }
             }
           }
-        }
-      `
+        `
 
-      const issueResult = await this.octokit.graphql<IssueQueryResult>(issueQuery, {
-        owner,
-        repo,
-        issueNumber: issue.number,
-      })
+        const issueResult = await this.octokit.graphql<IssueQueryResult>(issueQuery, {
+          owner,
+          repo,
+          issueNumber: issue.number,
+        })
 
-      const issueId = issueResult.repository.issue.id
+        const issueId = issueResult.repository.issue.id
+        console.log(`[createProjectBoard] Got issue ID: ${issueId}`)
 
-      // Add issue to project
-      const addItemMutation = `
-        mutation($projectId: ID!, $contentId: ID!) {
-          addProjectV2ItemById(input: { projectId: $projectId, contentId: $contentId }) {
-            item {
-              id
+        // Add issue to project
+        const addItemMutation = `
+          mutation($projectId: ID!, $contentId: ID!) {
+            addProjectV2ItemById(input: { projectId: $projectId, contentId: $contentId }) {
+              item {
+                id
+              }
             }
           }
-        }
-      `
+        `
 
-      const itemResult = await this.octokit.graphql<AddItemResult>(addItemMutation, {
-        projectId,
-        contentId: issueId,
-      })
+        const itemResult = await this.octokit.graphql<AddItemResult>(addItemMutation, {
+          projectId,
+          contentId: issueId,
+        })
 
-      const itemId = itemResult.addProjectV2ItemById.item.id
-      console.log(`[createProjectBoard] Added issue #${issue.number} to project, setting to first column`)
+        const itemId = itemResult.addProjectV2ItemById.item.id
+        console.log(`[createProjectBoard] Added issue #${issue.number} to project with item ID: ${itemId}`)
 
-      // Set all issues to the first column (e.g., "Todo" or "Backlog")
-      const updateFieldMutation = `
-        mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: ProjectV2FieldValue!) {
-          updateProjectV2ItemFieldValue(input: {
-            projectId: $projectId
-            itemId: $itemId
-            fieldId: $fieldId
-            value: $value
-          }) {
-            projectV2Item {
-              id
+        // Set all issues to the first column (e.g., "Todo" or "Backlog")
+        const updateFieldMutation = `
+          mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: ProjectV2FieldValue!) {
+            updateProjectV2ItemFieldValue(input: {
+              projectId: $projectId
+              itemId: $itemId
+              fieldId: $fieldId
+              value: $value
+            }) {
+              projectV2Item {
+                id
+              }
             }
           }
-        }
-      `
+        `
 
-      await this.octokit.graphql(updateFieldMutation, {
-        projectId,
-        itemId,
-        fieldId,
-        value: {
-          singleSelectOptionId: firstColumnId,
-        },
-      })
+        await this.octokit.graphql(updateFieldMutation, {
+          projectId,
+          itemId,
+          fieldId,
+          value: {
+            singleSelectOptionId: firstColumnId,
+          },
+        })
 
-      // Small delay to avoid rate limiting
-      await new Promise((resolve) => setTimeout(resolve, 100))
+        console.log(`[createProjectBoard] ✓ Issue #${issue.number} set to column "${fieldOptions2[0].name}"`)
+
+        // Small delay to avoid rate limiting
+        await new Promise((resolve) => setTimeout(resolve, 100))
+      } catch (error) {
+        console.error(`[createProjectBoard] Failed to add issue #${issue.number} to project:`, error)
+        // Continue with other issues even if one fails
+      }
     }
 
     return projectUrl
