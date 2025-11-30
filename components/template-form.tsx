@@ -874,28 +874,42 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
                         rows={3}
                         placeholder="Issue description (supports markdown)"
                       />
-                      <div className="flex flex-wrap gap-2">
-                        {labels.map((label) => (
-                          <button
-                            key={label.name}
-                            onClick={() =>
-                              toggleIssueLabel(phaseIndex, issueIndex, label.name)
-                            }
-                            className={`px-2 py-1 text-xs font-medium rounded transition-opacity ${
-                              issue.labels?.includes(label.name)
-                                ? "opacity-100"
-                                : "opacity-40 hover:opacity-60"
-                            }`}
-                            style={{
-                              backgroundColor: `#${label.color}20`,
-                              color: `#${label.color}`,
-                              border: `1px solid #${label.color}40`,
-                            }}
-                          >
-                            {label.name}
-                          </button>
-                        ))}
-                      </div>
+
+                      {/* Label Selection */}
+                      {labels.length > 0 && (
+                        <div className="space-y-2">
+                          <label className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                            Labels (click to add/remove)
+                          </label>
+                          <div className="flex flex-wrap gap-2">
+                            {labels.map((label) => {
+                              const isSelected = issue.labels?.includes(label.name)
+                              return (
+                                <button
+                                  key={label.name}
+                                  onClick={() =>
+                                    toggleIssueLabel(phaseIndex, issueIndex, label.name)
+                                  }
+                                  className={`px-2 py-1 text-xs font-medium rounded transition-all ${
+                                    isSelected
+                                      ? "ring-2 ring-offset-1"
+                                      : "opacity-50 hover:opacity-75"
+                                  }`}
+                                  style={{
+                                    backgroundColor: isSelected ? `#${label.color}` : `#${label.color}20`,
+                                    color: isSelected ? '#ffffff' : `#${label.color}`,
+                                    border: `1px solid #${label.color}`,
+                                  }}
+                                  title={isSelected ? "Click to remove" : "Click to add"}
+                                >
+                                  {isSelected && <span className="mr-1">✓</span>}
+                                  {label.name}
+                                </button>
+                              )
+                            })}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ))}
 
