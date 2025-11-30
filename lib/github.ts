@@ -395,13 +395,13 @@ export class GitHubService {
 
     const fieldResult = await this.octokit.graphql<CreateFieldResult>(createFieldMutation, {
       projectId,
-      name: "Status",
+      name: "Workflow",
       options: fieldOptions,
     })
 
     const fieldId = fieldResult.createProjectV2Field.projectV2Field.id
     const fieldOptions2 = fieldResult.createProjectV2Field.projectV2Field.options
-    console.log(`[createProjectBoard] Created Status field with ${fieldOptions2.length} options`)
+    console.log(`[createProjectBoard] Created Workflow field with ${fieldOptions2.length} options`)
 
     // Get the ID of the first column (where all new issues should start)
     const firstColumnId = fieldOptions2[0]?.id
