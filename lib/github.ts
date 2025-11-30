@@ -196,7 +196,7 @@ export class GitHubService {
     }
   }
 
-  async getExistingIssues(owner: string, repo: string): Promise<string[]> {
+  async getExistingIssues(owner: string, repo: string): Promise<Map<string, number>> {
     try {
       const { data } = await this.octokit.issues.listForRepo({
         owner,
@@ -204,11 +204,15 @@ export class GitHubService {
         state: "all",
         per_page: 100,
       })
-      // Return array of issue titles
-      return data.map((issue) => issue.title)
+      // Return map of issue title -> issue number
+      const issueMap = new Map<string, number>()
+      for (const issue of data) {
+        issueMap.set(issue.title, issue.number)
+      }
+      return issueMap
     } catch (error) {
       console.error("Error fetching existing issues:", error)
-      return []
+      return new Map()
     }
   }
 
@@ -249,7 +253,7 @@ export class GitHubService {
     let issuesSkipped = 0
 
     // Fetch existing data to avoid duplicates
-    const existingIssueTitles = await this.getExistingIssues(owner, repo)
+    const existingIssuesMap = await this.getExistingIssues(owner, repo)
     const existingLabels = await this.getExistingLabels(owner, repo)
 
     // Step 1: Create or update labels
@@ -273,14 +277,18 @@ export class GitHubService {
       }
     }
 
-    // Step 2: Create issues and track them for board organization
+    // Step 2: Create issues and track ALL issues (new + existing) for board organization
     const createdIssues: Array<{ number: number; phaseName: string }> = []
+    const allIssuesToAddToBoard: Array<{ number: number; phaseName: string }> = []
 
     for (const phase of template.phases) {
       for (const issue of phase.issues) {
-        // Skip if issue with same title already exists
-        if (existingIssueTitles.includes(issue.title)) {
+        const existingIssueNumber = existingIssuesMap.get(issue.title)
+
+        if (existingIssueNumber) {
+          // Issue already exists - add to board list but don't create
           issuesSkipped++
+          allIssuesToAddToBoard.push({ number: existingIssueNumber, phaseName: phase.name })
           continue
         }
 
@@ -288,6 +296,7 @@ export class GitHubService {
           const issueNumber = await this.createIssue(owner, repo, issue)
           issuesCreated++
           createdIssues.push({ number: issueNumber, phaseName: phase.name })
+          allIssuesToAddToBoard.push({ number: issueNumber, phaseName: phase.name })
         } catch (error) {
           issuesSkipped++
           // Silently skip issues that can't be created
@@ -316,14 +325,16 @@ export class GitHubService {
           boardName: boardConfig.boardName,
           columns: boardConfig.columns,
           phaseMapping: boardConfig.phaseMapping,
-          createdIssuesCount: createdIssues.length
+          newIssuesCount: createdIssues.length,
+          existingIssuesCount: allIssuesToAddToBoard.length - createdIssues.length,
+          totalIssuesToAddToBoard: allIssuesToAddToBoard.length
         })
         projectUrl = await this.createProjectBoard(
           owner,
           repo,
           template,
           boardConfig,
-          createdIssues
+          allIssuesToAddToBoard
         )
         console.log("Project board created successfully:", projectUrl)
       } catch (error) {
