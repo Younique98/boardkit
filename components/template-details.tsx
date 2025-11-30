@@ -45,8 +45,8 @@ export function TemplateDetails({ template }: TemplateDetailsProps) {
 
     try {
       saveCustomTemplate(duplicateTemplate)
-      // Redirect to the new duplicate template
-      router.push(`/templates/${duplicateTemplate.id}`)
+      // Redirect to edit page of the new duplicate template
+      router.push(`/templates/${duplicateTemplate.id}/edit`)
     } catch (error) {
       console.error("Error duplicating template:", error)
       alert("Failed to duplicate template")
