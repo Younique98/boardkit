@@ -359,7 +359,7 @@ export class GitHubService {
 
     const projectResult = await this.octokit.graphql<CreateProjectResult>(createProjectMutation, {
       ownerId,
-      title: boardConfig.boardName,
+      title: boardConfig.boardName || `${template.name} Board`,
       shortDescription: template.description || `Board for ${template.name}`,
     })
 
