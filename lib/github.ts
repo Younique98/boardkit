@@ -35,6 +35,30 @@ interface CreateFieldResult {
   }
 }
 
+interface ProjectFieldsQueryResult {
+  node: {
+    fields: {
+      nodes: Array<{
+        id: string
+        name: string
+        options?: Array<{
+          id: string
+          name: string
+        }>
+      }>
+    }
+  }
+}
+
+interface CreateFieldOptionResult {
+  createProjectV2FieldOption: {
+    projectV2FieldOption: {
+      id: string
+      name: string
+    }
+  }
+}
+
 interface IssueQueryResult {
   repository: {
     issue: {
@@ -388,8 +412,8 @@ export class GitHubService {
       }
     `
 
-    const fieldsResult = await this.octokit.graphql<any>(getFieldsQuery, { projectId })
-    const statusField = fieldsResult.node.fields.nodes.find((field: any) => field.name === "Status")
+    const fieldsResult = await this.octokit.graphql<ProjectFieldsQueryResult>(getFieldsQuery, { projectId })
+    const statusField = fieldsResult.node.fields.nodes.find((field) => field.name === "Status")
 
     console.log(`[createProjectBoard] Found Status field:`, statusField)
 
@@ -401,7 +425,7 @@ export class GitHubService {
       console.log(`[createProjectBoard] Updating existing Status field options...`)
 
       // First, delete existing options
-      for (const option of statusField.options) {
+      for (const option of statusField.options || []) {
         const deleteOptionMutation = `
           mutation($projectId: ID!, $fieldId: ID!, $optionId: ID!) {
             deleteProjectV2FieldOption(input: {
@@ -446,7 +470,7 @@ export class GitHubService {
             }
           }
         `
-        const optionResult = await this.octokit.graphql<any>(createOptionMutation, {
+        const optionResult = await this.octokit.graphql<CreateFieldOptionResult>(createOptionMutation, {
           projectId,
           fieldId: statusField.id,
           name: column.name,
