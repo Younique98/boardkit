@@ -230,17 +230,22 @@ export class GitHubService {
 
     // Step 1: Create or update labels
     for (let i = 0; i < template.labels.length; i++) {
-      const result = await this.createOrUpdateLabel(
-        owner,
-        repo,
-        template.labels[i],
-        existingLabels
-      )
+      try {
+        const result = await this.createOrUpdateLabel(
+          owner,
+          repo,
+          template.labels[i],
+          existingLabels
+        )
 
-      if (result === "created") {
-        labelsCreated++
-      } else if (result === "updated") {
-        labelsUpdated++
+        if (result === "created") {
+          labelsCreated++
+        } else if (result === "updated") {
+          labelsUpdated++
+        }
+      } catch (error) {
+        console.error(`Error creating/updating label ${template.labels[i].name}:`, error)
+        // Continue with other labels even if one fails
       }
     }
 
@@ -255,9 +260,15 @@ export class GitHubService {
           continue
         }
 
-        const issueNumber = await this.createIssue(owner, repo, issue)
-        issuesCreated++
-        createdIssues.push({ number: issueNumber, phaseName: phase.name })
+        try {
+          const issueNumber = await this.createIssue(owner, repo, issue)
+          issuesCreated++
+          createdIssues.push({ number: issueNumber, phaseName: phase.name })
+        } catch (error) {
+          console.error(`Error creating issue ${issue.title}:`, error)
+          issuesSkipped++
+          // Continue with other issues even if one fails
+        }
 
         // Small delay to avoid rate limiting
         await new Promise((resolve) => setTimeout(resolve, 100))
