@@ -219,9 +219,21 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
                       </p>
                     )}
                     {result.projectUrl && (
-                      <p>
-                        📊 Created Project Board
-                      </p>
+                      <div className="space-y-2">
+                        <p>
+                          📊 Created Project Board with Workflow field
+                        </p>
+                        <div className="text-sm bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 text-left">
+                          <p className="font-semibold text-blue-900 dark:text-blue-100 mb-1">
+                            💡 To see as a visual board:
+                          </p>
+                          <ol className="list-decimal list-inside space-y-1 text-blue-800 dark:text-blue-200">
+                            <li>Click &ldquo;View Project Board&rdquo; below</li>
+                            <li>Click the view name at the top</li>
+                            <li>Select &ldquo;Board&rdquo; under Layout</li>
+                          </ol>
+                        </div>
+                      </div>
                     )}
                     {(result.issuesCreated ?? 0) === 0 &&
                      (result.labelsCreated ?? 0) === 0 &&
@@ -444,8 +456,19 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
 
                                 {/* Info about issue placement */}
                                 {getCurrentColumns().length > 0 && (
-                                  <div className="text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
-                                    💡 All issues will be placed in the first column ({getCurrentColumns()[0]?.name || 'Todo'})
+                                  <div className="space-y-2">
+                                    <div className="text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
+                                      💡 All issues will be placed in the first column ({getCurrentColumns()[0]?.name || 'Todo'})
+                                    </div>
+                                    <div className="text-xs text-gray-600 dark:text-gray-400 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 p-3 rounded-lg">
+                                      <p className="font-semibold text-amber-900 dark:text-amber-100 mb-1">
+                                        ℹ️ About Board Layout
+                                      </p>
+                                      <p>
+                                        The project will be created with a <strong>Workflow</strong> field containing your selected columns.
+                                        By default, it displays as a Table view. You can switch to Board view in GitHub&apos;s UI after creation.
+                                      </p>
+                                    </div>
                                   </div>
                                 )}
                               </>
