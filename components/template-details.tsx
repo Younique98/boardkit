@@ -92,8 +92,11 @@ export function TemplateDetails({ template }: TemplateDetailsProps) {
           <div className="flex items-start gap-6">
             <div className="text-7xl">{template.icon}</div>
             <div className="flex-1">
-              <div className="flex items-start justify-between mb-4">
-                <div>
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 gap-3">
+                <span className="px-3 py-1 text-sm font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded self-start sm:order-2">
+                  {template.category}
+                </span>
+                <div className="sm:order-1">
                   <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
                     {template.name}
                   </h1>
@@ -101,9 +104,6 @@ export function TemplateDetails({ template }: TemplateDetailsProps) {
                     {template.description}
                   </p>
                 </div>
-                <span className="px-3 py-1 text-sm font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded">
-                  {template.category}
-                </span>
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 text-sm text-gray-500 dark:text-gray-400">
