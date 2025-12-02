@@ -130,13 +130,13 @@ export function TemplateDetails({ template }: TemplateDetailsProps) {
               <div className="mt-6 flex gap-3 flex-wrap">
                 <button
                   onClick={() => setShowRepoSelector(true)}
-                  className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
+                  className="px-4 sm:px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl min-h-[44px]"
                 >
                   Generate This Board
                 </button>
                 <button
                   onClick={handleDuplicate}
-                  className="px-8 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
+                  className="px-4 sm:px-8 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl min-h-[44px]"
                   title="Create a copy of this template"
                 >
                   📋 Duplicate
@@ -145,19 +145,19 @@ export function TemplateDetails({ template }: TemplateDetailsProps) {
                   <>
                     <button
                       onClick={handleExport}
-                      className="px-8 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
+                      className="px-4 sm:px-8 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl min-h-[44px]"
                     >
                       📥 Export JSON
                     </button>
                     <Link
                       href={`/templates/${template.id}/edit`}
-                      className="px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
+                      className="px-4 sm:px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl min-h-[44px] inline-block"
                     >
                       Edit Template
                     </Link>
                     <button
                       onClick={() => setShowDeleteConfirm(true)}
-                      className="px-8 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
+                      className="px-4 sm:px-8 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl min-h-[44px]"
                     >
                       Delete Template
                     </button>
