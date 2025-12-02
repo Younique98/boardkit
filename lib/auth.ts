@@ -15,16 +15,37 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   ],
   secret: process.env.NEXTAUTH_SECRET,
   trustHost: true,
+  session: {
+    strategy: "jwt",
+    maxAge: 7 * 24 * 60 * 60, // 7 days
+  },
+  jwt: {
+    maxAge: 7 * 24 * 60 * 60, // 7 days
+  },
+  cookies: {
+    sessionToken: {
+      name: `${process.env.NODE_ENV === "production" ? "__Secure-" : ""}next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+  },
   callbacks: {
     async jwt({ token, account }) {
       if (account) {
         token.accessToken = account.access_token
+        token.expiresAt = account.expires_at
       }
       return token
     },
     async session({ session, token }) {
       // @ts-expect-error - Adding custom accessToken property to session
       session.accessToken = token.accessToken
+      // @ts-expect-error - Adding expiresAt to session
+      session.expiresAt = token.expiresAt
       return session
     },
   },

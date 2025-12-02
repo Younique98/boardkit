@@ -311,24 +311,8 @@ export class GitHubService {
     // Step 3: Create project board if requested
     let projectUrl: string | undefined
 
-    console.log("=== BOARD CONFIG DEBUG ===")
-    console.log("boardConfig received:", boardConfig)
-    console.log("boardConfig?.enabled:", boardConfig?.enabled)
-    console.log("boardConfig?.columns:", boardConfig?.columns)
-    console.log("boardConfig?.columns.length:", boardConfig?.columns?.length)
-    console.log("Will create board?:", boardConfig?.enabled && boardConfig.columns.length > 0)
-    console.log("========================")
-
     if (boardConfig?.enabled && boardConfig.columns.length > 0) {
       try {
-        console.log("Creating project board with config:", {
-          boardName: boardConfig.boardName,
-          columns: boardConfig.columns,
-          phaseMapping: boardConfig.phaseMapping,
-          newIssuesCount: createdIssues.length,
-          existingIssuesCount: allIssuesToAddToBoard.length - createdIssues.length,
-          totalIssuesToAddToBoard: allIssuesToAddToBoard.length
-        })
         projectUrl = await this.createProjectBoard(
           owner,
           repo,
@@ -336,7 +320,6 @@ export class GitHubService {
           boardConfig,
           allIssuesToAddToBoard
         )
-        console.log("Project board created successfully:", projectUrl)
       } catch (error) {
         console.error("Error creating project board:", error)
         if (error instanceof Error) {
@@ -357,11 +340,6 @@ export class GitHubService {
     boardConfig: BoardConfiguration,
     createdIssues: Array<{ number: number; phaseName: string }>
   ): Promise<string> {
-    console.log(`[createProjectBoard] Starting for ${owner}/${repo}`)
-    console.log(`[createProjectBoard] Board name: ${boardConfig.boardName}`)
-    console.log(`[createProjectBoard] Columns:`, boardConfig.columns)
-    console.log(`[createProjectBoard] Created issues count:`, createdIssues.length)
-
     // Step 1: Get repository and owner node IDs
     const repoQuery = `
       query($owner: String!, $repo: String!) {
@@ -377,7 +355,6 @@ export class GitHubService {
 
     const repoResult = await this.octokit.graphql<RepositoryQueryResult>(repoQuery, { owner, repo })
     const ownerId = repoResult.repository.owner.id
-    console.log(`[createProjectBoard] Got owner ID: ${ownerId}`)
 
     // Step 2: Create the project
     const createProjectMutation = `
@@ -399,7 +376,6 @@ export class GitHubService {
 
     const projectId = projectResult.createProjectV2.projectV2.id
     const projectUrl = projectResult.createProjectV2.projectV2.url
-    console.log(`[createProjectBoard] Created project: ${projectUrl}`)
 
     // Step 3: Create a custom single-select field for status/columns
     // Note: We create a custom "Workflow" field instead of modifying the built-in "Status" field
@@ -440,25 +416,20 @@ export class GitHubService {
 
     const fieldId = fieldResult.createProjectV2Field.projectV2Field.id
     const fieldOptions2 = fieldResult.createProjectV2Field.projectV2Field.options
-    console.log(`[createProjectBoard] Created Workflow field with ${fieldOptions2.length} options`)
 
     // Get the ID of the first column (where all new issues should start)
     const firstColumnId = fieldOptions2[0]?.id
     if (!firstColumnId) {
       throw new Error("No columns defined in board configuration")
     }
-    console.log(`[createProjectBoard] All issues will be placed in first column: ${fieldOptions2[0].name}`)
 
     // Step 4: Add all created issues to the project and set them to the first column
-    console.log(`[createProjectBoard] Adding ${createdIssues.length} issues to project...`)
-
     if (createdIssues.length === 0) {
-      console.warn(`[createProjectBoard] No new issues were created - they may already exist in the repository. The board was created but has no issues.`)
+      console.warn(`No new issues created - they may already exist. Board created but empty.`)
     }
 
     for (const issue of createdIssues) {
       try {
-        console.log(`[createProjectBoard] Processing issue #${issue.number}...`)
 
         // Get issue node ID
         const issueQuery = `
@@ -478,7 +449,6 @@ export class GitHubService {
         })
 
         const issueId = issueResult.repository.issue.id
-        console.log(`[createProjectBoard] Got issue ID: ${issueId}`)
 
         // Add issue to project
         const addItemMutation = `
@@ -497,7 +467,6 @@ export class GitHubService {
         })
 
         const itemId = itemResult.addProjectV2ItemById.item.id
-        console.log(`[createProjectBoard] Added issue #${issue.number} to project with item ID: ${itemId}`)
 
         // Set all issues to the first column (e.g., "Todo" or "Backlog")
         const updateFieldMutation = `
@@ -523,8 +492,6 @@ export class GitHubService {
             singleSelectOptionId: firstColumnId,
           },
         })
-
-        console.log(`[createProjectBoard] ✓ Issue #${issue.number} set to column "${fieldOptions2[0].name}"`)
 
         // Small delay to avoid rate limiting
         await new Promise((resolve) => setTimeout(resolve, 100))
