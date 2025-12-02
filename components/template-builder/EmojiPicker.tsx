@@ -31,24 +31,36 @@ export function EmojiPicker({ value, onChange }: EmojiPickerProps) {
       </button>
 
       {showPicker && (
-        <div className="fixed sm:absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 sm:translate-x-0 sm:translate-y-0 sm:top-full sm:left-0 mt-2 z-50 max-w-[90vw] sm:max-w-none">
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setShowPicker(false)}
-              className="absolute -top-2 -right-2 min-w-[44px] min-h-[44px] bg-red-500 text-white rounded-full hover:bg-red-600 flex items-center justify-center text-xs z-10"
-              aria-label="Close emoji picker"
-            >
-              ✕
-            </button>
-            <Picker
-              onEmojiClick={(emojiData) => {
-                onChange(emojiData.emoji)
-                setShowPicker(false)
-              }}
-            />
+        <>
+          {/* Backdrop for mobile */}
+          <div
+            className="fixed inset-0 bg-black/50 z-40 sm:hidden"
+            onClick={() => setShowPicker(false)}
+          />
+          <div className="fixed sm:absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 sm:translate-x-0 sm:translate-y-0 sm:top-full sm:left-0 sm:mt-2 z-50 max-w-[90vw] sm:max-w-none">
+            <div className="relative">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setShowPicker(false)
+                }}
+                className="absolute -top-2 -right-2 min-w-[44px] min-h-[44px] bg-red-500 text-white rounded-full hover:bg-red-600 flex items-center justify-center text-xs z-10 shadow-lg"
+                aria-label="Close emoji picker"
+              >
+                ✕
+              </button>
+              <div onClick={(e) => e.stopPropagation()}>
+                <Picker
+                  onEmojiClick={(emojiData) => {
+                    onChange(emojiData.emoji)
+                    setShowPicker(false)
+                  }}
+                />
+              </div>
+            </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   )
