@@ -122,11 +122,6 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
 
       const data = await response.json()
 
-      console.log("=== FRONTEND RECEIVED DATA ===")
-      console.log("Full response data:", data)
-      console.log("projectUrl:", data.projectUrl)
-      console.log("============================")
-
       if (data.success) {
         // Append layout parameter to projectUrl based on board type
         let finalProjectUrl = data.projectUrl
