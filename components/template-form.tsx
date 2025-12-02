@@ -426,22 +426,22 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
                 {totalIssues} issues • {labels.length} labels • {phases.length} phases
               </p>
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
               <button
                 onClick={() => router.back()}
-                className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                className="px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors min-h-[44px]"
               >
                 Cancel
               </button>
               <button
                 onClick={() => setShowPreview(true)}
-                className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors"
+                className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors min-h-[44px]"
               >
                 👁️ Preview
               </button>
               <button
                 onClick={handleSubmit}
-                className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors"
+                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors min-h-[44px]"
               >
                 {mode === "edit" ? "Save Changes" : "Create Template"}
               </button>

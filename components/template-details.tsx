@@ -92,8 +92,11 @@ export function TemplateDetails({ template }: TemplateDetailsProps) {
           <div className="flex items-start gap-6">
             <div className="text-7xl">{template.icon}</div>
             <div className="flex-1">
-              <div className="flex items-start justify-between mb-4">
-                <div>
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 gap-3">
+                <span className="px-3 py-1 text-sm font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded self-start sm:order-2">
+                  {template.category}
+                </span>
+                <div className="sm:order-1">
                   <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
                     {template.name}
                   </h1>
@@ -101,12 +104,9 @@ export function TemplateDetails({ template }: TemplateDetailsProps) {
                     {template.description}
                   </p>
                 </div>
-                <span className="px-3 py-1 text-sm font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded">
-                  {template.category}
-                </span>
               </div>
 
-              <div className="flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 text-sm text-gray-500 dark:text-gray-400">
                 <span className="flex items-center gap-2">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -130,13 +130,13 @@ export function TemplateDetails({ template }: TemplateDetailsProps) {
               <div className="mt-6 flex gap-3 flex-wrap">
                 <button
                   onClick={() => setShowRepoSelector(true)}
-                  className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
+                  className="px-4 sm:px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl min-h-[44px]"
                 >
                   Generate This Board
                 </button>
                 <button
                   onClick={handleDuplicate}
-                  className="px-8 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
+                  className="px-4 sm:px-8 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl min-h-[44px]"
                   title="Create a copy of this template"
                 >
                   📋 Duplicate
@@ -145,19 +145,19 @@ export function TemplateDetails({ template }: TemplateDetailsProps) {
                   <>
                     <button
                       onClick={handleExport}
-                      className="px-8 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
+                      className="px-4 sm:px-8 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl min-h-[44px]"
                     >
                       📥 Export JSON
                     </button>
                     <Link
                       href={`/templates/${template.id}/edit`}
-                      className="px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
+                      className="px-4 sm:px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl min-h-[44px] inline-block"
                     >
                       Edit Template
                     </Link>
                     <button
                       onClick={() => setShowDeleteConfirm(true)}
-                      className="px-8 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
+                      className="px-4 sm:px-8 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl min-h-[44px]"
                     >
                       Delete Template
                     </button>
