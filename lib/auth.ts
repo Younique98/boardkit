@@ -12,10 +12,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           scope: "repo read:user user:email project",
         },
       },
+      // Disable PKCE for GitHub OAuth (fixes Vercel deployment issue)
+      checks: ["state"],
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
   trustHost: true,
+  // Ensure cookies work properly on Vercel
+  useSecureCookies: process.env.NODE_ENV === "production",
   session: {
     strategy: "jwt",
     maxAge: 7 * 24 * 60 * 60, // 7 days
