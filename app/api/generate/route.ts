@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
   try {
     // Rate limiting - strict for expensive board generation
     const identifier = getClientIdentifier(request)
-    const rateLimitResult = rateLimit(identifier, RateLimitPresets.strict)
+    const rateLimitResult = await rateLimit(identifier, RateLimitPresets.strict)
 
     if (!rateLimitResult.success) {
       const resetDate = new Date(rateLimitResult.reset).toISOString()
