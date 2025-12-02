@@ -1,8 +1,34 @@
 /**
- * Simple in-memory rate limiter for API routes
- * For production with multiple instances, consider using Redis
+ * Distributed rate limiting with Redis fallback to in-memory
+ *
+ * For production with multiple instances, configure Redis:
+ * - UPSTASH_REDIS_REST_URL: Your Upstash Redis URL
+ * - UPSTASH_REDIS_REST_TOKEN: Your Upstash Redis token
+ *
+ * Without Redis, falls back to in-memory (single instance only)
  */
 
+import { Redis } from "@upstash/redis"
+import { Ratelimit } from "@upstash/ratelimit"
+
+// Redis client (only initialized if env vars are present)
+let redis: Redis | null = null
+let redisRateLimiters: Map<string, Ratelimit> | null = null
+
+// Initialize Redis if configured
+if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+  redis = new Redis({
+    url: process.env.UPSTASH_REDIS_REST_URL,
+    token: process.env.UPSTASH_REDIS_REST_TOKEN,
+  })
+
+  redisRateLimiters = new Map()
+  console.log("✅ Redis rate limiting enabled (distributed)")
+} else {
+  console.warn("⚠️ Redis not configured - using in-memory rate limiting (single instance only)")
+}
+
+// In-memory rate limiter (fallback)
 interface RateLimitEntry {
   count: number
   resetTime: number
@@ -11,14 +37,16 @@ interface RateLimitEntry {
 const rateLimitMap = new Map<string, RateLimitEntry>()
 
 // Cleanup old entries every 5 minutes
-setInterval(() => {
-  const now = Date.now()
-  for (const [key, value] of rateLimitMap.entries()) {
-    if (value.resetTime < now) {
-      rateLimitMap.delete(key)
+if (!redis) {
+  setInterval(() => {
+    const now = Date.now()
+    for (const [key, value] of rateLimitMap.entries()) {
+      if (value.resetTime < now) {
+        rateLimitMap.delete(key)
+      }
     }
-  }
-}, 5 * 60 * 1000)
+  }, 5 * 60 * 1000)
+}
 
 interface RateLimitOptions {
   interval: number // Time window in milliseconds
@@ -32,12 +60,49 @@ interface RateLimitResult {
 }
 
 /**
- * Check if a request should be rate limited
- * @param identifier - Unique identifier (e.g., IP address or user ID)
- * @param options - Rate limit configuration
- * @returns Rate limit result with success status and metadata
+ * Get or create Redis rate limiter for specific options
  */
-export function rateLimit(
+function getRedisRateLimiter(options: RateLimitOptions): Ratelimit {
+  if (!redis || !redisRateLimiters) {
+    throw new Error("Redis not initialized")
+  }
+
+  const key = `${options.maxRequests}-${options.interval}`
+
+  if (!redisRateLimiters.has(key)) {
+    const limiter = new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(options.maxRequests, `${options.interval}ms`),
+      analytics: true,
+      prefix: "@boardkit/ratelimit",
+    })
+    redisRateLimiters.set(key, limiter)
+  }
+
+  return redisRateLimiters.get(key)!
+}
+
+/**
+ * Redis-based rate limiting
+ */
+async function rateLimitRedis(
+  identifier: string,
+  options: RateLimitOptions
+): Promise<RateLimitResult> {
+  const limiter = getRedisRateLimiter(options)
+  const result = await limiter.limit(identifier)
+
+  return {
+    success: result.success,
+    remaining: result.remaining,
+    reset: result.reset,
+  }
+}
+
+/**
+ * In-memory rate limiting (fallback for single instance)
+ */
+function rateLimitMemory(
   identifier: string,
   options: RateLimitOptions
 ): RateLimitResult {
@@ -74,6 +139,25 @@ export function rateLimit(
     success: false,
     remaining: 0,
     reset: entry.resetTime,
+  }
+}
+
+/**
+ * Check if a request should be rate limited
+ * Uses Redis if configured, otherwise falls back to in-memory
+ *
+ * @param identifier - Unique identifier (e.g., IP address or user ID)
+ * @param options - Rate limit configuration
+ * @returns Rate limit result with success status and metadata
+ */
+export async function rateLimit(
+  identifier: string,
+  options: RateLimitOptions
+): Promise<RateLimitResult> {
+  if (redis) {
+    return await rateLimitRedis(identifier, options)
+  } else {
+    return rateLimitMemory(identifier, options)
   }
 }
 

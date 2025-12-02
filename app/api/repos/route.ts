@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
   try {
     // Rate limiting - moderate for repository listing
     const identifier = getClientIdentifier(request)
-    const rateLimitResult = rateLimit(identifier, RateLimitPresets.moderate)
+    const rateLimitResult = await rateLimit(identifier, RateLimitPresets.moderate)
 
     if (!rateLimitResult.success) {
       return NextResponse.json(

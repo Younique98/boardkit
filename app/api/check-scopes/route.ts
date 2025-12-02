@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
   try {
     // Rate limiting - lenient for lightweight scope checks
     const identifier = getClientIdentifier(request)
-    const rateLimitResult = rateLimit(identifier, RateLimitPresets.lenient)
+    const rateLimitResult = await rateLimit(identifier, RateLimitPresets.lenient)
 
     if (!rateLimitResult.success) {
       return NextResponse.json(
