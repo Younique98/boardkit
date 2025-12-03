@@ -56,6 +56,8 @@ export function EmojiPicker({ value, onChange }: EmojiPickerProps) {
                     onChange(emojiData.emoji)
                     setShowPicker(false)
                   }}
+                  emojiStyle="native"
+                  previewConfig={{ showPreview: false }}
                 />
               </div>
             </div>

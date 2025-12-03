@@ -426,7 +426,7 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
                 {totalIssues} issues • {labels.length} labels • {phases.length} phases
               </p>
             </div>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 w-full sm:w-auto">
               <button
                 onClick={() => router.back()}
                 className="px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors min-h-[44px]"
@@ -553,8 +553,8 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
             />
 
             {/* Color Selection Row */}
-            <div className="flex gap-3 items-center">
-              <div className="flex-1 flex gap-2 items-center">
+            <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+              <div className="flex gap-2 items-center">
                 {/* Native Color Picker */}
                 <input
                   type="color"
@@ -592,7 +592,7 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
               <button
                 type="button"
                 onClick={addLabel}
-                className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+                className="w-full sm:w-auto px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
               >
                 Add Label
               </button>
