@@ -35,30 +35,6 @@ interface CreateFieldResult {
   }
 }
 
-interface ProjectFieldsQueryResult {
-  node: {
-    fields: {
-      nodes: Array<{
-        id: string
-        name: string
-        options?: Array<{
-          id: string
-          name: string
-        }>
-      }>
-    }
-  }
-}
-
-interface CreateFieldOptionResult {
-  createProjectV2FieldOption: {
-    projectV2FieldOption: {
-      id: string
-      name: string
-    }
-  }
-}
-
 interface IssueQueryResult {
   repository: {
     issue: {
@@ -271,9 +247,8 @@ export class GitHubService {
         } else if (result === "updated") {
           labelsUpdated++
         }
-      } catch (error) {
+      } catch {
         // Silently skip labels that already exist or can't be created
-        // This is fine - user might be reusing an existing repo
       }
     }
 
@@ -297,10 +272,8 @@ export class GitHubService {
           issuesCreated++
           createdIssues.push({ number: issueNumber, phaseName: phase.name })
           allIssuesToAddToBoard.push({ number: issueNumber, phaseName: phase.name })
-        } catch (error) {
+        } catch {
           issuesSkipped++
-          // Silently skip issues that can't be created
-          // This is fine - user might be reusing an existing repo
         }
 
         // Small delay to avoid rate limiting

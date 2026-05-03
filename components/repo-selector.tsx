@@ -44,7 +44,7 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
   const [createBoard, setCreateBoard] = useState(true)
   const [boardType, setBoardType] = useState<BoardType>("kanban")
   const [boardName, setBoardName] = useState("")
-  const [customColumns, setCustomColumns] = useState<BoardColumn[]>([])
+  const [customColumns] = useState<BoardColumn[]>([])
   const [phaseMapping, setPhaseMapping] = useState<PhaseColumnMapping[]>([])
 
   useEffect(() => {
@@ -56,7 +56,7 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
     if (!boardName && template) {
       setBoardName(`${template.name} Board`)
     }
-  }, [template])
+  }, [template, boardName])
 
   useEffect(() => {
     if (boardType !== "custom" && boardType !== "none") {
