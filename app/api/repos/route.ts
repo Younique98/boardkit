@@ -60,12 +60,17 @@ export async function GET(request: NextRequest) {
           { status: 403 }
         )
       }
-      throw githubError
+      const message = githubError instanceof Error ? githubError.message : String(githubError)
+      return NextResponse.json(
+        { error: `GitHub API error: ${message}` },
+        { status: 500 }
+      )
     }
   } catch (error) {
     console.error("Repository fetch failed:", error)
+    const message = error instanceof Error ? error.message : String(error)
     return NextResponse.json(
-      { error: "Failed to fetch repositories" },
+      { error: `Failed to fetch repositories: ${message}` },
       { status: 500 }
     )
   }
