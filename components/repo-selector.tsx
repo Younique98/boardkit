@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { signIn } from "next-auth/react"
 import { Template, BoardType, BoardColumn, PhaseColumnMapping } from "@/types/template"
 import { BOARD_PRESETS, BOARD_TYPE_LABELS } from "@/lib/board-presets"
 
@@ -22,6 +23,7 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
   const [repos, setRepos] = useState<Repository[]>([])
   const [loading, setLoading] = useState(true)
   const [repoError, setRepoError] = useState<string | null>(null)
+  const [isAuthError, setIsAuthError] = useState(false)
   const [selectedRepo, setSelectedRepo] = useState<Repository | null>(null)
   const [generating, setGenerating] = useState(false)
   const [progress, setProgress] = useState({ phase: "", current: 0, total: 0 })
@@ -94,7 +96,12 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
       const response = await fetch("/api/repos")
       const data = await response.json()
       if (!response.ok) {
-        setRepoError(data.error || "Failed to fetch repositories")
+        if (response.status === 401 || response.status === 403) {
+          setIsAuthError(true)
+          setRepoError(data.error || "GitHub token expired. Please sign in again.")
+        } else {
+          setRepoError(data.error || "Failed to fetch repositories")
+        }
         return
       }
       if (data.repos) {
@@ -339,7 +346,15 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
               ) : repoError ? (
                 <div className="text-center py-12">
                   <div className="text-6xl mb-4">⚠️</div>
-                  <p className="text-gray-600 dark:text-gray-400">{repoError}</p>
+                  <p className="text-gray-600 dark:text-gray-400 mb-4">{repoError}</p>
+                  {isAuthError && (
+                    <button
+                      onClick={() => signIn("github")}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      Sign in with GitHub
+                    </button>
+                  )}
                 </div>
               ) : repos.length === 0 ? (
                 <div className="text-center py-12">

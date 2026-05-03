@@ -83,10 +83,10 @@ export class GitHubService {
   }
 
   async getUserRepos() {
-    const { data } = await this.octokit.repos.listForAuthenticatedUser({
+    const { data } = await this.octokit.rest.repos.listForAuthenticatedUser({
       sort: "updated",
       per_page: 100,
-      affiliation: "owner",
+      visibility: "all",
     })
     return data
   }
