@@ -155,10 +155,14 @@ export async function rateLimit(
   options: RateLimitOptions
 ): Promise<RateLimitResult> {
   if (redis) {
-    return await rateLimitRedis(identifier, options)
-  } else {
-    return rateLimitMemory(identifier, options)
+    try {
+      return await rateLimitRedis(identifier, options)
+    } catch (error) {
+      console.error("Redis rate limit failed, falling back to in-memory:", error)
+      return rateLimitMemory(identifier, options)
+    }
   }
+  return rateLimitMemory(identifier, options)
 }
 
 /**
