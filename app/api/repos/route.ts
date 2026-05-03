@@ -21,7 +21,16 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const session = await auth()
+    let session
+    try {
+      session = await auth()
+    } catch (authError) {
+      console.error("NextAuth auth() failed:", authError)
+      return NextResponse.json(
+        { error: "Authentication error. Please sign out and sign in again." },
+        { status: 401 }
+      )
+    }
 
     if (!session?.accessToken) {
       return NextResponse.json(
