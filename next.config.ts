@@ -64,4 +64,28 @@ export default withPWA({
   dest: "public",
   register: true,
   disable: process.env.NODE_ENV === "development",
+  workboxOptions: {
+    // Avoid the _ref bug in generated cacheWillUpdate plugins by
+    // using a plain NetworkFirst strategy with no expiration plugin
+    runtimeCaching: [
+      {
+        urlPattern: /^https:\/\/fonts\.(googleapis|gstatic)\.com\/.*/i,
+        handler: "CacheFirst",
+        options: {
+          cacheName: "google-fonts",
+          expiration: { maxEntries: 4, maxAgeSeconds: 365 * 24 * 60 * 60 },
+        },
+      },
+      {
+        urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|ico)$/i,
+        handler: "CacheFirst",
+        options: { cacheName: "images" },
+      },
+      {
+        urlPattern: /\.(?:js|css)$/i,
+        handler: "StaleWhileRevalidate",
+        options: { cacheName: "static-resources" },
+      },
+    ],
+  },
 })(nextConfig);
