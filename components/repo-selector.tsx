@@ -21,6 +21,7 @@ interface Repository {
 export function RepoSelector({ template, onClose }: RepoSelectorProps) {
   const [repos, setRepos] = useState<Repository[]>([])
   const [loading, setLoading] = useState(true)
+  const [repoError, setRepoError] = useState<string | null>(null)
   const [selectedRepo, setSelectedRepo] = useState<Repository | null>(null)
   const [generating, setGenerating] = useState(false)
   const [progress, setProgress] = useState({ phase: "", current: 0, total: 0 })
@@ -92,13 +93,19 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
     try {
       const response = await fetch("/api/repos")
       const data = await response.json()
-      if (data.repos && data.repos.length > 0) {
+      if (!response.ok) {
+        setRepoError(data.error || "Failed to fetch repositories")
+        return
+      }
+      if (data.repos) {
         setRepos(data.repos)
-        // Auto-select the first repository
-        setSelectedRepo(data.repos[0])
+        if (data.repos.length > 0) {
+          setSelectedRepo(data.repos[0])
+        }
       }
     } catch (error) {
       console.error("Failed to fetch repos:", error)
+      setRepoError("Failed to fetch repositories")
     } finally {
       setLoading(false)
     }
@@ -328,6 +335,11 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
                 <div className="text-center py-12">
                   <div className="animate-spin w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
                   <p className="text-gray-600 dark:text-gray-400">Loading repositories...</p>
+                </div>
+              ) : repoError ? (
+                <div className="text-center py-12">
+                  <div className="text-6xl mb-4">⚠️</div>
+                  <p className="text-gray-600 dark:text-gray-400">{repoError}</p>
                 </div>
               ) : repos.length === 0 ? (
                 <div className="text-center py-12">

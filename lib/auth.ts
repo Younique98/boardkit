@@ -89,7 +89,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       extendedSession.accessToken = token.accessToken as string
       extendedSession.expiresAt = token.expiresAt as number
-      return session
+      return extendedSession
     },
   },
   pages: {
