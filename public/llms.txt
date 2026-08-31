@@ -1,0 +1,28 @@
+# BoardKit
+
+> A Progressive Web App that generates structured GitHub project boards
+> from pre-built templates - 20+ templates and 900+ pre-written issues,
+> cutting hours of manual setup down to seconds.
+
+BoardKit connects to GitHub via OAuth and generates a complete project
+board - issues, labels, and phases - from a chosen template in one click.
+Templates can also be created from scratch or imported from CSV/JSON.
+
+## Key pages
+
+- [Home](https://boardkit.app/): Template gallery and one-click board
+  generation.
+- [Create a template](https://boardkit.app/templates/create): Build a
+  custom template from scratch.
+- [Import a template](https://boardkit.app/templates/import): Import a
+  template from CSV or JSON.
+- [Privacy](https://boardkit.app/privacy): Data usage and privacy policy.
+
+## Technical implementation
+
+- **Framework:** Next.js 15 (App Router), TypeScript, Tailwind CSS
+- **Auth:** GitHub OAuth (NextAuth.js)
+- **GitHub API:** Octokit.js
+- **PWA:** Installable on mobile devices
+
+Source and full documentation: https://github.com/Younique98/boardkit
