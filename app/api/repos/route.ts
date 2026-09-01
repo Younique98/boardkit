@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { auth } from "@/lib/auth"
+import { getGitHubAccessToken } from "@/lib/github-auth"
 import { GitHubService } from "@/lib/github"
 import { rateLimit, getClientIdentifier, RateLimitPresets } from "@/lib/rate-limit"
 
@@ -21,25 +21,25 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    let session
+    let accessToken: string | null
     try {
-      session = await auth()
+      accessToken = await getGitHubAccessToken(request)
     } catch (authError) {
-      console.error("NextAuth auth() failed:", authError)
+      console.error("Reading session token failed:", authError)
       return NextResponse.json(
         { error: "Authentication error. Please sign out and sign in again." },
         { status: 401 }
       )
     }
 
-    if (!session?.accessToken) {
+    if (!accessToken) {
       return NextResponse.json(
         { error: "Authentication required" },
         { status: 401 }
       )
     }
 
-    const github = new GitHubService(session.accessToken)
+    const github = new GitHubService(accessToken)
 
     try {
       const repos = await github.getUserRepos()

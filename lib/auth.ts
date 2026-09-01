@@ -81,15 +81,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return token
     },
-    async session({ session, token }) {
-      // Adding custom properties to session (type cast for custom fields)
-      const extendedSession = session as typeof session & {
-        accessToken?: string
-        expiresAt?: number
-      }
-      extendedSession.accessToken = token.accessToken as string
-      extendedSession.expiresAt = token.expiresAt as number
-      return extendedSession
+    async session({ session }) {
+      // Intentionally do NOT copy the GitHub OAuth access token (or its
+      // expiry) onto the session object here. The session returned by this
+      // callback is what /api/auth/session serves to the browser and what
+      // useSession() exposes to client-side JS, so anything placed on it is
+      // readable by any script running on the page (e.g. via an XSS bug or
+      // a malicious dependency) - including the raw token with its
+      // "repo read:user user:email project" scope.
+      //
+      // The token itself still lives in the encrypted, httpOnly JWT cookie
+      // (see the jwt() callback above). Server-side code that needs it
+      // (API routes) should call getToken() from "next-auth/jwt" directly
+      // against the incoming request instead of reading it off the
+      // session - see lib/github-auth.ts.
+      return session
     },
   },
   pages: {
