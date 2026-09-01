@@ -850,7 +850,7 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
                           placeholder="Issue title"
                         />
                         {issue.title && (
-                          <div className="flex items-center px-3 py-2 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 text-sm rounded-lg border border-green-200 dark:border-green-800">
+                          <div className="flex items-center px-3 py-2 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 text-sm rounded-lg border border-green-200 dark:border-green-800">
                             <span className="mr-1">✓</span>
                             <span className="font-medium">Saved</span>
                           </div>
@@ -891,7 +891,7 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
                                   className={`px-2 py-1 text-xs font-medium rounded transition-all ${
                                     isSelected
                                       ? "ring-2 ring-offset-1"
-                                      : "label-chip border opacity-50 hover:opacity-75"
+                                      : "label-chip border hover:ring-1 hover:ring-gray-400 dark:hover:ring-gray-500"
                                   }`}
                                   style={
                                     (isSelected
