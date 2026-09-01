@@ -45,7 +45,7 @@ export function EmojiPicker({ value, onChange }: EmojiPickerProps) {
                   e.stopPropagation()
                   setShowPicker(false)
                 }}
-                className="absolute -top-2 -right-2 min-w-[44px] min-h-[44px] bg-red-500 text-white rounded-full hover:bg-red-600 flex items-center justify-center text-xs z-10 shadow-lg"
+                className="absolute -top-2 -right-2 min-w-[44px] min-h-[44px] bg-red-600 text-white rounded-full hover:bg-red-700 flex items-center justify-center text-xs z-10 shadow-lg"
                 aria-label="Close emoji picker"
               >
                 ✕

@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useState, type CSSProperties } from "react"
 import { useRouter } from "next/navigation"
 import { Template } from "@/types/template"
 import Link from "next/link"
 import { RepoSelector } from "./repo-selector"
 import { deleteCustomTemplate, saveCustomTemplate } from "@/lib/custom-templates"
+import { labelChipStyle } from "@/lib/label-color"
 
 interface TemplateDetailsProps {
   template: Template
@@ -136,7 +137,7 @@ export function TemplateDetails({ template }: TemplateDetailsProps) {
                 </button>
                 <button
                   onClick={handleDuplicate}
-                  className="px-4 sm:px-8 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl min-h-[44px]"
+                  className="px-4 sm:px-8 py-3 bg-orange-700 hover:bg-orange-800 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl min-h-[44px]"
                   title="Create a copy of this template"
                 >
                   📋 Duplicate
@@ -145,7 +146,7 @@ export function TemplateDetails({ template }: TemplateDetailsProps) {
                   <>
                     <button
                       onClick={handleExport}
-                      className="px-4 sm:px-8 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl min-h-[44px]"
+                      className="px-4 sm:px-8 py-3 bg-green-700 hover:bg-green-800 text-white rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl min-h-[44px]"
                     >
                       📥 Export JSON
                     </button>
@@ -229,12 +230,8 @@ export function TemplateDetails({ template }: TemplateDetailsProps) {
             {template.labels.map((label, index) => (
               <span
                 key={index}
-                className="px-3 py-1 text-sm font-medium rounded"
-                style={{
-                  backgroundColor: `#${label.color}20`,
-                  color: `#${label.color}`,
-                  border: `1px solid #${label.color}40`,
-                }}
+                className="label-chip px-3 py-1 text-sm font-medium rounded border"
+                style={labelChipStyle(label.color) as CSSProperties}
               >
                 {label.name}
               </span>

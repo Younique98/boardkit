@@ -25,3 +25,24 @@ body {
     text-wrap: balance;
   }
 }
+
+/*
+ * GitHub-style label chips render an arbitrary, per-template author-chosen
+ * color (see lib/label-color.ts). Since that color is dynamic, it's set via
+ * inline CSS custom properties rather than a Tailwind class, and this rule
+ * swaps in the pre-computed, contrast-verified light/dark variant to follow
+ * the same prefers-color-scheme switch the rest of the app uses.
+ */
+.label-chip {
+  background-color: var(--label-chip-bg-light);
+  color: var(--label-chip-fg-light);
+  border-color: var(--label-chip-border-light);
+}
+
+@media (prefers-color-scheme: dark) {
+  .label-chip {
+    background-color: var(--label-chip-bg-dark);
+    color: var(--label-chip-fg-dark);
+    border-color: var(--label-chip-border-dark);
+  }
+}

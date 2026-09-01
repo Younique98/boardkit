@@ -389,7 +389,7 @@ export default function ImportJSONPage() {
                   disabled={!jsonText.trim() || (!!template && showPreview)}
                   className={`flex-1 px-6 py-2 rounded-lg font-semibold transition-colors ${
                     template && showPreview
-                      ? "bg-green-600 text-white cursor-default"
+                      ? "bg-green-700 text-white cursor-default"
                       : jsonText.trim()
                         ? "bg-blue-600 hover:bg-blue-700 text-white"
                         : "bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed"

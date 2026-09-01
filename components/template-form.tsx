@@ -1,10 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useState, type CSSProperties } from "react"
 import { useRouter } from "next/navigation"
 import { EmojiPicker } from "./template-builder/EmojiPicker"
 import { Template, Phase, Issue, GitHubLabel } from "@/types/template"
 import { saveCustomTemplate, updateCustomTemplate } from "@/lib/custom-templates"
+import { getSolidChipColors, labelChipStyle, GRAY_50_900_CARD_BG } from "@/lib/label-color"
 
 interface TemplateFormProps {
   initialTemplate?: Template
@@ -592,7 +593,7 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
               <button
                 type="button"
                 onClick={addLabel}
-                className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+                className="px-6 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg transition-colors"
               >
                 Add Label
               </button>
@@ -682,7 +683,7 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
                     <div className="flex gap-2">
                       <button
                         onClick={saveEditLabel}
-                        className="flex-1 px-3 py-1.5 text-sm bg-green-600 hover:bg-green-700 text-white rounded transition-colors"
+                        className="flex-1 px-3 py-1.5 text-sm bg-green-700 hover:bg-green-800 text-white rounded transition-colors"
                       >
                         ✓ Save
                       </button>
@@ -697,12 +698,8 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
                 ) : (
                   // Display mode
                   <span
-                    className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded"
-                    style={{
-                      backgroundColor: `#${label.color}20`,
-                      color: `#${label.color}`,
-                      border: `1px solid #${label.color}40`,
-                    }}
+                    className="label-chip inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded border"
+                    style={labelChipStyle(label.color) as CSSProperties}
                   >
                     {label.name}
                     <button
@@ -884,6 +881,7 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
                           <div className="flex flex-wrap gap-2">
                             {labels.map((label) => {
                               const isSelected = issue.labels?.includes(label.name)
+                              const solid = getSolidChipColors(label.color)
                               return (
                                 <button
                                   key={label.name}
@@ -893,13 +891,17 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
                                   className={`px-2 py-1 text-xs font-medium rounded transition-all ${
                                     isSelected
                                       ? "ring-2 ring-offset-1"
-                                      : "opacity-50 hover:opacity-75"
+                                      : "label-chip border opacity-50 hover:opacity-75"
                                   }`}
-                                  style={{
-                                    backgroundColor: isSelected ? `#${label.color}` : `#${label.color}20`,
-                                    color: isSelected ? '#ffffff' : `#${label.color}`,
-                                    border: `1px solid #${label.color}`,
-                                  }}
+                                  style={
+                                    (isSelected
+                                      ? {
+                                          backgroundColor: solid.background,
+                                          color: solid.text,
+                                          border: `1px solid ${solid.background}`,
+                                        }
+                                      : labelChipStyle(label.color, GRAY_50_900_CARD_BG)) as CSSProperties
+                                  }
                                   title={isSelected ? "Click to remove" : "Click to add"}
                                 >
                                   {isSelected && <span className="mr-1">✓</span>}
@@ -1083,12 +1085,8 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
                       {labels.map((label, index) => (
                         <span
                           key={index}
-                          className="px-3 py-1 text-sm font-medium rounded"
-                          style={{
-                            backgroundColor: `#${label.color}20`,
-                            color: `#${label.color}`,
-                            border: `1px solid #${label.color}40`,
-                          }}
+                          className="label-chip px-3 py-1 text-sm font-medium rounded border"
+                          style={labelChipStyle(label.color, GRAY_50_900_CARD_BG) as CSSProperties}
                         >
                           {label.name}
                         </span>
