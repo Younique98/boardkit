@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
-import { auth } from "@/lib/auth"
+import { getGitHubAccessToken } from "@/lib/github-auth"
 import { rateLimit, getClientIdentifier, RateLimitPresets } from "@/lib/rate-limit"
-
-interface SessionWithToken {
-  accessToken?: string
-}
 
 export async function GET(request: NextRequest) {
   try {
@@ -24,14 +20,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const session = await auth()
-
-    if (!session) {
-      return NextResponse.json({ error: "Authentication required" }, { status: 401 })
-    }
-
-    // Get the access token from the session
-    const accessToken = (session as unknown as SessionWithToken).accessToken
+    const accessToken = await getGitHubAccessToken(request)
 
     if (!accessToken) {
       return NextResponse.json({ error: "Authentication required" }, { status: 401 })

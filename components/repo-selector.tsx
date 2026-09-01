@@ -474,7 +474,7 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
                             )}
                           </div>
                           {selectedRepo?.id === repo.id && (
-                            <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                            <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                             </svg>
                           )}
@@ -510,6 +510,7 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
                               checked={createBoard}
                               onChange={(e) => setCreateBoard(e.target.checked)}
                               className="sr-only peer"
+                              aria-label="Automatically create a GitHub Project Board"
                             />
                             <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 dark:peer-focus:ring-blue-600 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                           </label>
@@ -519,10 +520,11 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
                           <div className="space-y-3 pt-2">
                             {/* Board Type Selector */}
                             <div>
-                              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                              <label htmlFor="board-type-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                                 Board Type
                               </label>
                               <select
+                                id="board-type-select"
                                 value={boardType}
                                 onChange={(e) => setBoardType(e.target.value as BoardType)}
                                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"

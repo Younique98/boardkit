@@ -1,4 +1,14 @@
 import Link from "next/link"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description:
+    "How BoardKit collects, uses, and protects your GitHub account data and OAuth access token when you generate project boards.",
+  alternates: {
+    canonical: "/privacy",
+  },
+}
 
 export default function PrivacyPolicy() {
   return (
@@ -143,8 +153,8 @@ export default function PrivacyPolicy() {
               If you have any questions about this Privacy Policy or our data practices, please contact us at:
             </p>
             <ul className="list-none text-gray-700 dark:text-gray-300 space-y-1">
-              <li>Email: [Your email address]</li>
-              <li>GitHub: <Link href="https://github.com/Younique98/boardkit" className="text-blue-600 hover:underline">github.com/Younique98/boardkit</Link></li>
+              <li>GitHub Issues: <Link href="https://github.com/Younique98/boardkit/issues" className="text-blue-600 dark:text-blue-400 hover:underline">github.com/Younique98/boardkit/issues</Link></li>
+              <li>Repository: <Link href="https://github.com/Younique98/boardkit" className="text-blue-600 dark:text-blue-400 hover:underline">github.com/Younique98/boardkit</Link></li>
             </ul>
           </section>
 

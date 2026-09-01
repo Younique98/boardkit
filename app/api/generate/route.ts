@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { auth } from "@/lib/auth"
+import { getGitHubAccessToken } from "@/lib/github-auth"
 import { GitHubService } from "@/lib/github"
 import { getTemplateById } from "@/lib/templates"
 import { rateLimit, getClientIdentifier, RateLimitPresets } from "@/lib/rate-limit"
@@ -55,9 +55,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const session = await auth()
+    const accessToken = await getGitHubAccessToken(request)
 
-    if (!session?.accessToken) {
+    if (!accessToken) {
       return NextResponse.json(
         { error: "Authentication required" },
         { status: 401 }
@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const github = new GitHubService(session.accessToken)
+    const github = new GitHubService(accessToken)
 
     // Verify access to repository
     const hasAccess = await github.verifyAccess(owner, repo)
