@@ -359,8 +359,8 @@ export default function ImportJSONPage() {
                 placeholder="Paste your JSON template here...&#10;&#10;Example:&#10;{&#10;  &quot;name&quot;: &quot;My Template&quot;,&#10;  &quot;description&quot;: &quot;...&quot;,&#10;  ...&#10;}"
                 className={`w-full h-96 px-4 py-3 font-mono text-sm border-2 rounded-lg bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white resize-y ${
                   error
-                    ? "border-red-500 focus:ring-2 focus:ring-red-500"
-                    : "border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500"
+                    ? "border-red-500 focus-visible:ring-2 focus-visible:ring-red-500"
+                    : "border-gray-300 dark:border-gray-600 focus-visible:ring-2 focus-visible:ring-bk-accent"
                 }`}
               />
 

@@ -501,8 +501,8 @@ export function TemplateForm({ initialTemplate, mode }: TemplateFormProps) {
                 }}
                 className={`w-full px-4 py-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
                   errors.name
-                    ? "border-red-500 dark:border-red-500 focus:ring-2 focus:ring-red-500"
-                    : "border-gray-300 dark:border-gray-600"
+                    ? "border-red-500 dark:border-red-500 focus-visible:ring-2 focus-visible:ring-red-500"
+                    : "border-gray-300 dark:border-gray-600 focus-visible:ring-2 focus-visible:ring-bk-accent"
                 }`}
                 placeholder="My Awesome Template"
               />

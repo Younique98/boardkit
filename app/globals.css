@@ -2,28 +2,98 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * BoardKit design tokens.
+ *
+ * Colors are expressed as CSS custom properties so both this file and
+ * tailwind.config.ts (which maps `bk-*` Tailwind colors to these vars) stay
+ * in sync with a single source of truth. Values are the exact tokens from
+ * the design spec; see the contrast notes below for how they're meant to be
+ * combined (a couple of pairings need specific foreground/background
+ * combinations to clear WCAG AA - documented inline).
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Light mode (default) */
+  --bk-bg: #FAFAF8; /* warm-neutral paper, not pure white */
+  --bk-surface: #FFFFFF;
+  --bk-ink: #1B1D22;
+  --bk-ink-muted: #565B66;
+  --bk-border: #DDE1E6; /* decorative divider - not a standalone control boundary, see note below */
+  --bk-accent: #0E8388; /* primary actions, links, active states */
+  --bk-accent-ink: #FFFFFF; /* text on accent */
+  --bk-signal: #D98E04; /* warm amber - "in progress" / attention states only, never the primary accent */
+
+  /* Fixed dark ink for text rendered on top of --bk-signal. --bk-signal
+     itself only shifts a little between themes (bright amber either way),
+     but --bk-ink flips from dark-on-light to light-on-dark, which would fail
+     contrast in dark mode (1.79:1) if reused here. This fixed value clears
+     AA against both the light signal (6.28:1) and dark signal (8.16:1). */
+  --bk-signal-ink: #1B1D22;
+
+  --font-heading: "Manrope", system-ui, sans-serif;
+  --font-body: "Work Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bk-bg: #14161A;
+    --bk-surface: #1C1F25;
+    --bk-ink: #EDEFF3;
+    --bk-ink-muted: #9BA1AC;
+    --bk-border: #2A2E35;
+    --bk-accent: #2FB8BD; /* brightened teal for dark-mode contrast */
+    --bk-accent-ink: #0B1210;
+    --bk-signal: #E8A93A;
   }
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--bk-ink);
+  background: var(--bk-bg);
+  font-family: var(--font-body);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: var(--font-mono);
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/*
+ * Focus visibility.
+ *
+ * The audit found focus rings only on 3 form inputs, leaving buttons and
+ * links to the browser's unstyled default outline. This applies one
+ * consistent, on-brand ring to every keyboard-focused interactive element
+ * site-wide, using :focus-visible so it only appears for keyboard/assistive
+ * navigation (not on mouse click). Modern browsers clip the outline to the
+ * element's own border-radius automatically, so this doesn't need to guess
+ * per-component shapes (pills, circles, inputs, etc. all just work).
+ *
+ * --bk-accent clears the WCAG 1.4.11 non-text 3:1 minimum against both
+ * --bk-bg and --bk-surface in light and dark mode (4.35:1-7.51:1, see
+ * contrast script), so it's a safe, single ring color everywhere.
+ */
+:focus-visible {
+  outline: 2px solid var(--bk-accent);
+  outline-offset: 2px;
 }
 
 /*
