@@ -1,13 +1,19 @@
 import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
 import { getGitHubAccessToken } from "@/lib/github-auth"
 import { GitHubService } from "@/lib/github"
+import { getUserPlan } from "@/lib/user"
 import { rateLimit, getClientIdentifier, RateLimitPresets } from "@/lib/rate-limit"
 
 export async function GET(request: NextRequest) {
   try {
-    // Rate limiting - moderate for repository listing
-    const identifier = getClientIdentifier(request)
-    const rateLimitResult = await rateLimit(identifier, RateLimitPresets.moderate)
+    // Rate limiting - moderate for repository listing, higher ceiling for
+    // premium users (see lib/rate-limit.ts).
+    const session = await auth()
+    const userId = session?.user?.id
+    const identifier = userId ? `user:${userId}` : `ip:${getClientIdentifier(request)}`
+    const plan = userId ? await getUserPlan(userId) : "FREE"
+    const rateLimitResult = await rateLimit(identifier, RateLimitPresets.moderate, plan)
 
     if (!rateLimitResult.success) {
       return NextResponse.json(

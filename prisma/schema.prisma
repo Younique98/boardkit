@@ -1,0 +1,43 @@
+// BoardKit database schema.
+//
+// Provider is Postgres. No database is provisioned by this schema - point
+// DATABASE_URL (see .env.example) at a real Postgres instance (e.g. via the
+// Vercel Postgres / Neon integration in the Vercel dashboard) and run:
+//
+//   npx prisma migrate deploy   (production)
+//   npx prisma migrate dev      (local development, creates a migration)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Plan {
+  FREE
+  PREMIUM
+}
+
+// Keyed by the GitHub user id (the numeric `id` from the GitHub OAuth
+// profile, as a string - this is what NextAuth's JWT `sub` claim carries for
+// this app's GitHub provider, see lib/auth.ts). A row is created the first
+// time a user signs in (see the `jwt` callback in lib/auth.ts) and kept in
+// sync with Stripe via the /api/stripe/webhook route.
+model User {
+  id    String  @id
+  email String?
+
+  plan Plan @default(FREE)
+
+  // Stripe billing fields. All nullable - a FREE user has none of these
+  // until they start (or have started and cancelled) a subscription.
+  stripeCustomerId       String?   @unique
+  stripeSubscriptionId   String?   @unique
+  stripeCurrentPeriodEnd DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

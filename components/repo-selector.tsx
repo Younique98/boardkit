@@ -39,6 +39,14 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
   } | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [showAllRepos, setShowAllRepos] = useState(true)
+  const [mode, setMode] = useState<"existing" | "create">("existing")
+
+  // New repository form state
+  const [newRepoName, setNewRepoName] = useState("")
+  const [newRepoDescription, setNewRepoDescription] = useState("")
+  const [newRepoPrivate, setNewRepoPrivate] = useState(true)
+  const [creatingRepo, setCreatingRepo] = useState(false)
+  const [createRepoError, setCreateRepoError] = useState<string | null>(null)
 
   // Board configuration state
   const [createBoard, setCreateBoard] = useState(true)
@@ -115,6 +123,49 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
       setRepoError("Failed to fetch repositories")
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function handleCreateRepo(e: React.FormEvent) {
+    e.preventDefault()
+    if (!newRepoName.trim()) return
+
+    setCreatingRepo(true)
+    setCreateRepoError(null)
+
+    try {
+      const response = await fetch("/api/repos/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: newRepoName.trim(),
+          description: newRepoDescription.trim() || undefined,
+          isPrivate: newRepoPrivate,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        // 422 = GitHub rejected it (most commonly: name already taken).
+        // data.error already carries a specific, human-readable reason -
+        // show it inline instead of a generic failure message.
+        setCreateRepoError(data.error || "Failed to create repository")
+        return
+      }
+
+      const created: Repository = data.repo
+      setRepos((prev) => [created, ...prev])
+      setSelectedRepo(created)
+      setShowAllRepos(false)
+      setMode("existing")
+      setNewRepoName("")
+      setNewRepoDescription("")
+    } catch (error) {
+      console.error("Failed to create repo:", error)
+      setCreateRepoError("Failed to create repository. Please try again.")
+    } finally {
+      setCreatingRepo(false)
     }
   }
 
@@ -356,13 +407,134 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
                     </button>
                   )}
                 </div>
-              ) : repos.length === 0 ? (
-                <div className="text-center py-12">
-                  <div className="text-6xl mb-4">📁</div>
-                  <p className="text-gray-600 dark:text-gray-400">No repositories found</p>
-                </div>
               ) : (
                 <>
+                  {/* Repo source tabs */}
+                  <div className="flex gap-2 mb-4 border-b border-bk-border" role="tablist">
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={mode === "existing"}
+                      onClick={() => setMode("existing")}
+                      className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
+                        mode === "existing"
+                          ? "border-bk-accent text-bk-accent"
+                          : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                      }`}
+                    >
+                      Use existing repo
+                    </button>
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={mode === "create"}
+                      onClick={() => setMode("create")}
+                      className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
+                        mode === "create"
+                          ? "border-bk-accent text-bk-accent"
+                          : "border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                      }`}
+                    >
+                      Create new repo
+                    </button>
+                  </div>
+
+                  {mode === "create" ? (
+                    <form onSubmit={handleCreateRepo} className="space-y-4 mb-6">
+                      <div>
+                        <label htmlFor="new-repo-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                          Repository name
+                        </label>
+                        <input
+                          id="new-repo-name"
+                          type="text"
+                          required
+                          autoComplete="off"
+                          value={newRepoName}
+                          onChange={(e) => {
+                            setNewRepoName(e.target.value)
+                            if (createRepoError) setCreateRepoError(null)
+                          }}
+                          placeholder="my-new-project"
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus-visible:ring-2 focus-visible:ring-bk-accent"
+                        />
+                      </div>
+
+                      <div>
+                        <label htmlFor="new-repo-description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                          Description <span className="text-gray-400 font-normal">(optional)</span>
+                        </label>
+                        <input
+                          id="new-repo-description"
+                          type="text"
+                          value={newRepoDescription}
+                          onChange={(e) => setNewRepoDescription(e.target.value)}
+                          placeholder="What's this project about?"
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus-visible:ring-2 focus-visible:ring-bk-accent"
+                        />
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Visibility</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">Private repos are only visible to you</p>
+                        </div>
+                        <div className="flex rounded-lg border border-gray-300 dark:border-gray-600 overflow-hidden text-sm">
+                          <button
+                            type="button"
+                            onClick={() => setNewRepoPrivate(true)}
+                            aria-pressed={newRepoPrivate}
+                            className={`px-3 py-1.5 font-medium transition-colors ${
+                              newRepoPrivate
+                                ? "bg-bk-accent text-bk-accent-ink"
+                                : "bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+                            }`}
+                          >
+                            Private
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setNewRepoPrivate(false)}
+                            aria-pressed={!newRepoPrivate}
+                            className={`px-3 py-1.5 font-medium transition-colors ${
+                              !newRepoPrivate
+                                ? "bg-bk-accent text-bk-accent-ink"
+                                : "bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+                            }`}
+                          >
+                            Public
+                          </button>
+                        </div>
+                      </div>
+
+                      {createRepoError && (
+                        <p className="text-sm text-red-600 dark:text-red-400" role="alert">
+                          {createRepoError}
+                        </p>
+                      )}
+
+                      <button
+                        type="submit"
+                        disabled={!newRepoName.trim() || creatingRepo}
+                        className="w-full px-4 py-2.5 bg-bk-accent hover:opacity-90 disabled:bg-gray-300 dark:disabled:bg-gray-700 disabled:cursor-not-allowed text-bk-accent-ink rounded-lg font-semibold transition-colors text-sm"
+                      >
+                        {creatingRepo ? "Creating repository..." : "Create repository"}
+                      </button>
+                    </form>
+                  ) : repos.length === 0 ? (
+                    <div className="text-center py-12">
+                      <div className="text-6xl mb-4">📁</div>
+                      <p className="text-gray-600 dark:text-gray-400 mb-4">No repositories found</p>
+                      <button
+                        type="button"
+                        onClick={() => setMode("create")}
+                        className="text-bk-accent hover:underline font-medium text-sm"
+                      >
+                        Create a new repository instead →
+                      </button>
+                    </div>
+                  ) : (
+                    <>
                   {/* Search Input */}
                   <div className="mb-4">
                     <div className="relative">
@@ -482,6 +654,8 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
                       </button>
                     )))}
                     </div>
+                  )}
+                    </>
                   )}
 
                   {selectedRepo && (

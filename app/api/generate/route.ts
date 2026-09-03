@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
 import { getGitHubAccessToken } from "@/lib/github-auth"
 import { GitHubService } from "@/lib/github"
 import { getTemplateById } from "@/lib/templates"
+import { getUserPlan } from "@/lib/user"
 import { rateLimit, getClientIdentifier, RateLimitPresets } from "@/lib/rate-limit"
 import { z } from "zod"
 
@@ -35,9 +37,13 @@ const generateRequestSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    // Rate limiting - strict for expensive board generation
-    const identifier = getClientIdentifier(request)
-    const rateLimitResult = await rateLimit(identifier, RateLimitPresets.strict)
+    // Rate limiting - strict for expensive board generation, higher
+    // ceiling for premium users (see lib/rate-limit.ts).
+    const session = await auth()
+    const userId = session?.user?.id
+    const identifier = userId ? `user:${userId}` : `ip:${getClientIdentifier(request)}`
+    const plan = userId ? await getUserPlan(userId) : "FREE"
+    const rateLimitResult = await rateLimit(identifier, RateLimitPresets.strict, plan)
 
     if (!rateLimitResult.success) {
       const resetDate = new Date(rateLimitResult.reset).toISOString()

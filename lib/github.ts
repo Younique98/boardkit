@@ -67,6 +67,16 @@ export class GitHubService {
     return data
   }
 
+  async createRepository(params: { name: string; description?: string; isPrivate: boolean }) {
+    const { data } = await this.octokit.rest.repos.createForAuthenticatedUser({
+      name: params.name,
+      description: params.description,
+      private: params.isPrivate,
+      auto_init: true,
+    })
+    return data
+  }
+
   async getExistingLabels(owner: string, repo: string): Promise<Map<string, GitHubLabel>> {
     try {
       const { data } = await this.octokit.issues.listLabelsForRepo({
