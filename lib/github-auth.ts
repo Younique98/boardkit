@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server"
 import { getToken } from "next-auth/jwt"
+import { SESSION_COOKIE_NAME } from "./auth"
 
 /**
  * Reads the caller's GitHub OAuth access token straight out of the
@@ -17,6 +18,14 @@ export async function getGitHubAccessToken(request: NextRequest): Promise<string
   const token = await getToken({
     req: request,
     secret: process.env.NEXTAUTH_SECRET,
+    // Without this, getToken() defaults to NextAuth v5's own cookie name
+    // ("authjs.session-token") instead of the custom name this app's
+    // auth.ts actually issues the session cookie under - see the comment
+    // on SESSION_COOKIE_NAME. Getting this wrong means getToken() silently
+    // finds no cookie and every API route treats a signed-in user as
+    // signed out, even though the browser and /api/auth/session both
+    // correctly show them as logged in.
+    cookieName: SESSION_COOKIE_NAME,
   })
 
   const accessToken = token?.accessToken

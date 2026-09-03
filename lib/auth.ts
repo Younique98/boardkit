@@ -2,6 +2,14 @@ import NextAuth from "next-auth"
 import GitHub from "next-auth/providers/github"
 import { encode, decode } from "next-auth/jwt"
 
+// NextAuth v5's own default session cookie name is "authjs.session-token".
+// This app overrides it to the older v4-style name below (kept for
+// continuity with cookies already issued before the v5 upgrade). Any code
+// that reads the session cookie directly - i.e. getToken() calls outside
+// this file, see lib/github-auth.ts - must be told this same name, or it
+// silently falls back to the v5 default and never finds the cookie.
+export const SESSION_COOKIE_NAME = `${process.env.NODE_ENV === "production" ? "__Secure-" : ""}next-auth.session-token`
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     GitHub({
@@ -36,7 +44,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   cookies: {
     sessionToken: {
-      name: `${process.env.NODE_ENV === "production" ? "__Secure-" : ""}next-auth.session-token`,
+      name: SESSION_COOKIE_NAME,
       options: {
         httpOnly: true,
         sameSite: "lax",
