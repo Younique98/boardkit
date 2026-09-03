@@ -23,7 +23,9 @@ if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) 
   })
 
   redisRateLimiters = new Map()
-  console.log("✅ Redis rate limiting enabled (distributed)")
+  if (process.env.NODE_ENV !== "production") {
+    console.log("✅ Redis rate limiting enabled (distributed)")
+  }
 } else {
   console.warn("⚠️ Redis not configured - using in-memory rate limiting (single instance only)")
 }
