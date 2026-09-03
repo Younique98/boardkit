@@ -1,6 +1,7 @@
 import NextAuth from "next-auth"
 import GitHub from "next-auth/providers/github"
 import { encode, decode } from "next-auth/jwt"
+import { upsertUserOnSignIn } from "@/lib/user"
 
 // NextAuth v5's own default session cookie name is "authjs.session-token".
 // This app overrides it to the older v4-style name below (kept for
@@ -86,10 +87,34 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (account) {
         token.accessToken = account.access_token
         token.expiresAt = account.expires_at
+
+        // Fresh sign-in - make sure a User row exists for this GitHub
+        // account so it's there the first time they hit a DB-backed route
+        // (plan lookups, Stripe checkout, etc). `sub` is the GitHub numeric
+        // user id (see the GitHub provider's default profile() mapping).
+        if (typeof token.sub === "string" && token.sub.length > 0) {
+          try {
+            await upsertUserOnSignIn({
+              githubId: token.sub,
+              email: typeof token.email === "string" ? token.email : null,
+            })
+          } catch (error) {
+            // Never block sign-in on a DB hiccup - the row gets created
+            // lazily on the next sign-in or the first Stripe checkout.
+            console.error("Failed to upsert user on sign-in:", error)
+          }
+        }
       }
       return token
     },
-    async session({ session }) {
+    async session({ session, token }) {
+      // token.sub (the GitHub numeric user id) is not sensitive - unlike
+      // the OAuth access token above, it's fine to expose to client-side
+      // JS. The pricing UI and billing routes use it to key plan lookups.
+      if (session.user && typeof token.sub === "string") {
+        session.user.id = token.sub
+      }
+
       // Intentionally do NOT copy the GitHub OAuth access token (or its
       // expiry) onto the session object here. The session returned by this
       // callback is what /api/auth/session serves to the browser and what

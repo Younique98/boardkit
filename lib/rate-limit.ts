@@ -1,15 +1,25 @@
 /**
- * Distributed rate limiting with Redis fallback to in-memory
+ * Plan-aware rate limiting, with Redis available only to premium traffic.
  *
- * For production with multiple instances, configure Redis:
+ * FREE plan requests always use the in-memory limiter at the base preset
+ * caps below, regardless of whether Redis is configured - free tier limits
+ * are deliberately strict enough that per-instance (rather than distributed)
+ * counting is fine, and it keeps Redis capacity for paying users.
+ *
+ * PREMIUM plan requests get materially higher limits (see
+ * PREMIUM_RATE_LIMIT_MULTIPLIER) and, when Redis is configured, those higher
+ * limits are enforced with Redis so they hold across multiple instances. If
+ * Redis isn't configured, premium requests still get the higher limit, just
+ * enforced in-memory (per instance) instead of erroring.
+ *
+ * To configure Redis:
  * - UPSTASH_REDIS_REST_URL: Your Upstash Redis URL
  * - UPSTASH_REDIS_REST_TOKEN: Your Upstash Redis token
- *
- * Without Redis, falls back to in-memory (single instance only)
  */
 
 import { Redis } from "@upstash/redis"
 import { Ratelimit } from "@upstash/ratelimit"
+import type { Plan } from "@prisma/client"
 
 // Redis client (only initialized if env vars are present)
 let redis: Redis | null = null
@@ -24,10 +34,10 @@ if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) 
 
   redisRateLimiters = new Map()
   if (process.env.NODE_ENV !== "production") {
-    console.log("✅ Redis rate limiting enabled (distributed)")
+    console.log("✅ Redis rate limiting enabled for premium users (distributed)")
   }
 } else {
-  console.warn("⚠️ Redis not configured - using in-memory rate limiting (single instance only)")
+  console.warn("⚠️ Redis not configured - premium users get the higher in-memory limit instead (single instance only). Free-tier limiting is unaffected either way.")
 }
 
 // In-memory rate limiter (fallback)
@@ -144,26 +154,51 @@ function rateLimitMemory(
   }
 }
 
+// Premium plan requests get this many times the free-tier request budget.
+// Applied on top of whichever RateLimitPresets entry the caller passes in.
+const PREMIUM_RATE_LIMIT_MULTIPLIER = 5
+
 /**
- * Check if a request should be rate limited
- * Uses Redis if configured, otherwise falls back to in-memory
+ * Check if a request should be rate limited.
  *
- * @param identifier - Unique identifier (e.g., IP address or user ID)
- * @param options - Rate limit configuration
+ * FREE (the default) always uses the in-memory limiter at exactly the
+ * supplied `options`. PREMIUM multiplies `options.maxRequests` by
+ * PREMIUM_RATE_LIMIT_MULTIPLIER and, when Redis is configured, enforces that
+ * higher limit with Redis (distributed across instances); otherwise it's
+ * enforced in-memory - never an error, just a per-instance approximation.
+ *
+ * @param identifier - Unique identifier (e.g., IP address or user ID -
+ *   prefer a user id when the caller is authenticated, so a premium user's
+ *   higher limit isn't diluted by sharing an IP-based bucket with others)
+ * @param options - Base (free-tier) rate limit configuration
+ * @param plan - The requesting user's plan. Defaults to FREE.
  * @returns Rate limit result with success status and metadata
  */
 export async function rateLimit(
   identifier: string,
-  options: RateLimitOptions
+  options: RateLimitOptions,
+  plan: Plan = "FREE"
 ): Promise<RateLimitResult> {
-  if (redis) {
-    try {
-      return await rateLimitRedis(identifier, options)
-    } catch (error) {
-      console.error("Redis rate limit failed, falling back to in-memory:", error)
-      return rateLimitMemory(identifier, options)
+  if (plan === "PREMIUM") {
+    const premiumOptions: RateLimitOptions = {
+      interval: options.interval,
+      maxRequests: options.maxRequests * PREMIUM_RATE_LIMIT_MULTIPLIER,
     }
+
+    if (redis) {
+      try {
+        return await rateLimitRedis(identifier, premiumOptions)
+      } catch (error) {
+        console.error("Redis rate limit failed for premium user, falling back to in-memory:", error)
+        return rateLimitMemory(identifier, premiumOptions)
+      }
+    }
+
+    return rateLimitMemory(identifier, premiumOptions)
   }
+
+  // FREE - always in-memory, always the base preset. Redis (if configured)
+  // is reserved for premium traffic.
   return rateLimitMemory(identifier, options)
 }
 

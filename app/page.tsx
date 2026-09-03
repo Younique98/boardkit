@@ -1,10 +1,13 @@
 import { auth } from "@/lib/auth"
+import { getUserPlan } from "@/lib/user"
 import { TemplateGallery } from "@/components/template-gallery"
 import { AuthButton } from "@/components/auth-button"
+import { PlanIndicator } from "@/components/plan-indicator"
 import Image from "next/image"
 
 export default async function Home() {
   const session = await auth()
+  const plan = session?.user?.id ? await getUserPlan(session.user.id) : "FREE"
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -24,18 +27,21 @@ export default async function Home() {
 
             <div className="flex items-center gap-4">
               {session?.user && (
-                <div className="hidden sm:flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
-                  {session.user.image && (
-                    <Image
-                      src={session.user.image}
-                      alt={session.user.name || "User"}
-                      width={32}
-                      height={32}
-                      className="rounded-full"
-                    />
-                  )}
-                  <span className="hidden md:inline">{session.user.name}</span>
-                </div>
+                <>
+                  <PlanIndicator plan={plan} />
+                  <div className="hidden sm:flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                    {session.user.image && (
+                      <Image
+                        src={session.user.image}
+                        alt={session.user.name || "User"}
+                        width={32}
+                        height={32}
+                        className="rounded-full"
+                      />
+                    )}
+                    <span className="hidden md:inline">{session.user.name}</span>
+                  </div>
+                </>
               )}
               <AuthButton isSignedIn={!!session} variant="secondary" />
             </div>
