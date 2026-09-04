@@ -462,7 +462,7 @@ export function RepoSelector({ template, onClose }: RepoSelectorProps) {
 
                       <div>
                         <label htmlFor="new-repo-description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                          Description <span className="text-gray-400 font-normal">(optional)</span>
+                          Description <span className="text-gray-500 dark:text-gray-400 font-normal">(optional)</span>
                         </label>
                         <input
                           id="new-repo-description"

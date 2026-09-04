@@ -26,7 +26,7 @@ export function PlanIndicator({ plan }: PlanIndicatorProps) {
       </span>
       <a
         href={isPremium ? "/api/stripe/portal" : "/api/stripe/checkout"}
-        className="font-medium text-bk-accent hover:underline"
+        className="font-medium text-bk-accent-text hover:underline"
       >
         {isPremium ? "Manage subscription" : `Upgrade — $${PREMIUM_MONTHLY_PRICE_USD}/mo`}
       </a>

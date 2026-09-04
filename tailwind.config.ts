@@ -18,6 +18,7 @@ const config: Config = {
         "bk-border": "var(--bk-border)",
         "bk-accent": "var(--bk-accent)",
         "bk-accent-ink": "var(--bk-accent-ink)",
+        "bk-accent-text": "var(--bk-accent-text)",
         "bk-signal": "var(--bk-signal)",
         "bk-signal-ink": "var(--bk-signal-ink)",
       },
