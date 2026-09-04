@@ -23,6 +23,16 @@
   --bk-accent-ink: #FFFFFF; /* text on accent */
   --bk-signal: #D98E04; /* warm amber - "in progress" / attention states only, never the primary accent */
 
+  /* --bk-accent itself is only audited to the WCAG 1.4.11 non-text 3:1
+     minimum (see the :focus-visible note below) - on the near-white page
+     background it measures 4.35:1, which clears 3:1 for a ring/border but
+     misses the 4.5:1 normal-text minimum. --bk-accent-text is a slightly
+     darker, same-hue variant for small link/body text on light surfaces
+     (e.g. the plan indicator's "Upgrade" link): 5.37:1 on --bk-bg, 5.62:1 on
+     white. Dark mode's --bk-accent already clears 4.5:1 comfortably
+     (6.09-7.86:1), so --bk-accent-text just reuses it there. */
+  --bk-accent-text: #0C7378;
+
   /* Fixed dark ink for text rendered on top of --bk-signal. --bk-signal
      itself only shifts a little between themes (bright amber either way),
      but --bk-ink flips from dark-on-light to light-on-dark, which would fail
@@ -44,6 +54,7 @@
     --bk-border: #2A2E35;
     --bk-accent: #2FB8BD; /* brightened teal for dark-mode contrast */
     --bk-accent-ink: #0B1210;
+    --bk-accent-text: #2FB8BD; /* already clears 4.5:1 as text here, see light-mode note above */
     --bk-signal: #E8A93A;
   }
 }
